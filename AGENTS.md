@@ -103,6 +103,12 @@ Alias `#shared` aponta para `shared/`. Código em `shared/` roda no cliente, no 
 5. Com testes/CI verdes, faça merge (squash) e apague a branch.
 6. Deploy sai de `main`.
 
+CI e publicação:
+
+- `.github/workflows/ci.yml` roda testes, typecheck, build e o build da imagem em PRs. Não faça merge com checks vermelhos.
+- `.github/workflows/publish.yml` publica `ghcr.io/pedronora/convite-festa` a cada push em `main` e em tags `v*.*.*` (`latest`, `main`, `sha-<commit>` e versões semver).
+- `docker-compose.ghcr.yml` é o override que troca o build local pela imagem publicada.
+
 Nunca commite `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` ou artefatos de build — o `.gitignore` já cobre esses casos.
 
 ## Ambiente
