@@ -25,12 +25,14 @@ npm run build
 npm run preview
 npm test                    # Vitest (shared rules)
 npm run typecheck           # vue-tsc / Nuxt
+npm run lint                # ESLint (@nuxt/eslint)
+npm run lint:fix            # ESLint with automatic fixes
 npm run db:generate         # generates a migration from the schema
 npm run db:studio
 npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "senha-longa"
 ```
 
-Before opening a PR, run **`npm test`, `npm run typecheck` and `npm run build`**. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test.
+Before opening a PR, run **`npm run lint`, `npm test`, `npm run typecheck` and `npm run build`**. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test. Node 22 is pinned in `.nvmrc` (ESLint 10 requires Node 21+).
 
 ## Repository map
 

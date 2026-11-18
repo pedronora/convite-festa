@@ -194,13 +194,14 @@ The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in produ
 ## Tests and checks
 
 ```bash
+npm run lint      # ESLint (@nuxt/eslint)
 npm test          # Vitest: phone, messages, RSVP, limits and settings
 npm run typecheck # vue-tsc / Nuxt typecheck
 npm run build     # production build
 npm run preview   # preview the build
 ```
 
-The tests cover the shared pure rules. HTTP and database flows must be verified in the development environment or with a dedicated integration test.
+The tests cover the shared pure rules. HTTP and database flows must be verified in the development environment or with a dedicated integration test. Node 22 is pinned in `.nvmrc` (ESLint 10 requires Node 21+).
 
 ## Docker deploy (production)
 
@@ -349,6 +350,8 @@ docker/               # production entrypoint
 | `npm run build` | Production build. |
 | `npm run preview` | Previews the build. |
 | `npm run typecheck` | Type checking for app and server. |
+| `npm run lint` | ESLint check. |
+| `npm run lint:fix` | ESLint with automatic fixes. |
 | `npm test` | Vitest tests. |
 | `npm run db:generate` | Generates a migration from the schema. |
 | `npm run db:migrate` | Applies migrations. |
