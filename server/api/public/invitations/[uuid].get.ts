@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   if (!invitation) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Convite não encontrado',
       message: 'Não encontramos este convite. Verifique o link recebido no WhatsApp.',
     })
   }

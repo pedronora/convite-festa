@@ -7,7 +7,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Dados inválidos',
       message: zodMessage(parsed.error),
       data: { fieldErrors: parsed.error.flatten().fieldErrors },
     })
@@ -15,7 +14,7 @@ export default defineEventHandler(async (event) => {
   const input = parsed.data
   const phone = normalizePhoneBR(input.phone)
   if (!phone) {
-    throw createError({ statusCode: 422, statusMessage: 'Telefone inválido' })
+    throw createError({ statusCode: 422, message: 'Telefone inválido' })
   }
 
   const db = useDb()
@@ -32,7 +31,7 @@ export default defineEventHandler(async (event) => {
         maxGuests: input.maxGuests ?? null,
       })
       .returning({ id: schema.guests.id })
-    if (!guest) throw createError({ statusCode: 500, statusMessage: 'Não foi possível cadastrar' })
+    if (!guest) throw createError({ statusCode: 500, message: 'Não foi possível cadastrar' })
     await tx.insert(schema.invitations).values({ guestId: guest.id })
     return guest.id
   })

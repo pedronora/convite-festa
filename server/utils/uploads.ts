@@ -25,14 +25,12 @@ export async function saveInviteImage(data: Buffer, mimeType: string): Promise<s
   if (!extension) {
     throw createError({
       statusCode: 415,
-      statusMessage: 'Formato não suportado',
       message: 'Envie uma imagem PNG, JPG ou WebP.',
     })
   }
   if (data.byteLength > MAX_IMAGE_BYTES) {
     throw createError({
       statusCode: 413,
-      statusMessage: 'Arquivo muito grande',
       message: 'A imagem deve ter no máximo 5 MB.',
     })
   }

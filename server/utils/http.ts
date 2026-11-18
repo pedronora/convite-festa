@@ -4,7 +4,7 @@ export function parsePositiveId(event: H3Event, name = 'id'): number {
   const raw = getRouterParam(event, name)
   const id = Number(raw)
   if (!Number.isInteger(id) || id < 1) {
-    throw createError({ statusCode: 400, statusMessage: 'Identificador inválido' })
+    throw createError({ statusCode: 400, message: 'Identificador inválido' })
   }
   return id
 }

@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Dados inválidos',
       message: zodMessage(parsed.error),
       data: { fieldErrors: bodyFieldErrors(parsed.error) },
     })
@@ -17,7 +16,7 @@ export default defineEventHandler(async (event) => {
   const input = parsed.data
   const phone = normalizePhoneBR(input.phone)
   if (!phone) {
-    throw createError({ statusCode: 422, statusMessage: 'Telefone inválido' })
+    throw createError({ statusCode: 422, message: 'Telefone inválido' })
   }
   const db = useDb()
   const [updated] = await db
@@ -36,7 +35,7 @@ export default defineEventHandler(async (event) => {
     .returning({ id: schema.guests.id })
 
   if (!updated) {
-    throw createError({ statusCode: 404, statusMessage: 'Convidado não encontrado' })
+    throw createError({ statusCode: 404, message: 'Convidado não encontrado' })
   }
   const guest = await findGuestById(id)
   console.info('[guests] updated', { guestId: id })
