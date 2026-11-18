@@ -7,6 +7,6 @@ export default defineEventHandler(async () => {
     return { status: 'ok', timestamp: new Date().toISOString() }
   } catch (error) {
     console.error('[health] database unavailable', error)
-    throw createError({ statusCode: 503, statusMessage: 'Banco indisponível' })
+    throw createError({ statusCode: 503, message: 'Banco indisponível' })
   }
 })

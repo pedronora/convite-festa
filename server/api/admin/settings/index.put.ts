@@ -9,7 +9,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Configurações inválidas',
       message: zodMessage(parsed.error),
       data: { fieldErrors: bodyFieldErrors(parsed.error) },
     })

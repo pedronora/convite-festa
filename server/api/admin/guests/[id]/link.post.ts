@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const id = parsePositiveId(event)
   const guest = await findGuestById(id)
   if (!guest) {
-    throw createError({ statusCode: 404, statusMessage: 'Convidado não encontrado' })
+    throw createError({ statusCode: 404, message: 'Convidado não encontrado' })
   }
   const db = useDb()
   await db

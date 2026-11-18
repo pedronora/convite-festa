@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     .where(eq(schema.guests.id, id))
     .returning({ id: schema.guests.id })
   if (!deleted) {
-    throw createError({ statusCode: 404, statusMessage: 'Convidado não encontrado' })
+    throw createError({ statusCode: 404, message: 'Convidado não encontrado' })
   }
   console.info('[guests] deleted', { guestId: id })
   return { ok: true }

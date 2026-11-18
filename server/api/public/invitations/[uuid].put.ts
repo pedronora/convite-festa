@@ -12,7 +12,6 @@ export default defineEventHandler(async (event) => {
   if (!row) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Convite não encontrado',
       message: 'Não encontramos este convite. Verifique o link recebido no WhatsApp.',
     })
   }
@@ -21,7 +20,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Dados inválidos',
       message: zodMessage(parsed.error),
       data: { fieldErrors: bodyFieldErrors(parsed.error) },
     })
@@ -39,7 +37,6 @@ export default defineEventHandler(async (event) => {
   if (attendanceStatus === 'yes' && exceedsGuestLimit(total, guestLimit)) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Limite de pessoas excedido',
       message: `Este convite permite até ${guestLimit} ${guestLimit === 1 ? 'pessoa' : 'pessoas'}. Ajuste as quantidades.`,
       data: { fieldErrors: { adults: `Limite de ${guestLimit} pessoas por convite` } },
     })
@@ -49,7 +46,7 @@ export default defineEventHandler(async (event) => {
   if (!phone) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Telefone inválido',
+      message: 'Telefone inválido',
       data: { fieldErrors: { phone: 'Telefone inválido' } },
     })
   }
@@ -89,7 +86,7 @@ export default defineEventHandler(async (event) => {
     .returning()
 
   if (!saved) {
-    throw createError({ statusCode: 500, statusMessage: 'Não foi possível salvar a confirmação' })
+    throw createError({ statusCode: 500, message: 'Não foi possível salvar a confirmação' })
   }
 
   await db
