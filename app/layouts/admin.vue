@@ -46,7 +46,7 @@ async function handleLogout() {
         />
       </div>
       <div class="relative flex h-20 items-center border-b border-white/10 px-6">
-        <AppLogo variant="light" />
+        <AppLogo variant="dark" />
       </div>
       <nav
         class="relative flex-1 space-y-1.5 overflow-y-auto px-3 py-6"
@@ -150,7 +150,7 @@ async function handleLogout() {
               aria-label="Menu do painel"
             >
               <div class="flex h-20 items-center justify-between border-b border-white/10 px-5">
-                <AppLogo variant="light" />
+                <AppLogo variant="dark" />
                 <button
                   type="button"
                   class="rounded-lg p-2 text-navy-300 hover:bg-white/10 hover:text-white"
