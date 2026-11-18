@@ -1,0 +1,7 @@
+# Usa a imagem publicada no GHCR em vez de buildar localmente.
+# Uso: docker compose -f docker-compose.yml -f docker-compose.ghcr.yml up -d
+
+services:
+  app:
+    image: ${GHCR_IMAGE:-ghcr.io/pedronora/convite-festa:latest}
+    build: !reset null

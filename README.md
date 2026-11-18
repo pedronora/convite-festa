@@ -1,5 +1,7 @@
 # Convite Festa — Luigi & Marco Antonio
 
+[![CI](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml/badge.svg)](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml)
+
 Aplicação web completa para gerenciar convidados, enviar convites pelo WhatsApp e acompanhar as confirmações de presença do aniversário do **Luigi (3 anos)** e do **Marco Antonio (1 ano)**.
 
 O projeto tem duas áreas:
@@ -238,6 +240,31 @@ O container da aplicação aplica as migrations automaticamente (`RUN_MIGRATIONS
 > Em produção, coloque a aplicação atrás de um proxy reverso com HTTPS (Caddy, Nginx, Traefik ou o proxy da plataforma). O cookie de sessão passa a usar `Secure` automaticamente quando a requisição chega via HTTPS. O proxy reverso não faz parte deste Compose; use o de sua preferência.
 
 Para desativar as migrations automáticas, defina `RUN_MIGRATIONS=false`. Nesse caso, rode `docker compose exec app node scripts/migrate.mjs` no momento desejado.
+
+### CI e imagem no GHCR
+
+Dois workflows do GitHub Actions cuidam da qualidade e da distribuição:
+
+- **CI** (`.github/workflows/ci.yml`): em pull requests e pushes para `main`, roda testes, checagem de tipos e build. Em pull requests, também valida o build da imagem Docker sem publicar.
+- **Publicar imagem** (`.github/workflows/publish.yml`): a cada push em `main`, publica `ghcr.io/pedronora/convite-festa` no GitHub Container Registry. Tags `v*.*.*` também geram imagens versionadas.
+
+Tags publicadas:
+
+| Tag | Quando |
+| --- | --- |
+| `latest` | push em `main` |
+| `main` | push em `main` |
+| `sha-<commit>` | todo build |
+| `1.2.3` e `1.2` | tag `v1.2.3` |
+
+Para rodar com a imagem publicada, use o override `docker-compose.ghcr.yml`, que dispensa o build local:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.ghcr.yml pull
+docker compose -f docker-compose.yml -f docker-compose.ghcr.yml up -d
+```
+
+A imagem é pública: `docker pull ghcr.io/pedronora/convite-festa:latest` funciona sem login.
 
 ### Persistência
 
