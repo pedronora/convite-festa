@@ -37,9 +37,24 @@ const slices = computed(() => {
 
 <template>
   <div class="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
-    <div class="relative shrink-0" :style="{ width: `${size}px`, height: `${size}px` }">
-      <svg :viewBox="`0 0 ${size} ${size}`" class="h-full w-full -rotate-90" role="img" :aria-label="`Status das confirmações. ${segments.map(s => `${s.label}: ${s.value}`).join(', ')}`">
-        <circle :cx="size / 2" :cy="size / 2" :r="radius" fill="none" stroke="#eef2f8" stroke-width="18" />
+    <div
+      class="relative shrink-0"
+      :style="{ width: `${size}px`, height: `${size}px` }"
+    >
+      <svg
+        :viewBox="`0 0 ${size} ${size}`"
+        class="h-full w-full -rotate-90"
+        role="img"
+        :aria-label="`Status das confirmações. ${segments.map(s => `${s.label}: ${s.value}`).join(', ')}`"
+      >
+        <circle
+          :cx="size / 2"
+          :cy="size / 2"
+          :r="radius"
+          fill="none"
+          stroke="#eef2f8"
+          stroke-width="18"
+        />
         <circle
           v-for="slice in slices"
           :key="slice.label"
@@ -61,13 +76,26 @@ const slices = computed(() => {
       </div>
     </div>
     <ul class="w-full space-y-2.5">
-      <li v-for="slice in slices" :key="slice.label" class="flex items-center gap-2.5">
-        <span class="h-2.5 w-2.5 shrink-0 rounded-full" :style="{ backgroundColor: slice.color }" aria-hidden="true" />
+      <li
+        v-for="slice in slices"
+        :key="slice.label"
+        class="flex items-center gap-2.5"
+      >
+        <span
+          class="h-2.5 w-2.5 shrink-0 rounded-full"
+          :style="{ backgroundColor: slice.color }"
+          aria-hidden="true"
+        />
         <span class="flex-1 text-sm font-semibold text-navy-600">{{ slice.label }}</span>
         <span class="text-sm font-extrabold text-navy-900">{{ slice.value }}</span>
         <span class="w-9 text-right text-[11px] font-bold text-navy-400">{{ slice.percent }}%</span>
       </li>
-      <li v-if="total === 0" class="text-sm text-navy-400">Sem dados ainda.</li>
+      <li
+        v-if="total === 0"
+        class="text-sm text-navy-400"
+      >
+        Sem dados ainda.
+      </li>
     </ul>
   </div>
 </template>

@@ -31,15 +31,28 @@ const formatted = computed(() => typeof props.value === 'number'
   <div class="card-surface group relative overflow-hidden p-5 transition hover:-translate-y-0.5 hover:shadow-soft">
     <div class="flex items-start justify-between gap-3">
       <div class="min-w-0">
-        <p class="text-[11px] font-extrabold uppercase tracking-wider text-navy-400">{{ label }}</p>
+        <p class="text-[11px] font-extrabold uppercase tracking-wider text-navy-400">
+          {{ label }}
+        </p>
         <p class="mt-2 flex items-baseline gap-1">
           <span class="font-display text-4xl leading-none text-navy-950">{{ formatted }}</span>
-          <span v-if="suffix" class="text-sm font-bold text-navy-400">{{ suffix }}</span>
+          <span
+            v-if="suffix"
+            class="text-sm font-bold text-navy-400"
+          >{{ suffix }}</span>
         </p>
-        <p v-if="hint" class="mt-2 text-xs font-semibold leading-snug text-navy-400">{{ hint }}</p>
+        <p
+          v-if="hint"
+          class="mt-2 text-xs font-semibold leading-snug text-navy-400"
+        >
+          {{ hint }}
+        </p>
       </div>
       <span :class="['inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-4', tones[tone].bg, tones[tone].text, tones[tone].ring]">
-        <AppIcon :name="icon" :size="22" />
+        <AppIcon
+          :name="icon"
+          :size="22"
+        />
       </span>
     </div>
   </div>

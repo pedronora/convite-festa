@@ -18,8 +18,8 @@ export default defineEventHandler(async (event) => {
   const saved = await savePartySettings(parsed.data)
 
   if (
-    previous.inviteImageUrl !== saved.inviteImageUrl &&
-    previous.inviteImageUrl.startsWith('/api/invite-image/')
+    previous.inviteImageUrl !== saved.inviteImageUrl
+    && previous.inviteImageUrl.startsWith('/api/invite-image/')
   ) {
     const oldName = previous.inviteImageUrl.replace('/api/invite-image/', '')
     if (/^[a-f0-9-]+\.(png|jpg|webp)$/.test(oldName)) {

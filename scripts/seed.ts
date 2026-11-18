@@ -184,8 +184,8 @@ async function seedGuests() {
       .returning({ id: guests.id })
     if (!guest) continue
 
-    const sentAt =
-      sample.sent !== 'not_sent' && sample.sentDaysAgo
+    const sentAt
+      = sample.sent !== 'not_sent' && sample.sentDaysAgo
         ? new Date(Date.now() - 1000 * 60 * 60 * 24 * sample.sentDaysAgo)
         : null
     const [invitation] = await db

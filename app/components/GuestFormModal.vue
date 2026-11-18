@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  saved: [guest: GuestListItem]
+  'saved': [guest: GuestListItem]
 }>()
 
 const toast = useToast()
@@ -79,10 +79,12 @@ async function submit() {
     toast.success(isEdit.value ? 'Convidado atualizado.' : 'Convidado cadastrado com link exclusivo.')
     emit('saved', saved)
     emit('update:modelValue', false)
-  } catch (error) {
+  }
+  catch (error) {
     serverError.value = apiErrorMessage(error)
     Object.assign(fieldErrors.value, apiFieldErrors(error))
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
@@ -96,8 +98,17 @@ async function submit() {
     size="md"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <form id="guest-form" class="space-y-4" novalidate @submit.prevent="submit">
-      <AppAlert v-if="serverError" type="error" title="Não foi possível salvar">
+    <form
+      id="guest-form"
+      class="space-y-4"
+      novalidate
+      @submit.prevent="submit"
+    >
+      <AppAlert
+        v-if="serverError"
+        type="error"
+        title="Não foi possível salvar"
+      >
         {{ serverError }}
       </AppAlert>
 
@@ -121,7 +132,13 @@ async function submit() {
           >
         </FormField>
 
-        <FormField label="Telefone / WhatsApp" for="guest-phone" :error="fieldErrors.phone" hint="Com DDD. Usaremos para o envio do convite." required>
+        <FormField
+          label="Telefone / WhatsApp"
+          for="guest-phone"
+          :error="fieldErrors.phone"
+          hint="Com DDD. Usaremos para o envio do convite."
+          required
+        >
           <input
             id="guest-phone"
             v-model="form.phone"
@@ -133,7 +150,12 @@ async function submit() {
           >
         </FormField>
 
-        <FormField label="E-mail" for="guest-email" :error="fieldErrors.email" hint="Opcional">
+        <FormField
+          label="E-mail"
+          for="guest-email"
+          :error="fieldErrors.email"
+          hint="Opcional"
+        >
           <input
             id="guest-email"
             v-model="form.email"
@@ -198,7 +220,13 @@ async function submit() {
           >
         </FormField>
 
-        <FormField label="Observações internas" for="guest-notes" :error="fieldErrors.notes" hint="Visível apenas no painel administrativo." class="sm:col-span-2">
+        <FormField
+          label="Observações internas"
+          for="guest-notes"
+          :error="fieldErrors.notes"
+          hint="Visível apenas no painel administrativo."
+          class="sm:col-span-2"
+        >
           <textarea
             id="guest-notes"
             v-model="form.notes"
@@ -211,18 +239,36 @@ async function submit() {
       </div>
 
       <p class="flex items-start gap-2 rounded-xl bg-navy-50 p-3 text-xs font-semibold text-navy-500">
-        <AppIcon name="info" :size="15" class="mt-0.5 shrink-0" />
+        <AppIcon
+          name="info"
+          :size="15"
+          class="mt-0.5 shrink-0"
+        />
         O link de confirmação é gerado automaticamente e não muda quando você edita os dados do convidado.
       </p>
     </form>
 
     <template #footer>
       <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <AppButton variant="ghost" size="sm" @click="emit('update:modelValue', false)">
+        <AppButton
+          variant="ghost"
+          size="sm"
+          @click="emit('update:modelValue', false)"
+        >
           Cancelar
         </AppButton>
-        <AppButton type="submit" form="guest-form" size="sm" :loading="saving">
-          <template #icon><AppIcon :name="isEdit ? 'check' : 'plus'" :size="16" /></template>
+        <AppButton
+          type="submit"
+          form="guest-form"
+          size="sm"
+          :loading="saving"
+        >
+          <template #icon>
+            <AppIcon
+              :name="isEdit ? 'check' : 'plus'"
+              :size="16"
+            />
+          </template>
           {{ isEdit ? 'Salvar alterações' : 'Cadastrar convidado' }}
         </AppButton>
       </div>

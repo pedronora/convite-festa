@@ -27,15 +27,24 @@ const styles = {
           :key="toast.id"
           :class="['pointer-events-auto flex w-full items-start gap-3 rounded-2xl border px-4 py-3 shadow-soft', styles[toast.type].classes]"
         >
-          <AppIcon :name="styles[toast.type].icon" :size="20" :class="['mt-0.5 shrink-0', styles[toast.type].iconClass]" />
-          <p class="flex-1 text-sm font-semibold leading-snug">{{ toast.message }}</p>
+          <AppIcon
+            :name="styles[toast.type].icon"
+            :size="20"
+            :class="['mt-0.5 shrink-0', styles[toast.type].iconClass]"
+          />
+          <p class="flex-1 text-sm font-semibold leading-snug">
+            {{ toast.message }}
+          </p>
           <button
             type="button"
             class="-mr-1 rounded-full p-1 opacity-60 transition hover:bg-current/10 hover:opacity-100"
             aria-label="Fechar notificação"
             @click="dismiss(toast.id)"
           >
-            <AppIcon name="x" :size="15" />
+            <AppIcon
+              name="x"
+              :size="15"
+            />
           </button>
         </div>
       </TransitionGroup>

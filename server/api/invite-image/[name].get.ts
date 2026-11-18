@@ -20,10 +20,11 @@ export default defineEventHandler(async (event) => {
       'Content-Length': String(file.byteLength),
       'Cache-Control': 'public, max-age=31536000, immutable',
       'X-Content-Type-Options': 'nosniff',
-      'Content-Security-Policy': "default-src 'none'; sandbox",
+      'Content-Security-Policy': 'default-src \'none\'; sandbox',
     })
     return file
-  } catch {
+  }
+  catch {
     throw createError({ statusCode: 404, message: 'Imagem não encontrada' })
   }
 })

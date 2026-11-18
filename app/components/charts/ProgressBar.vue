@@ -12,9 +12,18 @@ withDefaults(defineProps<{
 
 <template>
   <div>
-    <div v-if="label || showValue" class="mb-1.5 flex items-center justify-between gap-3">
-      <span v-if="label" class="text-sm font-bold text-navy-700">{{ label }}</span>
-      <span v-if="showValue" class="text-sm font-extrabold text-navy-950">{{ value }}%</span>
+    <div
+      v-if="label || showValue"
+      class="mb-1.5 flex items-center justify-between gap-3"
+    >
+      <span
+        v-if="label"
+        class="text-sm font-bold text-navy-700"
+      >{{ label }}</span>
+      <span
+        v-if="showValue"
+        class="text-sm font-extrabold text-navy-950"
+      >{{ value }}%</span>
     </div>
     <div
       class="h-2.5 overflow-hidden rounded-full bg-navy-100"

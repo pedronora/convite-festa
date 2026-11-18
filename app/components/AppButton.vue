@@ -57,8 +57,16 @@ const classes = computed(() => [
     :class="classes"
     :aria-disabled="disabled || loading || undefined"
   >
-    <AppIcon v-if="loading" name="loader" :size="16" class="animate-spin" />
-    <slot v-else name="icon" />
+    <AppIcon
+      v-if="loading"
+      name="loader"
+      :size="16"
+      class="animate-spin"
+    />
+    <slot
+      v-else
+      name="icon"
+    />
     <slot />
   </NuxtLink>
   <a
@@ -69,8 +77,16 @@ const classes = computed(() => [
     :class="classes"
     :aria-disabled="disabled || loading || undefined"
   >
-    <AppIcon v-if="loading" name="loader" :size="16" class="animate-spin" />
-    <slot v-else name="icon" />
+    <AppIcon
+      v-if="loading"
+      name="loader"
+      :size="16"
+      class="animate-spin"
+    />
+    <slot
+      v-else
+      name="icon"
+    />
     <slot />
   </a>
   <button
@@ -80,8 +96,16 @@ const classes = computed(() => [
     :disabled="disabled || loading"
     :aria-busy="loading || undefined"
   >
-    <AppIcon v-if="loading" name="loader" :size="16" class="animate-spin" />
-    <slot v-else name="icon" />
+    <AppIcon
+      v-if="loading"
+      name="loader"
+      :size="16"
+      class="animate-spin"
+    />
+    <slot
+      v-else
+      name="icon"
+    />
     <slot />
   </button>
 </template>

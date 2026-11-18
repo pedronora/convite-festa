@@ -1,5 +1,5 @@
-import { asc, count, desc, eq, ilike, isNull, or, sql, type SQL } from 'drizzle-orm'
-import type { GuestDetail, GuestListItem, GuestListResponse } from '#shared/types'
+import { count, desc, eq, ilike, isNull, or, sql, type SQL } from 'drizzle-orm'
+import type { GuestDetail, GuestListItem, GuestListResponse, RsvpStatus, SendStatus } from '#shared/types'
 
 type GuestQuery = {
   search: string
@@ -41,11 +41,41 @@ export const guestColumns = {
   rsvpNotes: schema.rsvps.notes,
 }
 
+type GuestRow = {
+  id: number
+  uuid: string
+  name: string
+  phone: string
+  email: string | null
+  groupName: string | null
+  notes: string | null
+  estimatedGuests: number | null
+  maxGuests: number | null
+  createdAt: Date
+  updatedAt: Date
+  invitationId: number | null
+  invitationUuid: string | null
+  sendStatus: SendStatus | null
+  sentAt: Date | null
+  lastSentAt: Date | null
+  rsvpId: number | null
+  attendanceStatus: RsvpStatus | null
+  adults: number | null
+  children8to11: number | null
+  children0to7: number | null
+  confirmedAt: Date | null
+  rsvpUpdatedAt: Date | null
+  responsibleName: string | null
+  rsvpPhone: string | null
+  rsvpEmail: string | null
+  rsvpNotes: string | null
+}
+
 function toIso(value: Date | null | undefined): string | null {
   return value ? new Date(value).toISOString() : null
 }
 
-export function mapGuestRow(row: Record<string, any>): GuestListItem {
+export function mapGuestRow(row: GuestRow): GuestListItem {
   const adults = row.adults ?? 0
   const children8to11 = row.children8to11 ?? 0
   const children0to7 = row.children0to7 ?? 0
@@ -61,8 +91,8 @@ export function mapGuestRow(row: Record<string, any>): GuestListItem {
     maxGuests: row.maxGuests,
     createdAt: toIso(row.createdAt)!,
     updatedAt: toIso(row.updatedAt)!,
-    invitationId: row.invitationId,
-    invitationUuid: row.invitationUuid,
+    invitationId: row.invitationId!,
+    invitationUuid: row.invitationUuid!,
     sendStatus: row.sendStatus ?? 'not_sent',
     sentAt: toIso(row.sentAt),
     lastSentAt: toIso(row.lastSentAt),

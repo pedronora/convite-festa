@@ -38,10 +38,12 @@ async function submit() {
       ? route.query.redirect
       : '/admin'
     await navigateTo(redirect, { replace: true })
-  } catch (error) {
+  }
+  catch (error) {
     errorMessage.value = apiErrorMessage(error, 'Não foi possível entrar. Verifique os dados.')
     fieldErrors.value = apiFieldErrors(error)
-  } finally {
+  }
+  finally {
     submitting.value = false
   }
 }
@@ -51,20 +53,39 @@ async function submit() {
   <div class="rounded-3xl border border-white/10 bg-white p-6 shadow-2xl sm:p-8">
     <div class="mb-6">
       <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-spider-50 text-spider-600">
-        <AppIcon name="lock" :size="21" />
+        <AppIcon
+          name="lock"
+          :size="21"
+        />
       </span>
-      <h1 class="mt-4 font-display text-4xl text-navy-950">Área dos anfitriões</h1>
+      <h1 class="mt-4 font-display text-4xl text-navy-950">
+        Área dos anfitriões
+      </h1>
       <p class="mt-1 text-sm font-semibold text-navy-500">
         Entre para gerenciar convidados, enviar convites e acompanhar as confirmações.
       </p>
     </div>
 
-    <AppAlert v-if="errorMessage" type="error" class="mb-4" title="Não foi possível entrar">
+    <AppAlert
+      v-if="errorMessage"
+      type="error"
+      class="mb-4"
+      title="Não foi possível entrar"
+    >
       {{ errorMessage }}
     </AppAlert>
 
-    <form class="space-y-4" novalidate @submit.prevent="submit">
-      <FormField label="E-mail" for="login-email" :error="fieldErrors.email" required>
+    <form
+      class="space-y-4"
+      novalidate
+      @submit.prevent="submit"
+    >
+      <FormField
+        label="E-mail"
+        for="login-email"
+        :error="fieldErrors.email"
+        required
+      >
         <input
           id="login-email"
           v-model="form.email"
@@ -78,7 +99,12 @@ async function submit() {
         >
       </FormField>
 
-      <FormField label="Senha" for="login-password" :error="fieldErrors.password" required>
+      <FormField
+        label="Senha"
+        for="login-password"
+        :error="fieldErrors.password"
+        required
+      >
         <div class="relative">
           <input
             id="login-password"
@@ -95,19 +121,36 @@ async function submit() {
             :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
             @click="showPassword = !showPassword"
           >
-            <AppIcon :name="showPassword ? 'eye-off' : 'eye'" :size="17" />
+            <AppIcon
+              :name="showPassword ? 'eye-off' : 'eye'"
+              :size="17"
+            />
           </button>
         </div>
       </FormField>
 
-      <AppButton type="submit" size="lg" block :loading="submitting">
-        <template #icon><AppIcon name="shield" :size="17" /></template>
+      <AppButton
+        type="submit"
+        size="lg"
+        block
+        :loading="submitting"
+      >
+        <template #icon>
+          <AppIcon
+            name="shield"
+            :size="17"
+          />
+        </template>
         Entrar no painel
       </AppButton>
     </form>
 
     <div class="mt-5 flex items-start gap-2 rounded-xl bg-navy-50 p-3 text-[11px] font-semibold leading-relaxed text-navy-500">
-      <AppIcon name="lock" :size="14" class="mt-0.5 shrink-0" />
+      <AppIcon
+        name="lock"
+        :size="14"
+        class="mt-0.5 shrink-0"
+      />
       Sessão protegida por cookie seguro e válida por 7 dias. Após várias tentativas incorretas, o acesso é
       bloqueado temporariamente.
     </div>

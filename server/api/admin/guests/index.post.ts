@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm'
 import { guestInputSchema, zodMessage } from '#shared/validation'
 import { normalizePhoneBR } from '#shared/utils/phone'
 

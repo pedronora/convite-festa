@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  sent: [guestId: number]
+  'sent': [guestId: number]
 }>()
 
 const toast = useToast()
@@ -49,7 +49,8 @@ watch(() => props.modelValue, async (open) => {
   if (!settings.value) {
     try {
       settings.value = await $fetch<PartySettings>('/api/admin/settings')
-    } catch {
+    }
+    catch {
       settings.value = { ...defaultPartySettings }
       toast.error('Não foi possível carregar as configurações. Usando o modelo padrão.')
     }
@@ -88,7 +89,8 @@ async function copyLink() {
   try {
     await navigator.clipboard.writeText(inviteLink.value)
     toast.success('Link copiado para a área de transferência.')
-  } catch {
+  }
+  catch {
     toast.error('Não foi possível copiar automaticamente. Selecione o link no campo e copie.')
   }
 }
@@ -110,13 +112,16 @@ async function registerSend(status: 'sent' | 'failed') {
       sentIds.value.push(current.value.id)
       emit('sent', current.value.id)
       toast.success(`Envio registrado para ${current.value.name}.`)
-    } else {
+    }
+    else {
       toast.info(`Falha de envio registrada para ${current.value.name}.`)
     }
     advance()
-  } catch (error) {
+  }
+  catch (error) {
     toast.error(apiErrorMessage(error, 'Não foi possível registrar o envio.'))
-  } finally {
+  }
+  finally {
     registering.value = false
   }
 }
@@ -124,7 +129,8 @@ async function registerSend(status: 'sent' | 'failed') {
 function advance() {
   if (index.value < queue.value.length - 1) {
     index.value += 1
-  } else {
+  }
+  else {
     finished.value = true
   }
 }
@@ -132,7 +138,8 @@ function advance() {
 function skip() {
   if (index.value < queue.value.length - 1) {
     index.value += 1
-  } else {
+  }
+  else {
     finished.value = true
   }
 }
@@ -153,30 +160,57 @@ async function fail() {
     :closeable="!registering"
     @update:model-value="emit('update:modelValue', $event)"
   >
-    <div v-if="finished" class="flex flex-col items-center py-6 text-center">
+    <div
+      v-if="finished"
+      class="flex flex-col items-center py-6 text-center"
+    >
       <span class="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/50">
-        <AppIcon name="check-circle" :size="32" />
+        <AppIcon
+          name="check-circle"
+          :size="32"
+        />
       </span>
-      <h3 class="mt-4 font-display text-3xl text-navy-950">Tudo registrado!</h3>
+      <h3 class="mt-4 font-display text-3xl text-navy-950">
+        Tudo registrado!
+      </h3>
       <p class="mt-2 max-w-md text-sm font-semibold text-navy-500">
         {{ sentIds.length }} {{ sentIds.length === 1 ? 'envio confirmado' : 'envios confirmados' }}.
         O histórico já está atualizado no painel.
       </p>
       <div class="mt-6 flex flex-wrap justify-center gap-2">
-        <AppButton variant="outline" size="sm" @click="close">Fechar</AppButton>
-        <AppButton to="/admin/envios" size="sm" @click="close">
+        <AppButton
+          variant="outline"
+          size="sm"
+          @click="close"
+        >
+          Fechar
+        </AppButton>
+        <AppButton
+          to="/admin/envios"
+          size="sm"
+          @click="close"
+        >
           Ver histórico de envios
         </AppButton>
       </div>
     </div>
 
-    <div v-else-if="current" class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div
+      v-else-if="current"
+      class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]"
+    >
       <div class="space-y-5">
-        <div v-if="isBulk" class="flex items-center justify-between gap-3 rounded-xl bg-navy-50 px-3.5 py-2.5">
+        <div
+          v-if="isBulk"
+          class="flex items-center justify-between gap-3 rounded-xl bg-navy-50 px-3.5 py-2.5"
+        >
           <p class="text-xs font-extrabold text-navy-700">
             Convidado {{ index + 1 }} de {{ queue.length }}
           </p>
-          <div class="flex items-center gap-1" aria-hidden="true">
+          <div
+            class="flex items-center gap-1"
+            aria-hidden="true"
+          >
             <span
               v-for="(guest, i) in queue"
               :key="guest.id"
@@ -191,33 +225,54 @@ async function fail() {
         <div class="rounded-2xl border border-navy-100 bg-navy-50/50 p-4">
           <div class="flex flex-wrap items-start justify-between gap-2">
             <div>
-              <p class="text-[10px] font-extrabold uppercase tracking-widest text-navy-400">Destinatário</p>
-              <p class="mt-0.5 text-base font-extrabold text-navy-950">{{ current.name }}</p>
+              <p class="text-[10px] font-extrabold uppercase tracking-widest text-navy-400">
+                Destinatário
+              </p>
+              <p class="mt-0.5 text-base font-extrabold text-navy-950">
+                {{ current.name }}
+              </p>
               <p class="text-xs font-semibold text-navy-500">
                 {{ formatPhoneBR(current.phone) }}
                 <span v-if="current.groupName"> · {{ current.groupName }}</span>
               </p>
             </div>
-            <StatusBadge kind="send" :status="current.sendStatus" size="sm" />
+            <StatusBadge
+              kind="send"
+              :status="current.sendStatus"
+              size="sm"
+            />
           </div>
         </div>
 
-        <div class="grid grid-cols-3 gap-2" aria-label="Passos do envio">
+        <div
+          class="grid grid-cols-3 gap-2"
+          aria-label="Passos do envio"
+        >
           <div :class="['rounded-xl border p-2.5 text-center', openedWhatsApp ? 'border-emerald-200 bg-emerald-50' : 'border-navy-100 bg-white']">
             <span :class="['mx-auto flex h-6 w-6 items-center justify-center rounded-full text-xs font-extrabold', openedWhatsApp ? 'bg-emerald-500 text-white' : 'bg-navy-100 text-navy-500']">1</span>
-            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">Abrir WhatsApp</p>
+            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">
+              Abrir WhatsApp
+            </p>
           </div>
           <div :class="['rounded-xl border p-2.5 text-center', openedWhatsApp ? 'border-navy-100 bg-white' : 'border-dashed border-navy-200 bg-navy-50/50']">
             <span class="mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-navy-100 text-xs font-extrabold text-navy-500">2</span>
-            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">Anexar imagem</p>
+            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">
+              Anexar imagem
+            </p>
           </div>
           <div :class="['rounded-xl border p-2.5 text-center', confirmSent ? 'border-spider-200 bg-spider-50' : 'border-dashed border-navy-200 bg-navy-50/50']">
             <span :class="['mx-auto flex h-6 w-6 items-center justify-center rounded-full text-xs font-extrabold', confirmSent ? 'bg-spider-500 text-white' : 'bg-navy-100 text-navy-500']">3</span>
-            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">Confirmar envio</p>
+            <p class="mt-1.5 text-[10px] font-extrabold uppercase tracking-wide text-navy-500">
+              Confirmar envio
+            </p>
           </div>
         </div>
 
-        <FormField label="Mensagem do convite" for="invite-message" hint="Personalize antes de enviar. O link individual já está incluído.">
+        <FormField
+          label="Mensagem do convite"
+          for="invite-message"
+          hint="Personalize antes de enviar. O link individual já está incluído."
+        >
           <textarea
             id="invite-message"
             v-model="message"
@@ -228,7 +283,9 @@ async function fail() {
         </FormField>
 
         <div>
-          <p class="mb-1.5 text-sm font-bold text-navy-800">Link individual de confirmação</p>
+          <p class="mb-1.5 text-sm font-bold text-navy-800">
+            Link individual de confirmação
+          </p>
           <div class="flex gap-2">
             <input
               :value="inviteLink"
@@ -238,8 +295,18 @@ async function fail() {
               aria-label="Link individual de confirmação"
               @focus="($event.target as HTMLInputElement).select()"
             >
-            <AppButton variant="outline" size="sm" class="shrink-0" @click="copyLink">
-              <template #icon><AppIcon name="copy" :size="15" /></template>
+            <AppButton
+              variant="outline"
+              size="sm"
+              class="shrink-0"
+              @click="copyLink"
+            >
+              <template #icon>
+                <AppIcon
+                  name="copy"
+                  :size="15"
+                />
+              </template>
               Copiar
             </AppButton>
           </div>
@@ -264,7 +331,12 @@ async function fail() {
             class="flex-1"
             @click="openWhatsApp"
           >
-            <template #icon><AppIcon name="whatsapp" :size="18" /></template>
+            <template #icon>
+              <AppIcon
+                name="whatsapp"
+                :size="18"
+              />
+            </template>
             Abrir WhatsApp de {{ current.name.split(' ')[0] }}
           </AppButton>
           <AppButton
@@ -273,13 +345,22 @@ async function fail() {
             :loading="registering"
             @click="registerSend('sent')"
           >
-            <template #icon><AppIcon name="check" :size="17" /></template>
+            <template #icon>
+              <AppIcon
+                name="check"
+                :size="17"
+              />
+            </template>
             Confirmar envio
           </AppButton>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-2 border-t border-navy-100 pt-3">
-          <button type="button" class="text-xs font-bold text-navy-400 underline underline-offset-2 hover:text-navy-700" @click="skip">
+          <button
+            type="button"
+            class="text-xs font-bold text-navy-400 underline underline-offset-2 hover:text-navy-700"
+            @click="skip"
+          >
             Pular este convidado
           </button>
           <button
@@ -306,21 +387,30 @@ async function fail() {
               rel="noopener"
               class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-navy-200 px-2.5 py-2 text-xs font-bold text-navy-700 transition hover:bg-navy-50"
             >
-              <AppIcon name="external" :size="14" /> Abrir imagem
+              <AppIcon
+                name="external"
+                :size="14"
+              /> Abrir imagem
             </a>
             <a
               :href="imageUrl"
               download="convite-luigi-marco"
               class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-navy-200 px-2.5 py-2 text-xs font-bold text-navy-700 transition hover:bg-navy-50"
             >
-              <AppIcon name="download" :size="14" /> Baixar
+              <AppIcon
+                name="download"
+                :size="14"
+              /> Baixar
             </a>
           </div>
         </div>
 
         <div class="rounded-2xl border border-amber-200 bg-amber-50 p-3.5">
           <p class="flex items-center gap-1.5 text-xs font-extrabold text-amber-800">
-            <AppIcon name="info" :size="14" /> Atenção
+            <AppIcon
+              name="info"
+              :size="14"
+            /> Atenção
           </p>
           <p class="mt-1 text-[11px] font-semibold leading-relaxed text-amber-800/90">
             Links <code>wa.me</code> não anexam imagens automaticamente. Abra o WhatsApp, anexe a imagem
@@ -328,8 +418,13 @@ async function fail() {
           </p>
         </div>
 
-        <div v-if="isBulk" class="rounded-2xl border border-navy-100 p-3">
-          <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-navy-400">Fila de envio</p>
+        <div
+          v-if="isBulk"
+          class="rounded-2xl border border-navy-100 p-3"
+        >
+          <p class="mb-2 text-[10px] font-extrabold uppercase tracking-widest text-navy-400">
+            Fila de envio
+          </p>
           <ul class="max-h-56 space-y-1 overflow-y-auto scrollbar-thin">
             <li
               v-for="(guest, i) in queue"
@@ -339,7 +434,10 @@ async function fail() {
                 i === index ? 'bg-spider-50 text-spider-800' : sentIds.includes(guest.id) ? 'text-emerald-700' : 'text-navy-400',
               ]"
             >
-              <AppIcon :name="sentIds.includes(guest.id) ? 'check-circle' : i === index ? 'arrow-right' : 'clock'" :size="12" />
+              <AppIcon
+                :name="sentIds.includes(guest.id) ? 'check-circle' : i === index ? 'arrow-right' : 'clock'"
+                :size="12"
+              />
               <span class="flex-1 truncate">{{ guest.name }}</span>
             </li>
           </ul>
@@ -352,7 +450,12 @@ async function fail() {
         <p class="text-[11px] font-semibold text-navy-400">
           O histórico registra telefone, mensagem, método, status e tentativa.
         </p>
-        <AppButton variant="ghost" size="sm" :disabled="registering" @click="close">
+        <AppButton
+          variant="ghost"
+          size="sm"
+          :disabled="registering"
+          @click="close"
+        >
           Fechar
         </AppButton>
       </div>

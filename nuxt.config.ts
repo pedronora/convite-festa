@@ -1,25 +1,9 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
+  modules: ['@nuxt/eslint'],
   components: [{ path: '~/components', pathPrefix: false }],
-  css: ['~/assets/css/main.css'],
-  vite: {
-    plugins: [tailwindcss()],
-  },
-  typescript: {
-    strict: true,
-    typeCheck: false,
-  },
-  runtimeConfig: {
-    databaseUrl: process.env.DATABASE_URL || '',
-    dataDir: process.env.DATA_DIR || './.data',
-    sessionCookieName: 'convite_session',
-    public: {
-      appUrl: process.env.NUXT_PUBLIC_APP_URL || '',
-    },
-  },
+  devtools: { enabled: false },
   app: {
     head: {
       htmlAttrs: { lang: 'pt-BR' },
@@ -40,14 +24,36 @@ export default defineNuxtConfig({
       ],
     },
   },
+  css: ['~/assets/css/main.css'],
+  runtimeConfig: {
+    databaseUrl: process.env.DATABASE_URL || '',
+    dataDir: process.env.DATA_DIR || './.data',
+    sessionCookieName: 'convite_session',
+    public: {
+      appUrl: process.env.NUXT_PUBLIC_APP_URL || '',
+    },
+  },
+  routeRules: {
+    '/api/**': { cors: false },
+    '/admin/**': { ssr: true },
+  },
+  compatibilityDate: '2025-07-15',
   nitro: {
     compressPublicAssets: true,
     experimental: {
       asyncContext: true,
     },
   },
-  routeRules: {
-    '/api/**': { cors: false },
-    '/admin/**': { ssr: true },
+  vite: {
+    plugins: [tailwindcss()],
+  },
+  typescript: {
+    strict: true,
+    typeCheck: false,
+  },
+  eslint: {
+    config: {
+      stylistic: true,
+    },
   },
 })

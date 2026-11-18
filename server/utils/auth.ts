@@ -79,10 +79,11 @@ export async function requireAdmin(event: H3Event): Promise<AdminIdentity> {
   if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
     const origin = getRequestHeader(event, 'origin')
     if (origin) {
-      let originHost = ''
+      let originHost: string
       try {
         originHost = new URL(origin).host
-      } catch {
+      }
+      catch {
         originHost = ''
       }
       if (originHost !== getRequestURL(event).host) {

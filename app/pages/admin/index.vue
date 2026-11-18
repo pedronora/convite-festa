@@ -50,24 +50,61 @@ const sendBars = computed(() => [
       :subtitle="party ? `Aniversário de ${party.celebrants.map(c => c.name).join(' e ')} · ${formatDateLong(party.partyDate)} · ${party.venue}` : 'Acompanhe convites, envios e confirmações.'"
     >
       <template #actions>
-        <AppButton variant="outline" size="sm" :loading="refreshing" @click="reload">
-          <template #icon><AppIcon name="refresh" :size="15" /></template>
+        <AppButton
+          variant="outline"
+          size="sm"
+          :loading="refreshing"
+          @click="reload"
+        >
+          <template #icon>
+            <AppIcon
+              name="refresh"
+              :size="15"
+            />
+          </template>
           Atualizar
         </AppButton>
-        <AppButton to="/admin/convidados?novo=1" size="sm">
-          <template #icon><AppIcon name="plus" :size="16" /></template>
+        <AppButton
+          to="/admin/convidados?novo=1"
+          size="sm"
+        >
+          <template #icon>
+            <AppIcon
+              name="plus"
+              :size="16"
+            />
+          </template>
           Novo convidado
         </AppButton>
       </template>
     </PageHeader>
 
-    <AppAlert v-if="error" type="error" title="Não foi possível carregar o dashboard" class="mb-6">
+    <AppAlert
+      v-if="error"
+      type="error"
+      title="Não foi possível carregar o dashboard"
+      class="mb-6"
+    >
       {{ apiErrorMessage(error) }}
-      <button type="button" class="ml-2 underline" @click="reload">Tentar novamente</button>
+      <button
+        type="button"
+        class="ml-2 underline"
+        @click="reload"
+      >
+        Tentar novamente
+      </button>
     </AppAlert>
 
-    <div v-if="pending" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-live="polite">
-      <div v-for="index in 8" :key="index" class="card-surface p-5">
+    <div
+      v-if="pending"
+      class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+      aria-live="polite"
+    >
+      <div
+        v-for="index in 8"
+        :key="index"
+        class="card-surface p-5"
+      >
         <div class="skeleton h-3 w-24 rounded" />
         <div class="skeleton mt-4 h-10 w-20 rounded-lg" />
         <div class="skeleton mt-3 h-3 w-32 rounded" />
@@ -76,7 +113,10 @@ const sendBars = computed(() => [
 
     <template v-else-if="data && metrics && charts">
       <!-- Indicadores principais -->
-      <section aria-label="Indicadores principais" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <section
+        aria-label="Indicadores principais"
+        class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"
+      >
         <StatCard
           label="Total de convites"
           :value="metrics.totalInvites"
@@ -112,10 +152,16 @@ const sendBars = computed(() => [
         <section class="relative overflow-hidden rounded-3xl bg-navy-950 p-6 text-white shadow-soft">
           <div class="pointer-events-none absolute inset-0 text-white opacity-10">
             <WebDecoration class="absolute -right-16 -top-16 h-72 w-72" />
-            <WebDecoration class="absolute -bottom-24 -left-16 h-64 w-64" :flip-x="true" :flip-y="true" />
+            <WebDecoration
+              class="absolute -bottom-24 -left-16 h-64 w-64"
+              :flip-x="true"
+              :flip-y="true"
+            />
           </div>
           <div class="relative">
-            <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-sky-200">Time da festa</p>
+            <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-sky-200">
+              Time da festa
+            </p>
             <div class="mt-2 flex items-end gap-3">
               <span class="font-display text-6xl leading-none text-white">{{ metrics.totalPeople }}</span>
               <span class="mb-1 text-sm font-bold text-navy-200">pessoas confirmadas</span>
@@ -126,16 +172,28 @@ const sendBars = computed(() => [
             </p>
             <div class="mt-5 grid grid-cols-3 gap-2.5">
               <div class="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
-                <p class="font-display text-2xl text-spider-300">{{ metrics.adults }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">Adultos</p>
+                <p class="font-display text-2xl text-spider-300">
+                  {{ metrics.adults }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">
+                  Adultos
+                </p>
               </div>
               <div class="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
-                <p class="font-display text-2xl text-sky-300">{{ metrics.children8to11 }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">8 a 11 anos</p>
+                <p class="font-display text-2xl text-sky-300">
+                  {{ metrics.children8to11 }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">
+                  8 a 11 anos
+                </p>
               </div>
               <div class="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
-                <p class="font-display text-2xl text-amber-300">{{ metrics.children0to7 }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">0 a 7 anos</p>
+                <p class="font-display text-2xl text-amber-300">
+                  {{ metrics.children0to7 }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-300">
+                  0 a 7 anos
+                </p>
               </div>
             </div>
           </div>
@@ -145,8 +203,12 @@ const sendBars = computed(() => [
         <section class="card-surface p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
-              <h2 class="text-sm font-extrabold text-navy-900">Evolução das confirmações</h2>
-              <p class="mt-0.5 text-xs font-semibold text-navy-400">Percentuais sobre os convites enviados e o total.</p>
+              <h2 class="text-sm font-extrabold text-navy-900">
+                Evolução das confirmações
+              </h2>
+              <p class="mt-0.5 text-xs font-semibold text-navy-400">
+                Percentuais sobre os convites enviados e o total.
+              </p>
             </div>
             <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-extrabold text-emerald-700">
               {{ metrics.confirmationRate }}% confirmado
@@ -165,16 +227,28 @@ const sendBars = computed(() => [
             />
             <div class="grid grid-cols-3 gap-2 border-t border-navy-100 pt-4 text-center">
               <div>
-                <p class="font-display text-2xl text-emerald-600">{{ metrics.totalConfirmedInvites }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">Vão comparecer</p>
+                <p class="font-display text-2xl text-emerald-600">
+                  {{ metrics.totalConfirmedInvites }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">
+                  Vão comparecer
+                </p>
               </div>
               <div>
-                <p class="font-display text-2xl text-rose-500">{{ metrics.totalDeclinedInvites }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">Não vão</p>
+                <p class="font-display text-2xl text-rose-500">
+                  {{ metrics.totalDeclinedInvites }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">
+                  Não vão
+                </p>
               </div>
               <div>
-                <p class="font-display text-2xl text-navy-400">{{ metrics.awaitingInvites }}</p>
-                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">Sem resposta</p>
+                <p class="font-display text-2xl text-navy-400">
+                  {{ metrics.awaitingInvites }}
+                </p>
+                <p class="text-[10px] font-bold uppercase tracking-wide text-navy-400">
+                  Sem resposta
+                </p>
               </div>
             </div>
           </div>
@@ -182,68 +256,129 @@ const sendBars = computed(() => [
       </div>
 
       <!-- Gráficos -->
-      <section class="mt-4 grid gap-4 lg:grid-cols-2" aria-label="Gráficos da festa">
+      <section
+        class="mt-4 grid gap-4 lg:grid-cols-2"
+        aria-label="Gráficos da festa"
+      >
         <div class="card-surface p-6">
           <div class="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 class="text-sm font-extrabold text-navy-900">Status das confirmações</h2>
-              <p class="text-xs font-semibold text-navy-400">Por convite (família ou pessoa)</p>
+              <h2 class="text-sm font-extrabold text-navy-900">
+                Status das confirmações
+              </h2>
+              <p class="text-xs font-semibold text-navy-400">
+                Por convite (família ou pessoa)
+              </p>
             </div>
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-navy-50 text-navy-500">
-              <AppIcon name="chart" :size="18" />
+              <AppIcon
+                name="chart"
+                :size="18"
+              />
             </span>
           </div>
-          <DonutChart :segments="statusSegments" center-label="convites" />
+          <DonutChart
+            :segments="statusSegments"
+            center-label="convites"
+          />
         </div>
 
         <div class="card-surface p-6">
           <div class="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 class="text-sm font-extrabold text-navy-900">Pessoas por faixa etária</h2>
-              <p class="text-xs font-semibold text-navy-400">Somente confirmações positivas</p>
+              <h2 class="text-sm font-extrabold text-navy-900">
+                Pessoas por faixa etária
+              </h2>
+              <p class="text-xs font-semibold text-navy-400">
+                Somente confirmações positivas
+              </p>
             </div>
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-spider-50 text-spider-600">
-              <AppIcon name="users" :size="18" />
+              <AppIcon
+                name="users"
+                :size="18"
+              />
             </span>
           </div>
-          <BarChart :items="ageBars" unit="pessoas" />
+          <BarChart
+            :items="ageBars"
+            unit="pessoas"
+          />
         </div>
 
         <div class="card-surface p-6">
           <div class="mb-5 flex items-center justify-between gap-3">
             <div>
-              <h2 class="text-sm font-extrabold text-navy-900">Envios de convites</h2>
-              <p class="text-xs font-semibold text-navy-400">Situação atual de cada convite</p>
+              <h2 class="text-sm font-extrabold text-navy-900">
+                Envios de convites
+              </h2>
+              <p class="text-xs font-semibold text-navy-400">
+                Situação atual de cada convite
+              </p>
             </div>
             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-sky-50 text-sky-700">
-              <AppIcon name="send" :size="18" />
+              <AppIcon
+                name="send"
+                :size="18"
+              />
             </span>
           </div>
-          <BarChart :items="sendBars" unit="convites" />
+          <BarChart
+            :items="sendBars"
+            unit="convites"
+          />
         </div>
 
         <div class="card-surface p-6">
           <div class="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 class="text-sm font-extrabold text-navy-900">Atividade recente</h2>
-              <p class="text-xs font-semibold text-navy-400">Últimas respostas e envios registrados</p>
+              <h2 class="text-sm font-extrabold text-navy-900">
+                Atividade recente
+              </h2>
+              <p class="text-xs font-semibold text-navy-400">
+                Últimas respostas e envios registrados
+              </p>
             </div>
-            <AppButton to="/admin/confirmacoes" variant="ghost" size="sm">
+            <AppButton
+              to="/admin/confirmacoes"
+              variant="ghost"
+              size="sm"
+            >
               Ver tudo
-              <template #icon><AppIcon name="arrow-right" :size="14" /></template>
+              <template #icon>
+                <AppIcon
+                  name="arrow-right"
+                  :size="14"
+                />
+              </template>
             </AppButton>
           </div>
 
-          <div v-if="data.recentRsvps.length || data.recentSends.length" class="grid gap-5 sm:grid-cols-2">
+          <div
+            v-if="data.recentRsvps.length || data.recentSends.length"
+            class="grid gap-5 sm:grid-cols-2"
+          >
             <div>
               <h3 class="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wide text-navy-400">
-                <AppIcon name="calendar-check" :size="13" /> Confirmações
+                <AppIcon
+                  name="calendar-check"
+                  :size="13"
+                /> Confirmações
               </h3>
               <ul class="space-y-2">
-                <li v-for="rsvp in data.recentRsvps.slice(0, 4)" :key="`${rsvp.guestName}-${rsvp.confirmedAt}`" class="rounded-xl border border-navy-100 p-2.5">
+                <li
+                  v-for="rsvp in data.recentRsvps.slice(0, 4)"
+                  :key="`${rsvp.guestName}-${rsvp.confirmedAt}`"
+                  class="rounded-xl border border-navy-100 p-2.5"
+                >
                   <div class="flex items-center justify-between gap-2">
-                    <p class="truncate text-xs font-extrabold text-navy-800">{{ rsvp.guestName }}</p>
-                    <span :class="['h-2 w-2 shrink-0 rounded-full', rsvp.attendanceStatus === 'yes' ? 'bg-emerald-500' : 'bg-rose-400']" aria-hidden="true" />
+                    <p class="truncate text-xs font-extrabold text-navy-800">
+                      {{ rsvp.guestName }}
+                    </p>
+                    <span
+                      :class="['h-2 w-2 shrink-0 rounded-full', rsvp.attendanceStatus === 'yes' ? 'bg-emerald-500' : 'bg-rose-400']"
+                      aria-hidden="true"
+                    />
                   </div>
                   <p class="mt-0.5 text-[11px] font-semibold text-navy-400">
                     {{ rsvp.attendanceStatus === 'yes' ? `${rsvp.totalPeople} pessoa(s)` : 'Não comparecerá' }}
@@ -254,13 +389,25 @@ const sendBars = computed(() => [
             </div>
             <div>
               <h3 class="mb-2 flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wide text-navy-400">
-                <AppIcon name="send" :size="13" /> Envios
+                <AppIcon
+                  name="send"
+                  :size="13"
+                /> Envios
               </h3>
               <ul class="space-y-2">
-                <li v-for="send in data.recentSends.slice(0, 4)" :key="`${send.guestName}-${send.sentAt}`" class="rounded-xl border border-navy-100 p-2.5">
+                <li
+                  v-for="send in data.recentSends.slice(0, 4)"
+                  :key="`${send.guestName}-${send.sentAt}`"
+                  class="rounded-xl border border-navy-100 p-2.5"
+                >
                   <div class="flex items-center justify-between gap-2">
-                    <p class="truncate text-xs font-extrabold text-navy-800">{{ send.guestName }}</p>
-                    <span :class="['h-2 w-2 shrink-0 rounded-full', send.status === 'sent' ? 'bg-sky-500' : 'bg-amber-500']" aria-hidden="true" />
+                    <p class="truncate text-xs font-extrabold text-navy-800">
+                      {{ send.guestName }}
+                    </p>
+                    <span
+                      :class="['h-2 w-2 shrink-0 rounded-full', send.status === 'sent' ? 'bg-sky-500' : 'bg-amber-500']"
+                      aria-hidden="true"
+                    />
                   </div>
                   <p class="mt-0.5 text-[11px] font-semibold text-navy-400">
                     {{ send.status === 'sent' ? 'Convite enviado' : 'Falha registrada' }}
@@ -270,9 +417,18 @@ const sendBars = computed(() => [
               </ul>
             </div>
           </div>
-          <div v-else class="rounded-2xl border-2 border-dashed border-navy-200 p-6 text-center">
-            <p class="text-sm font-semibold text-navy-400">Nenhuma atividade registrada ainda.</p>
-            <AppButton to="/admin/convidados" size="sm" class="mt-3">
+          <div
+            v-else
+            class="rounded-2xl border-2 border-dashed border-navy-200 p-6 text-center"
+          >
+            <p class="text-sm font-semibold text-navy-400">
+              Nenhuma atividade registrada ainda.
+            </p>
+            <AppButton
+              to="/admin/convidados"
+              size="sm"
+              class="mt-3"
+            >
               Cadastrar e enviar convites
             </AppButton>
           </div>

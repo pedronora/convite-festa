@@ -9,15 +9,28 @@ const partyNames = computed(() => celebrantNames(settings.value.celebrants))
 
 <template>
   <div class="flex min-h-screen flex-col bg-paper">
-    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <a
+      href="#conteudo"
+      class="skip-link"
+    >Pular para o conteúdo</a>
     <header class="no-print sticky top-0 z-30 border-b border-navy-100/80 bg-white/85 backdrop-blur-md">
       <div class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
-        <NuxtLink to="/" class="rounded-xl" aria-label="Página inicial do convite">
-          <AppLogo variant="light" compact />
+        <NuxtLink
+          to="/"
+          class="rounded-xl"
+          aria-label="Página inicial do convite"
+        >
+          <AppLogo
+            variant="light"
+            compact
+          />
         </NuxtLink>
         <div class="flex items-center gap-2">
           <span class="hidden items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wide text-emerald-700 sm:inline-flex">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+            <span
+              class="h-1.5 w-1.5 rounded-full bg-emerald-500"
+              aria-hidden="true"
+            />
             Confirmação de presença
           </span>
           <NuxtLink
@@ -30,7 +43,10 @@ const partyNames = computed(() => celebrantNames(settings.value.celebrants))
       </div>
     </header>
 
-    <main id="conteudo" class="flex-1">
+    <main
+      id="conteudo"
+      class="flex-1"
+    >
       <slot />
     </main>
 

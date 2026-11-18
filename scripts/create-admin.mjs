@@ -45,9 +45,11 @@ try {
     returning id, email
   `
   console.log(`✓ Administrador disponível: ${admin.email} (id ${admin.id})`)
-} catch (error) {
+}
+catch (error) {
   console.error('Falha ao criar administrador:', error)
   process.exitCode = 1
-} finally {
+}
+finally {
   await sql.end()
 }

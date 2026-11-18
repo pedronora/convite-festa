@@ -5,7 +5,8 @@ export default defineEventHandler(async () => {
     const db = useDb()
     await db.execute(sql`select 1`)
     return { status: 'ok', timestamp: new Date().toISOString() }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[health] database unavailable', error)
     throw createError({ statusCode: 503, message: 'Banco indisponível' })
   }

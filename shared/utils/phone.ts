@@ -20,7 +20,8 @@ export function normalizePhoneBR(value: string): string | null {
     if (digits.startsWith('00')) digits = digits.slice(2)
     if (!digits.startsWith('55')) return null
     digits = digits.slice(2)
-  } else if (digits.length >= 12 && digits.startsWith('55')) {
+  }
+  else if (digits.length >= 12 && digits.startsWith('55')) {
     digits = digits.slice(2)
   }
 
