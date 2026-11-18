@@ -10,6 +10,14 @@ const retries = Number(process.env.DB_MIGRATE_RETRIES || 30)
 const waitMs = Number(process.env.DB_MIGRATE_RETRY_DELAY_MS || 2000)
 const migrationsFolder = process.env.MIGRATIONS_FOLDER || './drizzle'
 
+// Erros que não se resolvem esperando: senha errada, banco inexistente ou permissão negada.
+const PERMANENT_ERROR_CODES = new Set([
+  '28P01', // invalid_password
+  '28000', // invalid_authorization_specification
+  '3D000', // invalid_catalog_name (banco não existe)
+  '42501', // insufficient_privilege
+])
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -21,6 +29,10 @@ async function waitForDatabase(client) {
       return
     }
     catch (error) {
+      if (PERMANENT_ERROR_CODES.has(error?.code)) {
+        console.error(`[migrate] erro permanente (${error.code}): ${error.message}`)
+        throw error
+      }
       if (attempt === retries) throw error
       console.warn(`[migrate] banco indisponível (tentativa ${attempt}/${retries}), aguardando…`)
       await sleep(waitMs)

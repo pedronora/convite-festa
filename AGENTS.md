@@ -116,6 +116,7 @@ Never commit `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` or build artif
 ## Environment
 
 - Dev database: `postgres://convite:convite@localhost:5433/convite_festa`.
+- The dev Compose (`docker-compose.dev.yml`) is a separate project (`convite-festa-dev`) that only runs the database. Never combine it with `docker-compose.yml`.
 - Seed admin: defined by `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env` (minimum 10-character password).
 - Seed test invitation: `/convite/11111111-1111-4111-8111-111111111111`.
 - The production image uses `node:22-bookworm-slim`. **Do not go back to Alpine** without retesting the client build (Rollup fails with `Code is nested too deeply`).

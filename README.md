@@ -115,6 +115,8 @@ docker compose -f docker-compose.dev.yml down       # keeps the data
 docker compose -f docker-compose.dev.yml down -v    # deletes the data
 ```
 
+`docker-compose.dev.yml` is a **standalone** file: it only starts the development database, in its own Compose project (`convite-festa-dev`). Never combine it with `docker-compose.yml`. The production stack builds `DATABASE_URL` from `POSTGRES_PASSWORD`, while the development stack hardcodes the `convite` password, so a combined run ends in `password authentication failed for user "convite"`. With the app running on the host, keep `DATABASE_URL` using that same `convite:convite` pair.
+
 ## How the invitation works
 
 1. The administrator registers the guest at `/admin/convidados`.
@@ -212,6 +214,8 @@ The tests cover the shared pure rules. HTTP and database flows must be verified 
    ```
 
    Use a long password for `POSTGRES_PASSWORD` (avoid characters that need escaping in URLs, such as `@`, `:`, `/`, `#` and `%`) and set `APP_URL` to the real public URL, for example `https://convite.seudominio.com`.
+
+   PostgreSQL only applies `POSTGRES_PASSWORD` when the volume is created for the first time. If you change it later, the existing data volume keeps the old password and the app fails with `password authentication failed`. In that case, either restore the original value or reset the volume with `docker compose down -v` (this deletes the data) and recreate the administrator.
 
 2. Start the containers:
 

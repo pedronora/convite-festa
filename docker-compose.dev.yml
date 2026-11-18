@@ -1,7 +1,8 @@
+name: convite-festa-dev
+
 services:
   db:
     image: postgres:17-alpine
-    container_name: convite-festa-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: convite
@@ -19,3 +20,5 @@ services:
 
 volumes:
   convite_pgdata_dev:
+    # Mantém o nome antigo para preservar os dados já existentes.
+    name: convite-festa_convite_pgdata_dev
