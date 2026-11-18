@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: convite-festa-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: convite
+      POSTGRES_PASSWORD: convite
+      POSTGRES_DB: convite_festa
+    ports:
+      - '5433:5432'
+    volumes:
+      - convite_pgdata_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U convite -d convite_festa']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  convite_pgdata_dev:

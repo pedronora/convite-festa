@@ -1,0 +1,15 @@
+node_modules
+.nuxt
+.output
+.data
+.git
+.gitignore
+*.log
+coverage
+dist
+.env
+.env.*
+!.env.example
+README.md
+tests
+vitest.config.ts
