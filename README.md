@@ -1,232 +1,232 @@
-# Convite Festa — Luigi & Marco Antonio
+# Birthday Invitation — Luigi & Marco Antonio
 
 [![CI](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml/badge.svg)](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml)
 
-Aplicação web completa para gerenciar convidados, enviar convites pelo WhatsApp e acompanhar as confirmações de presença do aniversário do **Luigi (3 anos)** e do **Marco Antonio (1 ano)**.
+A complete web application to manage guests, send invitations over WhatsApp and track RSVPs for **Luigi's (3 years old)** and **Marco Antonio's (1 year old)** birthday party.
 
-O projeto tem duas áreas:
+The project has two areas:
 
-- **Página pública** (`/` e `/convite/[uuid]`): convite temático do Homem-Aranha, detalhes da festa, contagem regressiva, confirmação de presença e ações de calendário/mapa.
-- **Painel administrativo** (`/admin`): dashboard, cadastro de convidados, link individual por UUID, registro de envios, confirmações, exportação CSV e configurações da festa.
+- **Public site** (`/` and `/convite/[uuid]`): Spider-Man themed invitation, party details, countdown, RSVP and calendar/map actions.
+- **Admin panel** (`/admin`): dashboard, guest management, individual link per UUID, send history, RSVPs, CSV export and party settings.
 
 ## Stack
 
-- [Nuxt 4](https://nuxt.com/) + Vue 3 (Composition API) + TypeScript estrito
+- [Nuxt 4](https://nuxt.com/) + Vue 3 (Composition API) + strict TypeScript
 - Tailwind CSS v4
 - PostgreSQL 17 + [Drizzle ORM](https://orm.drizzle.team/)
-- Zod para validação compartilhada entre cliente e servidor
-- Sessões próprias no banco, senha com `scrypt` e cookie `httpOnly`
-- Vitest para testes das regras compartilhadas
-- Docker e Docker Compose para desenvolvimento e produção
+- Zod for shared validation between client and server
+- Own session store in the database, `scrypt` password hashing and `httpOnly` cookie
+- Vitest for the shared business rules
+- Docker and Docker Compose for development and production
 
-## Requisitos
+## Requirements
 
-- Node.js **22.22+** (recomendado 22 LTS)
+- Node.js **22.22+** (22 LTS recommended)
 - npm
-- Docker + Docker Compose (para o banco local ou para produção)
+- Docker + Docker Compose (for the local database or production)
 
-## Desenvolvimento
+## Development
 
 ```bash
-# 1. Instale as dependências
+# 1. Install dependencies
 npm install
 
-# 2. Suba o PostgreSQL de desenvolvimento (porta 5433)
+# 2. Start the development PostgreSQL (port 5433)
 docker compose -f docker-compose.dev.yml up -d
 
-# 3. Crie o .env a partir do exemplo
+# 3. Create .env from the example file
 cp .env.example .env
-# Edite ADMIN_PASSWORD (mínimo de 10 caracteres) antes de rodar o seed.
+# Edit ADMIN_PASSWORD (at least 10 characters) before running the seed.
 
-# 4. Aplique as migrations e popule os dados de demonstração
+# 4. Apply migrations and load demo data
 npm run db:migrate
 npm run db:seed
 
-# 5. Inicie o servidor de desenvolvimento
+# 5. Start the development server
 npm run dev
 ```
 
-Acesse:
+Open:
 
-- Página pública: <http://localhost:3000>
-- Painel: <http://localhost:3000/admin>
-- Convite de teste do seed: <http://localhost:3000/convite/11111111-1111-4111-8111-111111111111>
+- Public site: <http://localhost:3000>
+- Admin panel: <http://localhost:3000/admin>
+- Seed test invitation: <http://localhost:3000/convite/11111111-1111-4111-8111-111111111111>
 
-### Administrador do seed
+### Seed administrator
 
-O seed usa as variáveis `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` do `.env` (a senha precisa ter ao menos 10 caracteres). Defina os valores antes de rodar `npm run db:seed`, por exemplo:
+The seed uses the `ADMIN_NAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables from `.env` (the password must have at least 10 characters). Set them before running `npm run db:seed`, for example:
 
 ```text
-E-mail: admin@festa.local
-Senha:  a que você definiu em ADMIN_PASSWORD
+Email: admin@festa.local
+Password: the one you set in ADMIN_PASSWORD
 ```
 
-> Essas credenciais são **apenas para desenvolvimento**. Troque a senha em `/admin/configuracoes` ou defina outras variáveis antes do seed.
+> These credentials are **development only**. Change the password at `/admin/configuracoes` or set different variables before seeding.
 
-Para criar ou redefinir um administrador sem rodar o seed:
+To create or reset an administrator without running the seed:
 
 ```bash
 npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "uma-senha-longa"
 ```
 
-O comando também aceita `ADMIN_NAME`, `ADMIN_EMAIL` e `ADMIN_PASSWORD` vindos do ambiente. Se o e-mail já existir, a senha é atualizada.
+The command also accepts `ADMIN_NAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` from the environment. If the email already exists, the password is updated.
 
-### Seed de demonstração
+### Demo seed
 
-`npm run db:seed` cria:
+`npm run db:seed` creates:
 
-- o administrador definido no `.env`;
-- as configurações padrão da festa;
-- 8 convidados de exemplo, com envios, confirmações e recusas.
+- the administrator defined in `.env`;
+- the default party settings;
+- 8 sample guests, with sends, confirmations and declines.
 
-Defina `SEED_SAMPLE=false` para criar apenas o administrador e as configurações. O seed não é executado automaticamente em produção.
+Set `SEED_SAMPLE=false` to create only the administrator and the settings. The seed never runs automatically in production.
 
-## Variáveis de ambiente
+## Environment variables
 
-| Variável | Padrão | Descrição |
+| Variable | Default | Description |
 | --- | --- | --- |
-| `DATABASE_URL` | — | String de conexão do PostgreSQL. Obrigatória. |
-| `NUXT_PUBLIC_APP_URL` | `http://localhost:3000` | URL pública usada nos links de convite. Sem barra no final. |
-| `DATA_DIR` | `./.data` | Pasta persistente das imagens enviadas. Em produção: `/app/data`. |
-| `ADMIN_NAME` | `Administrador` | Nome usado pelos scripts de seed/create-admin. |
-| `ADMIN_EMAIL` | `admin@festa.local` | E-mail usado pelos scripts. |
-| `ADMIN_PASSWORD` | — | Senha inicial (mínimo de 10 caracteres). |
-| `SEED_SAMPLE` | `true` | Cria os convidados de exemplo no seed. Use `false` em produção. |
-| `PORT` / `HOST` | `3000` / `0.0.0.0` | Porta e interface do servidor Nitro. |
+| `DATABASE_URL` | — | PostgreSQL connection string. Required. |
+| `NUXT_PUBLIC_APP_URL` | `http://localhost:3000` | Public URL used in the invitation links. No trailing slash. |
+| `DATA_DIR` | `./.data` | Persistent folder for uploaded images. In production: `/app/data`. |
+| `ADMIN_NAME` | `Administrador` | Name used by the seed/create-admin scripts. |
+| `ADMIN_EMAIL` | `admin@festa.local` | Email used by the scripts. |
+| `ADMIN_PASSWORD` | — | Initial password (at least 10 characters). |
+| `SEED_SAMPLE` | `true` | Creates the sample guests during the seed. Use `false` in production. |
+| `PORT` / `HOST` | `3000` / `0.0.0.0` | Nitro server port and interface. |
 
-`NUXT_DATABASE_URL` e `NUXT_DATA_DIR` também são aceitos e têm prioridade em runtime; são úteis quando a imagem é construída sem `.env`.
+`NUXT_DATABASE_URL` and `NUXT_DATA_DIR` are also accepted and take precedence at runtime; they are useful when the image is built without a `.env`.
 
-## Banco de dados
+## Database
 
 ```bash
-npm run db:generate   # gera uma migration a partir do schema Drizzle
-npm run db:migrate    # aplica as migrations pendentes
-npm run db:seed       # popula administrador, configurações e dados de exemplo
-npm run db:studio     # abre o Drizzle Studio
+npm run db:generate   # generates a migration from the Drizzle schema
+npm run db:migrate    # applies pending migrations
+npm run db:seed       # loads administrator, settings and sample data
+npm run db:studio     # opens Drizzle Studio
 ```
 
-O schema fica em `server/database/schema.ts` e as migrations em `drizzle/`.
+The schema lives in `server/database/schema.ts` and the migrations in `drizzle/`.
 
-O PostgreSQL de desenvolvimento usa a porta **5433** para não conflitar com instâncias locais na 5432:
+The development PostgreSQL uses port **5433** to avoid clashing with local instances on 5432:
 
 ```bash
 docker compose -f docker-compose.dev.yml up -d
-docker compose -f docker-compose.dev.yml down       # mantém os dados
-docker compose -f docker-compose.dev.yml down -v    # apaga os dados
+docker compose -f docker-compose.dev.yml down       # keeps the data
+docker compose -f docker-compose.dev.yml down -v    # deletes the data
 ```
 
-## Como funciona o convite
+## How the invitation works
 
-1. O administrador cadastra o convidado em `/admin/convidados`.
-2. Cada convidado recebe uma **invitation** com UUID próprio, usado no link `/convite/[uuid]`.
-3. O administrador abre o modal de envio, revisa a mensagem, baixa/anexa a arte do convite e abre o WhatsApp.
-4. Depois de enviar de fato, o administrador marca a confirmação. Só então o envio é registrado no histórico, com telefone, mensagem, método, status e número da tentativa.
-5. O convidado abre o link, vê os dados da festa e confirma ou recusa a presença.
-6. A resposta pode ser editada pelo mesmo link. O dashboard e as páginas de confirmações são atualizados a partir do banco.
+1. The administrator registers the guest at `/admin/convidados`.
+2. Each guest gets an **invitation** with its own UUID, used in the `/convite/[uuid]` link.
+3. The administrator opens the send modal, reviews the message, downloads/attaches the invitation artwork and opens WhatsApp.
+4. After actually sending it, the administrator marks the confirmation. Only then is the send recorded in the history, with phone number, message, method, status and attempt number.
+5. The guest opens the link, sees the party details and accepts or declines the invitation.
+6. The answer can be edited through the same link. The dashboard and the confirmations pages are always read from the database.
 
-### Limitações do WhatsApp
+### WhatsApp limitations
 
-Este projeto **não envia mensagens automaticamente** e não usa a API oficial do WhatsApp. Ele monta um link `https://wa.me/...` e abre o WhatsApp Web/app com a mensagem pronta.
+This project **does not send messages automatically** and does not use the official WhatsApp API. It builds a `https://wa.me/...` link and opens WhatsApp Web/app with the message ready.
 
-- O envio real depende do administrador tocar em “enviar” no WhatsApp.
-- O link `wa.me` **não anexa imagens**. A arte precisa ser baixada/anexada manualmente.
-- O histórico só é gravado após a confirmação explícita na interface.
-- Reenvios geram novos registros com `attempt` incrementado.
-- Para automação real seria necessário integrar a WhatsApp Business Platform (API oficial), o que está fora do escopo atual.
+- The actual send depends on the administrator tapping “send” in WhatsApp.
+- The `wa.me` link **cannot attach images**. The artwork must be downloaded/attached manually.
+- The history is only recorded after the explicit confirmation in the UI.
+- Resends create new records with an incremented `attempt`.
+- Real automation would require integrating the WhatsApp Business Platform (official API), which is out of scope.
 
-## Rotas
+## Routes
 
-### Públicas
+### Public
 
-| Rota | Descrição |
+| Route | Description |
 | --- | --- |
-| `/` | Landing pública com detalhes da festa e contagem regressiva. |
-| `/convite/[uuid]` | Convite individual e formulário de RSVP. |
-| `/api/public/party` | Configurações públicas da festa. |
-| `/api/public/invitations/[uuid]` | Dados do convite individual. |
-| `/api/public/invitations/[uuid]` (PUT) | Cria ou atualiza o RSVP. |
-| `/api/public/invitations/[uuid]/calendar` | Arquivo `.ics` para o calendário. |
-| `/api/invite-image/[name]` | Serve a arte enviada pelo painel. |
+| `/` | Public landing page with the party details and countdown. |
+| `/convite/[uuid]` | Individual invitation and RSVP form. |
+| `/api/public/party` | Public party settings. |
+| `/api/public/invitations/[uuid]` | Individual invitation data. |
+| `/api/public/invitations/[uuid]` (PUT) | Creates or updates the RSVP. |
+| `/api/public/invitations/[uuid]/calendar` | `.ics` file for the calendar. |
+| `/api/invite-image/[name]` | Serves the artwork uploaded in the admin panel. |
 
-### Administrativas
+### Administrative
 
-Todas exigem sessão válida e são bloqueadas no servidor por `requireAdmin`.
+All of them require a valid session and are enforced on the server by `requireAdmin`.
 
-| Rota | Descrição |
+| Route | Description |
 | --- | --- |
-| `/admin/login` | Login do painel. |
-| `/admin` | Dashboard com métricas e gráficos. |
-| `/admin/convidados` | Lista, busca, filtros, ordenação, ações em lote e CSV. |
-| `/admin/convidados/[id]` | Detalhe, edição, reenvio, regeneração de link e exclusão. |
-| `/admin/envios` | Histórico de envios e reenvios. |
-| `/admin/confirmacoes` | Respostas, faixas etárias e recados. |
-| `/admin/configuracoes` | Dados da festa, imagem, template, limite e senha. |
+| `/admin/login` | Admin panel login. |
+| `/admin` | Dashboard with metrics and charts. |
+| `/admin/convidados` | List, search, filters, sorting, bulk actions and CSV. |
+| `/admin/convidados/[id]` | Details, editing, resend, link regeneration and deletion. |
+| `/admin/envios` | Send and resend history. |
+| `/admin/confirmacoes` | Answers, age groups and messages. |
+| `/admin/configuracoes` | Party details, image, template, limit and password. |
 
-## Regras de negócio
+## Business rules
 
-- **Convites e pessoas são contagens diferentes.** O dashboard mostra convites enviados/confirmados separadamente do total de pessoas (adultos + crianças 8–11 + crianças 0–7).
-- **RSVP único por convite.** A resposta é editável; o histórico de envios permanece.
-- **Faixas etárias separadas:** adultos, crianças de 8 a 11 anos e crianças de 0 a 7 anos.
-- **Recusa não exige pessoas.** Em uma confirmação positiva, é obrigatório informar ao menos uma pessoa.
-- **Limite de pessoas:** o limite individual do convidado tem prioridade sobre o limite padrão das configurações.
-- **Telefones** são normalizados para E.164 brasileiro (`55` + DDD + número) e validados no cliente e no servidor.
-- **Links de convite** usam UUID v4 e não permitem enumerar convidados.
-- **Mensagem e configurações** são persistidas no banco e aplicadas imediatamente na página pública.
+- **Invitations and people are separate counts.** The dashboard shows sent/confirmed invitations separately from the total number of people (adults + children aged 8–11 + children aged 0–7).
+- **One RSVP per invitation.** The answer can be edited; the send history is kept.
+- **Separate age groups:** adults, children aged 8 to 11 and children aged 0 to 7.
+- **A decline requires no people.** A positive confirmation must include at least one person.
+- **People limit:** the guest's individual limit takes precedence over the default limit from the settings.
+- **Phone numbers** are normalized to Brazilian E.164 (`55` + area code + number) and validated on both client and server.
+- **Invitation links** use UUID v4 and do not allow enumerating guests.
+- **Message and settings** are stored in the database and applied immediately on the public page.
 
-## Configurações da festa
+## Party settings
 
-Em `/admin/configuracoes` é possível alterar:
+At `/admin/configuracoes` you can change:
 
-- aniversariantes e idades;
-- data/hora e rótulos exibidos;
-- local, endereço, bairro, cidade, UF e consulta do mapa;
-- imagem do convite (PNG, JPG ou WebP, até 5 MB);
-- template da mensagem de WhatsApp (precisa conter `[LINK]`);
-- texto de introdução do RSVP;
-- mensagens de sucesso e de recusa;
-- limite padrão de pessoas por convite;
-- senha do administrador.
+- birthday people and their ages;
+- date/time and displayed labels;
+- venue, address, neighborhood, city, state and map query;
+- invitation image (PNG, JPG or WebP, up to 5 MB);
+- WhatsApp message template (must contain `[LINK]`);
+- RSVP intro text;
+- success and decline messages;
+- default people limit per invitation;
+- administrator password.
 
-Marcadores disponíveis no template: `[Nome]`, `[LINK]`, `[FESTA]`, `[DATA]`, `[HORARIO]`, `[LOCAL]`, `[ENDERECO]` e `[CIDADE]`.
+Template placeholders: `[Nome]`, `[LINK]`, `[FESTA]`, `[DATA]`, `[HORARIO]`, `[LOCAL]`, `[ENDERECO]` and `[CIDADE]`.
 
-A imagem enviada fica em `DATA_DIR/uploads` (volume persistente em produção) e é servida por `/api/invite-image/...`. A arte padrão é `public/images/convite-padrao.svg`.
+The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in production) and served by `/api/invite-image/...`. The default artwork is `public/images/convite-padrao.svg`.
 
-## Testes e verificação
+## Tests and checks
 
 ```bash
-npm test          # Vitest: telefone, mensagens, RSVP, limites e configurações
+npm test          # Vitest: phone, messages, RSVP, limits and settings
 npm run typecheck # vue-tsc / Nuxt typecheck
-npm run build     # build de produção
-npm run preview   # pré-visualização do build
+npm run build     # production build
+npm run preview   # preview the build
 ```
 
-Os testes cobrem as regras puras compartilhadas. Fluxos HTTP e de banco devem ser verificados no ambiente de desenvolvimento ou em um teste de integração próprio.
+The tests cover the shared pure rules. HTTP and database flows must be verified in the development environment or with a dedicated integration test.
 
-## Deploy com Docker (produção)
+## Docker deploy (production)
 
-1. Copie o exemplo e ajuste os valores:
+1. Copy the example file and adjust the values:
 
    ```bash
    cp .env.production.example .env
    ```
 
-   Use uma senha longa para `POSTGRES_PASSWORD` (evite caracteres que precisem de escape em URL, como `@`, `:`, `/`, `#` e `%`) e defina `APP_URL` com a URL pública real, por exemplo `https://convite.seudominio.com`.
+   Use a long password for `POSTGRES_PASSWORD` (avoid characters that need escaping in URLs, such as `@`, `:`, `/`, `#` and `%`) and set `APP_URL` to the real public URL, for example `https://convite.seudominio.com`.
 
-2. Suba os containers:
+2. Start the containers:
 
    ```bash
    docker compose up -d --build
    ```
 
-3. Acompanhe a inicialização:
+3. Follow the startup:
 
    ```bash
    docker compose logs -f app
    ```
 
-O container da aplicação aplica as migrations automaticamente (`RUN_MIGRATIONS=true`) e depois inicia o Nitro na porta 3000. O Compose publica a porta definida em `APP_PORT`.
+The application container applies the migrations automatically (`RUN_MIGRATIONS=true`) and then starts Nitro on port 3000. Compose publishes the port defined in `APP_PORT`.
 
-4. Crie o primeiro administrador:
+4. Create the first administrator:
 
    ```bash
    docker compose exec app node scripts/create-admin.mjs \
@@ -235,60 +235,60 @@ O container da aplicação aplica as migrations automaticamente (`RUN_MIGRATIONS
      --password "uma-senha-longa-e-unica"
    ```
 
-5. Acesse `https://seu-dominio/admin` e faça login.
+5. Open `https://your-domain/admin` and sign in.
 
-> Em produção, coloque a aplicação atrás de um proxy reverso com HTTPS (Caddy, Nginx, Traefik ou o proxy da plataforma). O cookie de sessão passa a usar `Secure` automaticamente quando a requisição chega via HTTPS. O proxy reverso não faz parte deste Compose; use o de sua preferência.
+> In production, put the application behind an HTTPS reverse proxy (Caddy, Nginx, Traefik or your platform's proxy). The session cookie automatically switches to `Secure` when the request arrives over HTTPS. The reverse proxy is not part of this Compose file; use the one you prefer.
 
-Para desativar as migrations automáticas, defina `RUN_MIGRATIONS=false`. Nesse caso, rode `docker compose exec app node scripts/migrate.mjs` no momento desejado.
+To disable automatic migrations, set `RUN_MIGRATIONS=false`. In that case, run `docker compose exec app node scripts/migrate.mjs` whenever you want.
 
-### CI e imagem no GHCR
+### CI and the GHCR image
 
-Dois workflows do GitHub Actions cuidam da qualidade e da distribuição:
+Two GitHub Actions workflows handle quality and distribution:
 
-- **CI** (`.github/workflows/ci.yml`): em pull requests e pushes para `main`, roda testes, checagem de tipos e build. Em pull requests, também valida o build da imagem Docker sem publicar.
-- **Publicar imagem** (`.github/workflows/publish.yml`): a cada push em `main`, publica `ghcr.io/pedronora/convite-festa` no GitHub Container Registry. Tags `v*.*.*` também geram imagens versionadas.
+- **CI** (`.github/workflows/ci.yml`): on pull requests and pushes to `main`, runs tests, type checking and the build. On pull requests, it also validates the Docker image build without publishing.
+- **Publish image** (`.github/workflows/publish.yml`): on every push to `main`, publishes `ghcr.io/pedronora/convite-festa` to the GitHub Container Registry. `v*.*.*` tags also produce versioned images.
 
-Tags publicadas:
+Published tags:
 
-| Tag | Quando |
+| Tag | When |
 | --- | --- |
-| `latest` | push em `main` |
-| `main` | push em `main` |
-| `sha-<commit>` | todo build |
-| `1.2.3` e `1.2` | tag `v1.2.3` |
+| `latest` | push to `main` |
+| `main` | push to `main` |
+| `sha-<commit>` | every build |
+| `1.2.3` and `1.2` | tag `v1.2.3` |
 
-Para rodar com a imagem publicada, use o override `docker-compose.ghcr.yml`, que dispensa o build local:
+To run the published image, use the `docker-compose.ghcr.yml` override, which skips the local build:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.ghcr.yml pull
 docker compose -f docker-compose.yml -f docker-compose.ghcr.yml up -d
 ```
 
-A imagem é pública: `docker pull ghcr.io/pedronora/convite-festa:latest` funciona sem login.
+The image is public: `docker pull ghcr.io/pedronora/convite-festa:latest` works without logging in.
 
-### Persistência
+### Persistence
 
-- `convite_pgdata`: dados do PostgreSQL.
-- `convite_uploads`: imagens enviadas em `/app/data`.
+- `convite_pgdata`: PostgreSQL data.
+- `convite_uploads`: uploaded images at `/app/data`.
 
-Faça backup dos dois volumes. Recriar containers sem remover volumes preserva os dados; `docker compose down -v` apaga tudo.
+Back up both volumes. Recreating containers without removing volumes keeps the data; `docker compose down -v` deletes everything.
 
-## Backup e restauração
+## Backup and restore
 
-### Banco
+### Database
 
 ```bash
-# Backup comprimido
+# Compressed backup
 docker compose exec -T db pg_dump -U convite -d convite_festa -Fc > backup-$(date +%F).dump
 
-# Restauração (sobrescreve os objetos existentes)
+# Restore (overwrites existing objects)
 cat backup-2026-11-18.dump | docker compose exec -T db pg_restore \
   -U convite -d convite_festa --clean --if-exists --no-owner
 ```
 
-Se as credenciais do banco forem diferentes, ajuste `-U` e `-d` ou use as variáveis do `.env`.
+If the database credentials are different, adjust `-U` and `-d` or use the variables from `.env`.
 
-### Imagens enviadas
+### Uploaded images
 
 ```bash
 docker run --rm \
@@ -297,70 +297,70 @@ docker run --rm \
   alpine tar czf /backup/uploads-$(date +%F).tar.gz -C /data .
 ```
 
-Para restaurar, troque `:ro` por `:rw` e execute `tar xzf /backup/uploads-....tar.gz -C /data`.
+To restore, replace `:ro` with `:rw` and run `tar xzf /backup/uploads-....tar.gz -C /data`.
 
-> O nome do volume pode variar se você alterou o campo `name` do Compose. Confira com `docker volume ls`.
+> The volume name may differ if you changed the Compose `name` field. Check it with `docker volume ls`.
 
-## Segurança
+## Security
 
-- Senhas são armazenadas com `scrypt` e salt aleatório; nunca em texto puro.
-- Sessões duram 7 dias, são armazenadas por hash SHA-256 e usam cookie `httpOnly`, `SameSite=Lax` e `Secure` sob HTTPS.
-- Todas as APIs administrativas validam a sessão no servidor, independentemente do middleware de rota.
-- Escritas administrativas verificam a origem (`Origin`) contra o host da requisição.
-- Entradas são validadas com Zod no servidor; o banco usa consultas parametrizadas via Drizzle.
-- A interface Vue escapa o conteúdo por padrão; não há uso de `v-html` com dados de convidados.
-- Rotas de convite, APIs e painel enviam `X-Robots-Tag: noindex, nofollow`; o painel também tem cabeçalhos de segurança globais.
-- Login, leitura de convites, RSVP e troca de senha têm rate limiting.
-- O RSVP é limitado por IP e por convite, e não revela se um UUID existe além do necessário.
-- Erros internos não retornam stack traces ao cliente.
-- O CSV neutraliza fórmulas de planilha e usa BOM/UTF-8 com delimitador `;`.
+- Passwords are stored with `scrypt` and a random salt; never in plain text.
+- Sessions last 7 days, are stored by SHA-256 hash and use an `httpOnly`, `SameSite=Lax` cookie, `Secure` under HTTPS.
+- Every administrative API validates the session on the server, regardless of the route middleware.
+- Administrative writes check the `Origin` against the request host.
+- Inputs are validated with Zod on the server; the database uses parameterized queries through Drizzle.
+- Vue escapes content by default; there is no `v-html` with guest data.
+- Invitation routes, APIs and the admin panel send `X-Robots-Tag: noindex, nofollow`; the panel also has global security headers.
+- Login, invitation reads, RSVP and password changes are rate limited.
+- RSVP is limited per IP and per invitation, and does not reveal whether a UUID exists beyond what is necessary.
+- Internal errors never return stack traces to the client.
+- The CSV neutralizes spreadsheet formulas and uses UTF-8 with BOM and `;` as the delimiter.
 
 ### Rate limiting
 
-O rate limiter é **em memória e por processo**. Isso é suficiente para uma instância única, que é o cenário previsto para esta festa. Se a aplicação for escalada horizontalmente (vários containers/processos), troque `server/utils/rate-limit.ts` por um armazenamento compartilhado, como Redis.
+The rate limiter is **in memory and per process**. That is enough for a single instance, which is the expected scenario for this party. If the application is scaled horizontally (multiple containers/processes), replace `server/utils/rate-limit.ts` with a shared store such as Redis.
 
-## Estrutura do projeto
+## Project structure
 
 ```text
-app/                  # páginas, layouts, componentes e composables
+app/                  # pages, layouts, components and composables
   pages/
     convite/[uuid].vue
     admin/...
   components/
   composables/
 server/
-  api/                # endpoints Nitro
-  database/           # schema e cliente Drizzle
-  middleware/         # cabeçalhos de segurança
-  plugins/            # log global de erros
+  api/                # Nitro endpoints
+  database/           # Drizzle schema and client
+  middleware/         # security headers
+  plugins/            # global error log
   utils/              # auth, dashboard, queries, uploads, rate limit
-shared/               # validação, tipos, configurações e utilitários
-drizzle/              # migrations SQL
-scripts/              # seed, create-admin e migrate
+shared/               # validation, types, config and utilities
+drizzle/              # SQL migrations
+scripts/              # seed, create-admin and migrate
 tests/                # Vitest
-docker/               # entrypoint de produção
+docker/               # production entrypoint
 ```
 
-## Scripts disponíveis
+## Available scripts
 
-| Script | Descrição |
+| Script | Description |
 | --- | --- |
-| `npm run dev` | Servidor de desenvolvimento. |
-| `npm run build` | Build de produção. |
-| `npm run preview` | Pré-visualiza o build. |
-| `npm run typecheck` | Checagem de tipos do app e do servidor. |
-| `npm test` | Testes com Vitest. |
-| `npm run db:generate` | Gera migration do schema. |
-| `npm run db:migrate` | Aplica migrations. |
-| `npm run db:push` | Sincroniza o schema diretamente (apenas prototipagem). |
-| `npm run db:seed` | Popula dados de desenvolvimento. |
-| `npm run admin:create` | Cria/redefine um administrador. |
-| `npm run db:studio` | Abre o Drizzle Studio. |
+| `npm run dev` | Development server. |
+| `npm run build` | Production build. |
+| `npm run preview` | Previews the build. |
+| `npm run typecheck` | Type checking for app and server. |
+| `npm test` | Vitest tests. |
+| `npm run db:generate` | Generates a migration from the schema. |
+| `npm run db:migrate` | Applies migrations. |
+| `npm run db:push` | Syncs the schema directly (prototyping only). |
+| `npm run db:seed` | Loads development data. |
+| `npm run admin:create` | Creates/resets an administrator. |
+| `npm run db:studio` | Opens Drizzle Studio. |
 
-## Decisões e escopo
+## Decisions and scope
 
-- Não há dados mockados na aplicação: tudo é lido do PostgreSQL. O seed é apenas uma conveniência de desenvolvimento.
-- Não há envio automático de WhatsApp, nem botões sem ação.
-- Os gráficos são componentes SVG próprios (donut, barras e progresso), sem dependência pesada de charts.
-- O evento padrão está configurado para **23 de janeiro de 2027, às 15h**, no Recanto Família Fernandes, em Cascavel/PR. A data pode ser alterada no painel.
-- O projeto não inclui upload de múltiplas imagens, segmentação de convidados por grupos ou integração com e-mail. Esses itens podem ser adicionados sem mudar o modelo principal.
+- There is no mocked data in the application: everything is read from PostgreSQL. The seed is only a development convenience.
+- There is no automatic WhatsApp sending, and no buttons without an action.
+- Charts are custom SVG components (donut, bars and progress), with no heavy chart dependency.
+- The default event is set to **January 23, 2027, at 3 PM**, at Recanto Família Fernandes, in Cascavel/PR. The date can be changed in the admin panel.
+- The project does not include multiple image upload, guest segmentation by groups or email integration. Those can be added without changing the main model.
