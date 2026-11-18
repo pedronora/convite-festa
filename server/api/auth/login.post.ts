@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Dados inválidos',
       message: zodMessage(parsed.error),
       data: { fieldErrors: parsed.error.flatten().fieldErrors },
     })
@@ -25,7 +24,6 @@ export default defineEventHandler(async (event) => {
   const invalid = () =>
     createError({
       statusCode: 401,
-      statusMessage: 'Credenciais inválidas',
       message: 'E-mail ou senha incorretos.',
     })
 

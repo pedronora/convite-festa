@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const uuid = getRouterParam(event, 'uuid') || ''
   const row = await findInvitationByUuid(uuid)
   if (!row) {
-    throw createError({ statusCode: 404, statusMessage: 'Convite não encontrado' })
+    throw createError({ statusCode: 404, message: 'Convite não encontrado' })
   }
   const settings = await getPartySettings()
   const start = new Date(settings.partyDate)

@@ -10,7 +10,7 @@ const MIME: Record<string, string> = {
 export default defineEventHandler(async (event) => {
   const name = getRouterParam(event, 'name') || ''
   if (!/^[a-f0-9-]+\.(png|jpg|webp)$/i.test(name)) {
-    throw createError({ statusCode: 404, statusMessage: 'Imagem não encontrada' })
+    throw createError({ statusCode: 404, message: 'Imagem não encontrada' })
   }
   const extension = name.split('.').pop()!.toLowerCase()
   try {
@@ -24,6 +24,6 @@ export default defineEventHandler(async (event) => {
     })
     return file
   } catch {
-    throw createError({ statusCode: 404, statusMessage: 'Imagem não encontrada' })
+    throw createError({ statusCode: 404, message: 'Imagem não encontrada' })
   }
 })

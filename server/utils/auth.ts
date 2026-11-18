@@ -86,7 +86,7 @@ export async function requireAdmin(event: H3Event): Promise<AdminIdentity> {
         originHost = ''
       }
       if (originHost !== getRequestURL(event).host) {
-        throw createError({ statusCode: 403, statusMessage: 'Origem não permitida' })
+        throw createError({ statusCode: 403, message: 'Origem não permitida' })
       }
     }
   }
@@ -94,7 +94,6 @@ export async function requireAdmin(event: H3Event): Promise<AdminIdentity> {
   if (!admin) {
     throw createError({
       statusCode: 401,
-      statusMessage: 'Não autenticado',
       message: 'Sua sessão expirou. Entre novamente.',
     })
   }

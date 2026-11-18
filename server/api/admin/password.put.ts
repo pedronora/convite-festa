@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Dados inválidos',
       message: zodMessage(parsed.error),
       data: { fieldErrors: bodyFieldErrors(parsed.error) },
     })
@@ -20,13 +19,13 @@ export default defineEventHandler(async (event) => {
     .from(schema.adminUsers)
     .where(eq(schema.adminUsers.id, admin.id))
     .limit(1)
-  if (!user) throw createError({ statusCode: 404, statusMessage: 'Usuário não encontrado' })
+  if (!user) throw createError({ statusCode: 404, message: 'Usuário não encontrado' })
 
   const valid = await verifyPassword(parsed.data.currentPassword, user.passwordHash)
   if (!valid) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Senha atual incorreta',
+      message: 'Senha atual incorreta',
       data: { fieldErrors: { currentPassword: 'Senha atual incorreta' } },
     })
   }

@@ -5,7 +5,6 @@ export default defineEventHandler(async (event) => {
   if (!file) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Arquivo ausente',
       message: 'Selecione uma imagem para enviar.',
     })
   }

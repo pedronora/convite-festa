@@ -50,7 +50,6 @@ export function enforceRateLimit(
     setResponseHeader(event, 'Retry-After', result.retryAfterSeconds)
     throw createError({
       statusCode: 429,
-      statusMessage: 'Muitas tentativas',
       message: 'Muitas tentativas. Aguarde alguns minutos e tente novamente.',
     })
   }
