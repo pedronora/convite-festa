@@ -19,7 +19,8 @@ async function waitForDatabase(client) {
     try {
       await client`select 1`
       return
-    } catch (error) {
+    }
+    catch (error) {
       if (attempt === retries) throw error
       console.warn(`[migrate] banco indisponível (tentativa ${attempt}/${retries}), aguardando…`)
       await sleep(waitMs)
@@ -37,9 +38,11 @@ try {
   const db = drizzle(client)
   await migrate(db, { migrationsFolder })
   console.log('✓ Migrations aplicadas')
-} catch (error) {
+}
+catch (error) {
   console.error('Falha ao aplicar migrations:', error)
   process.exitCode = 1
-} finally {
+}
+finally {
   await client.end()
 }

@@ -16,12 +16,14 @@ export function useAuth() {
       let data: { admin: AdminUser | null }
       if (import.meta.server) {
         data = await requestFetch()('/api/auth/me')
-      } else {
+      }
+      else {
         data = await $fetch<{ admin: AdminUser | null }>('/api/auth/me')
       }
       admin.value = data.admin
       return data.admin
-    } catch {
+    }
+    catch {
       admin.value = null
       return null
     }
@@ -39,7 +41,8 @@ export function useAuth() {
   async function logout(): Promise<void> {
     try {
       await $fetch('/api/auth/logout', { method: 'POST' })
-    } finally {
+    }
+    finally {
       admin.value = null
       await navigateTo('/admin/login')
     }

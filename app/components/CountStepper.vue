@@ -43,11 +43,22 @@ function onInput(event: Event) {
 <template>
   <div :class="['flex items-center gap-3 rounded-2xl border border-navy-100 bg-white p-3', disabled ? 'opacity-60' : '']">
     <span :class="['flex h-10 w-10 shrink-0 items-center justify-center rounded-xl', tones[tone]]">
-      <AppIcon :name="icon" :size="19" />
+      <AppIcon
+        :name="icon"
+        :size="19"
+      />
     </span>
     <div class="min-w-0 flex-1">
-      <label :for="id" class="block text-sm font-extrabold text-navy-800">{{ label }}</label>
-      <p v-if="description" class="text-[11px] font-semibold text-navy-400">{{ description }}</p>
+      <label
+        :for="id"
+        class="block text-sm font-extrabold text-navy-800"
+      >{{ label }}</label>
+      <p
+        v-if="description"
+        class="text-[11px] font-semibold text-navy-400"
+      >
+        {{ description }}
+      </p>
     </div>
     <div class="flex items-center gap-1">
       <button
@@ -57,7 +68,15 @@ function onInput(event: Event) {
         :aria-label="`Diminuir ${label}`"
         @click="decrement"
       >
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        ><path d="M5 12h14" /></svg>
       </button>
       <input
         :id="id"
@@ -78,7 +97,15 @@ function onInput(event: Event) {
         :aria-label="`Aumentar ${label}`"
         @click="increment"
       >
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          aria-hidden="true"
+        ><path d="M12 5v14M5 12h14" /></svg>
       </button>
     </div>
   </div>

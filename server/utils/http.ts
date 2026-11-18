@@ -9,7 +9,7 @@ export function parsePositiveId(event: H3Event, name = 'id'): number {
   return id
 }
 
-export function bodyFieldErrors(error: { issues: Array<{ path: PropertyKey[]; message: string }> }) {
+export function bodyFieldErrors(error: { issues: Array<{ path: PropertyKey[], message: string }> }) {
   const fields: Record<string, string> = {}
   for (const issue of error.issues) {
     const key = issue.path.join('.') || '_form'

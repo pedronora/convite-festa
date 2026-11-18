@@ -21,11 +21,26 @@ const icons = {
 </script>
 
 <template>
-  <div :class="['flex items-start gap-3 rounded-2xl border p-3.5 text-sm', styles[type]]" :role="type === 'error' ? 'alert' : 'status'">
-    <AppIcon :name="icons[type]" :size="18" class="mt-0.5 shrink-0" />
+  <div
+    :class="['flex items-start gap-3 rounded-2xl border p-3.5 text-sm', styles[type]]"
+    :role="type === 'error' ? 'alert' : 'status'"
+  >
+    <AppIcon
+      :name="icons[type]"
+      :size="18"
+      class="mt-0.5 shrink-0"
+    />
     <div>
-      <p v-if="title" class="font-extrabold">{{ title }}</p>
-      <div :class="title ? 'mt-0.5' : ''" class="font-semibold leading-relaxed">
+      <p
+        v-if="title"
+        class="font-extrabold"
+      >
+        {{ title }}
+      </p>
+      <div
+        :class="title ? 'mt-0.5' : ''"
+        class="font-semibold leading-relaxed"
+      >
         <slot />
       </div>
     </div>

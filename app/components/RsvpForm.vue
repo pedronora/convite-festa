@@ -34,7 +34,8 @@ function selectAttendance(value: 'yes' | 'no') {
     form.adults = 0
     form.children8to11 = 0
     form.children0to7 = 0
-  } else if (total.value === 0) {
+  }
+  else if (total.value === 0) {
     form.adults = 1
   }
   fieldErrors.value = {}
@@ -82,24 +83,37 @@ async function submit() {
     )
     toast.success(response.rsvp.wasUpdate ? 'Sua resposta foi atualizada!' : 'Resposta registrada com sucesso!')
     emit('saved', response.rsvp)
-  } catch (error) {
+  }
+  catch (error) {
     serverError.value = apiErrorMessage(error, 'Não foi possível salvar sua resposta. Tente novamente.')
     fieldErrors.value = apiFieldErrors(error)
-  } finally {
+  }
+  finally {
     saving.value = false
   }
 }
 </script>
 
 <template>
-  <form class="space-y-5" novalidate @submit.prevent="submit">
-    <AppAlert v-if="serverError" type="error" title="Revise sua resposta">
+  <form
+    class="space-y-5"
+    novalidate
+    @submit.prevent="submit"
+  >
+    <AppAlert
+      v-if="serverError"
+      type="error"
+      title="Revise sua resposta"
+    >
       {{ serverError }}
     </AppAlert>
 
     <fieldset>
       <legend class="mb-2 block text-sm font-extrabold text-navy-800">
-        Você poderá comparecer? <span class="text-spider-600" aria-hidden="true">*</span>
+        Você poderá comparecer? <span
+          class="text-spider-600"
+          aria-hidden="true"
+        >*</span>
       </legend>
       <div class="grid grid-cols-2 gap-2.5">
         <button
@@ -113,7 +127,10 @@ async function submit() {
           ]"
           @click="selectAttendance('yes')"
         >
-          <AppIcon name="check-circle" :size="24" />
+          <AppIcon
+            name="check-circle"
+            :size="24"
+          />
           <span class="text-sm font-extrabold">Sim, estaremos lá!</span>
         </button>
         <button
@@ -127,17 +144,30 @@ async function submit() {
           ]"
           @click="selectAttendance('no')"
         >
-          <AppIcon name="x-circle" :size="24" />
+          <AppIcon
+            name="x-circle"
+            :size="24"
+          />
           <span class="text-sm font-extrabold">Não poderei ir</span>
         </button>
       </div>
-      <p v-if="fieldErrors.attendanceStatus" class="mt-1.5 text-xs font-semibold text-spider-700" role="alert">
+      <p
+        v-if="fieldErrors.attendanceStatus"
+        class="mt-1.5 text-xs font-semibold text-spider-700"
+        role="alert"
+      >
         {{ fieldErrors.attendanceStatus }}
       </p>
     </fieldset>
 
     <div class="grid gap-4 sm:grid-cols-2">
-      <FormField label="Nome do responsável" for="rsvp-name" :error="fieldErrors.responsibleName" required class="sm:col-span-2">
+      <FormField
+        label="Nome do responsável"
+        for="rsvp-name"
+        :error="fieldErrors.responsibleName"
+        required
+        class="sm:col-span-2"
+      >
         <input
           id="rsvp-name"
           v-model="form.responsibleName"
@@ -148,7 +178,13 @@ async function submit() {
           placeholder="Quem está confirmando?"
         >
       </FormField>
-      <FormField label="WhatsApp / telefone" for="rsvp-phone" :error="fieldErrors.phone" hint="Para contato em caso de imprevisto." required>
+      <FormField
+        label="WhatsApp / telefone"
+        for="rsvp-phone"
+        :error="fieldErrors.phone"
+        hint="Para contato em caso de imprevisto."
+        required
+      >
         <input
           id="rsvp-phone"
           v-model="form.phone"
@@ -159,7 +195,12 @@ async function submit() {
           placeholder="(45) 99999-9999"
         >
       </FormField>
-      <FormField label="E-mail" for="rsvp-email" :error="fieldErrors.email" hint="Opcional">
+      <FormField
+        label="E-mail"
+        for="rsvp-email"
+        :error="fieldErrors.email"
+        hint="Opcional"
+      >
         <input
           id="rsvp-email"
           v-model="form.email"
@@ -178,11 +219,18 @@ async function submit() {
       leave-active-class="transition duration-200 ease-in"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="isAttending" class="space-y-3">
+      <div
+        v-if="isAttending"
+        class="space-y-3"
+      >
         <div class="flex items-center justify-between gap-3">
           <div>
-            <p class="text-sm font-extrabold text-navy-800">Quantas pessoas virão?</p>
-            <p class="text-[11px] font-semibold text-navy-400">Conte adultos e crianças em faixas exclusivas.</p>
+            <p class="text-sm font-extrabold text-navy-800">
+              Quantas pessoas virão?
+            </p>
+            <p class="text-[11px] font-semibold text-navy-400">
+              Conte adultos e crianças em faixas exclusivas.
+            </p>
           </div>
           <span class="rounded-full bg-navy-950 px-3 py-1 text-xs font-extrabold text-white">
             {{ total }} {{ total === 1 ? 'pessoa' : 'pessoas' }}
@@ -214,17 +262,34 @@ async function submit() {
           :max="50"
         />
 
-        <AppAlert v-if="limitExceeded" type="warning">
+        <AppAlert
+          v-if="limitExceeded"
+          type="warning"
+        >
           Este convite permite até {{ guestLimit }} pessoas. Ajuste as quantidades para continuar.
         </AppAlert>
-        <p v-if="fieldErrors.adults" class="text-xs font-semibold text-spider-700" role="alert">{{ fieldErrors.adults }}</p>
-        <p v-if="guestLimit" class="text-[11px] font-semibold text-navy-400">
+        <p
+          v-if="fieldErrors.adults"
+          class="text-xs font-semibold text-spider-700"
+          role="alert"
+        >
+          {{ fieldErrors.adults }}
+        </p>
+        <p
+          v-if="guestLimit"
+          class="text-[11px] font-semibold text-navy-400"
+        >
           Limite deste convite: {{ guestLimit }} {{ guestLimit === 1 ? 'pessoa' : 'pessoas' }}.
         </p>
       </div>
     </Transition>
 
-    <FormField label="Observações" for="rsvp-notes" :error="fieldErrors.notes" hint="Opcional. Restrições alimentares, recados, etc.">
+    <FormField
+      label="Observações"
+      for="rsvp-notes"
+      :error="fieldErrors.notes"
+      hint="Opcional. Restrições alimentares, recados, etc."
+    >
       <textarea
         id="rsvp-notes"
         v-model="form.notes"
@@ -240,8 +305,19 @@ async function submit() {
       Você poderá atualizar sua resposta acessando este mesmo link novamente.
     </div>
 
-    <AppButton type="submit" size="lg" block :loading="saving" :disabled="limitExceeded">
-      <template #icon><AppIcon name="send" :size="18" /></template>
+    <AppButton
+      type="submit"
+      size="lg"
+      block
+      :loading="saving"
+      :disabled="limitExceeded"
+    >
+      <template #icon>
+        <AppIcon
+          name="send"
+          :size="18"
+        />
+      </template>
       {{ existing ? 'Atualizar minha resposta' : 'Enviar confirmação' }}
     </AppButton>
   </form>

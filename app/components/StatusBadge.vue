@@ -31,7 +31,11 @@ const sizeClasses = computed(() => props.size === 'sm'
   <span
     :class="['inline-flex items-center rounded-full border font-bold whitespace-nowrap', sizeClasses, config.classes]"
   >
-    <AppIcon :name="config.icon" :size="size === 'sm' ? 11 : 13" :stroke-width="2.5" />
+    <AppIcon
+      :name="config.icon"
+      :size="size === 'sm' ? 11 : 13"
+      :stroke-width="2.5"
+    />
     {{ config.label }}
   </span>
 </template>

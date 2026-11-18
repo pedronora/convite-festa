@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  close: []
+  'close': []
 }>()
 
 const id = useId()
@@ -47,7 +47,8 @@ function onKeydown(event: KeyboardEvent) {
   if (event.shiftKey && document.activeElement === first) {
     event.preventDefault()
     last.focus()
-  } else if (!event.shiftKey && document.activeElement === last) {
+  }
+  else if (!event.shiftKey && document.activeElement === last) {
     event.preventDefault()
     first.focus()
   }
@@ -95,10 +96,17 @@ onBeforeUnmount(() => {
         >
           <div class="flex items-start justify-between gap-4 border-b border-navy-100 px-5 py-4 sm:px-6">
             <div>
-              <h2 :id="`${id}-title`" class="text-lg font-extrabold text-navy-950">
+              <h2
+                :id="`${id}-title`"
+                class="text-lg font-extrabold text-navy-950"
+              >
                 {{ title }}
               </h2>
-              <p v-if="description" :id="`${id}-desc`" class="mt-1 text-sm text-navy-500">
+              <p
+                v-if="description"
+                :id="`${id}-desc`"
+                class="mt-1 text-sm text-navy-500"
+              >
                 {{ description }}
               </p>
             </div>
@@ -109,13 +117,19 @@ onBeforeUnmount(() => {
               aria-label="Fechar"
               @click="close"
             >
-              <AppIcon name="x" :size="18" />
+              <AppIcon
+                name="x"
+                :size="18"
+              />
             </button>
           </div>
           <div class="scrollbar-thin flex-1 overflow-y-auto px-5 py-5 sm:px-6">
             <slot />
           </div>
-          <div v-if="$slots.footer" class="border-t border-navy-100 bg-navy-50/50 px-5 py-4 sm:px-6">
+          <div
+            v-if="$slots.footer"
+            class="border-t border-navy-100 bg-navy-50/50 px-5 py-4 sm:px-6"
+          >
             <slot name="footer" />
           </div>
         </div>

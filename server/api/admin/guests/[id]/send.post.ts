@@ -54,7 +54,8 @@ export default defineEventHandler(async (event) => {
         updatedAt: now,
       })
       .where(eq(schema.invitations.id, guest.invitationId))
-  } else if (guest.sendStatus !== 'sent') {
+  }
+  else if (guest.sendStatus !== 'sent') {
     await db
       .update(schema.invitations)
       .set({ status: 'failed', updatedAt: now })

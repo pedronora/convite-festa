@@ -15,9 +15,11 @@ const db = drizzle(client)
 try {
   await migrate(db, { migrationsFolder: './drizzle' })
   console.log('✓ Migrations aplicadas')
-} catch (error) {
+}
+catch (error) {
   console.error('Falha ao aplicar migrations:', error)
   process.exitCode = 1
-} finally {
+}
+finally {
   await client.end()
 }
