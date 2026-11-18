@@ -1,121 +1,121 @@
 # AGENTS.md
 
-Guia para agentes de IA e contribuidores que alteram este repositório. O [README](./README.md) cobre instalação, deploy, backup e a visão funcional; aqui ficam as regras de trabalho e os detalhes que não podem ser quebrados.
+Guide for AI agents and contributors working on this repository. The [README](./README.md) covers installation, deploy, backup and the functional overview; this file contains the working rules and the details that must not be broken.
 
-## Contexto
+## Context
 
-Aplicação Nuxt 4 (Vue 3 + TypeScript estrito) para o aniversário do Luigi e do Marco Antonio. Tem duas faces:
+Nuxt 4 application (Vue 3 + strict TypeScript) for Luigi's and Marco Antonio's birthday party. It has two faces:
 
-- **Pública**: landing, convite individual por UUID e formulário de RSVP.
-- **Administrativa**: login, dashboard, convidados, envios, confirmações e configurações.
+- **Public**: landing page, individual invitation by UUID and RSVP form.
+- **Administrative**: login, dashboard, guests, sends, RSVPs and settings.
 
-Interface, mensagens, commits e documentação em **português do Brasil**. O tema visual é Homem-Aranha (vermelho, azul-marinho, branco e azul-claro), com estética de quadrinhos.
+The interface, user-facing messages and commit messages are in **Brazilian Portuguese**; documentation (README, AGENTS.md and other docs) is in **English**. The visual theme is Spider-Man (red, navy blue, white and light blue), with a comic-book aesthetic.
 
-## Comandos
+## Commands
 
 ```bash
-npm install                 # Node >= 22.22 (o host com Node 20 emite apenas avisos)
+npm install                 # Node >= 22.22 (a host with Node 20 only emits warnings)
 
-docker compose -f docker-compose.dev.yml up -d   # PostgreSQL de dev na porta 5433
-npm run db:migrate          # aplica migrations pendentes
-npm run db:seed             # admin + configurações + dados de exemplo (só dev)
+docker compose -f docker-compose.dev.yml up -d   # dev PostgreSQL on port 5433
+npm run db:migrate          # applies pending migrations
+npm run db:seed             # admin + settings + sample data (dev only)
 
 npm run dev                 # http://localhost:3000
 npm run build
 npm run preview
-npm test                    # Vitest (regras compartilhadas)
+npm test                    # Vitest (shared rules)
 npm run typecheck           # vue-tsc / Nuxt
-npm run db:generate         # gera migration a partir do schema
+npm run db:generate         # generates a migration from the schema
 npm run db:studio
 npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "senha-longa"
 ```
 
-Antes de abrir PR, rode **`npm test`, `npm run typecheck` e `npm run build`**. Os testes são unitários; fluxos HTTP/banco precisam de verificação manual em dev ou de um teste de integração próprio.
+Before opening a PR, run **`npm test`, `npm run typecheck` and `npm run build`**. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test.
 
-## Mapa do repositório
+## Repository map
 
 ```text
-app/                    # cliente Nuxt
-  pages/                # rotas (admin/ e convite/[uuid].vue)
-  components/           # componentes autoimportados (pathPrefix: false)
+app/                    # Nuxt client
+  pages/                # routes (admin/ and convite/[uuid].vue)
+  components/           # auto-imported components (pathPrefix: false)
   composables/          # useAuth, useApi, useToast
   layouts/              # admin, auth, public
-  middleware/           # guarda de rota admin
-  assets/css/main.css   # tokens e utilitários Tailwind v4
-server/api/             # endpoints Nitro (admin/, auth/, public/, invite-image/)
-server/database/        # schema.ts e client.ts (Drizzle)
+  middleware/           # admin route guard
+  assets/css/main.css   # tokens and Tailwind v4 utilities
+server/api/             # Nitro endpoints (admin/, auth/, public/, invite-image/)
+server/database/        # schema.ts and client.ts (Drizzle)
 server/utils/           # auth, dashboard, queries, settings, uploads, rate limit
-server/middleware/      # cabeçalhos de segurança
-shared/                 # config, types, utils e validation (isomórfico)
-drizzle/                # migrations SQL + snapshot
-scripts/                # seed.ts, create-admin.ts, migrate.mjs (produção)
+server/middleware/      # security headers
+shared/                 # config, types, utils and validation (isomorphic)
+drizzle/                # SQL migrations + snapshot
+scripts/                # seed.ts, create-admin.ts, migrate.mjs (production)
 tests/                  # Vitest
-docker/                 # entrypoint de produção
+docker/                 # production entrypoint
 ```
 
-Alias `#shared` aponta para `shared/`. Código em `shared/` roda no cliente, no servidor e nos testes: **não importe banco, `node:*` ou APIs de servidor ali**.
+The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, on the server and in tests: **never import the database, `node:*` or server APIs there**.
 
-## Regras que não podem ser quebradas
+## Rules that must not be broken
 
-1. **Link do convite é único.** Use `buildInvitationLink()` de `shared/utils/format.ts`, que já inclui a âncora `#rsvp`. Nunca monte `/convite/${uuid}` à mão — o convidado deve cair direto no formulário.
-2. **Dados da festa vêm do banco.** Aniversariantes, idades, data, local, imagem, textos e limite ficam em `party_settings` e são editáveis em `/admin/configuracoes`. Os valores iniciais vivem em `shared/config/party.ts`; não hardcode nomes, endereço ou data em páginas.
-3. **WhatsApp é manual.** O sistema só abre `wa.me` com a mensagem pronta. Não simule envio automático nem anexe imagem. O histórico (`invitation_sends`) só é gravado após confirmação explícita do administrador e é append-only (reenvio = novo registro com `attempt` maior).
-4. **Convites ≠ pessoas.** Convite é a linha em `invitations`; pessoas são adultos + crianças 8–11 + crianças 0–7 do RSVP. O dashboard calcula tudo do banco e mostra os dois números separadamente.
-5. **Autorização no servidor.** Toda API em `server/api/admin/**` chama `requireAdmin(event)`. O middleware `admin` protege apenas a navegação; nunca confie só nele.
-6. **Validação compartilhada.** Schemas Zod ficam em `shared/validation`; o servidor sempre revalida. Validação no cliente é só conveniência.
-7. **Segurança por padrão.** Nada de `v-html` com dados de usuário; consultas só via Drizzle (parametrizadas); não exponha IDs sequenciais em rotas públicas; não registre telefone, e-mail ou mensagem em logs; erros internos não vão para o cliente. Login, RSVP e troca de senha têm rate limit.
-8. **Uploads controlados.** Imagem do convite em `DATA_DIR/uploads`, aceitando PNG/JPG/WebP até 5 MB, servida por `/api/invite-image/[name]`. A arte padrão é `public/images/convite-padrao.svg`.
-9. **Sem botão morto nem mock em produção.** Seed é exclusivamente de desenvolvimento. Toda ação visível precisa funcionar de verdade.
-10. **Uma instância.** O rate limit é em memória e por processo. Se houver escala horizontal, troque `server/utils/rate-limit.ts` por Redis antes de subir mais réplicas.
+1. **The invitation link is unique.** Use `buildInvitationLink()` from `shared/utils/format.ts`, which already includes the `#rsvp` anchor. Never build `/convite/${uuid}` by hand — the guest must land directly on the form.
+2. **Party data comes from the database.** Birthday people, ages, date, venue, image, texts and limit live in `party_settings` and are editable at `/admin/configuracoes`. The initial values live in `shared/config/party.ts`; do not hardcode names, address or date in pages.
+3. **WhatsApp is manual.** The system only opens `wa.me` with the message ready. Do not simulate automatic sending or attach images. The history (`invitation_sends`) is only recorded after the administrator's explicit confirmation and is append-only (a resend is a new record with a higher `attempt`).
+4. **Invitations ≠ people.** An invitation is the row in `invitations`; people are adults + children aged 8–11 + children aged 0–7 from the RSVP. The dashboard computes everything from the database and shows both numbers separately.
+5. **Authorization on the server.** Every API under `server/api/admin/**` calls `requireAdmin(event)`. The `admin` middleware only protects navigation; never trust it alone.
+6. **Shared validation.** Zod schemas live in `shared/validation`; the server always revalidates. Client-side validation is a convenience only.
+7. **Security by default.** No `v-html` with user data; queries only through Drizzle (parameterized); do not expose sequential IDs in public routes; do not log phone numbers, emails or messages; internal errors never reach the client. Login, RSVP and password changes are rate limited.
+8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-padrao.svg`.
+9. **No dead buttons or mocks in production.** The seed is development-only. Every visible action must actually work.
+10. **Single instance.** Rate limiting is in memory and per process. If you scale horizontally, replace `server/utils/rate-limit.ts` with Redis before adding more replicas.
 
-## Banco e migrations
+## Database and migrations
 
-- Schema em `server/database/schema.ts`; migrations geradas em `drizzle/`.
-- Alterou o schema? Edite o schema, rode `npm run db:generate`, **revise o SQL gerado** e aplique com `npm run db:migrate`.
-- Nunca edite uma migration já aplicada; crie outra.
-- Em produção o container roda `scripts/migrate.mjs` no entrypoint (`RUN_MIGRATIONS=true`); o seed nunca roda automaticamente.
-- Env de runtime: `DATABASE_URL` e `DATA_DIR` (ou `NUXT_DATABASE_URL` / `NUXT_DATA_DIR`). O código tem fallback para `runtimeConfig`.
+- Schema in `server/database/schema.ts`; migrations generated in `drizzle/`.
+- Changed the schema? Edit the schema, run `npm run db:generate`, **review the generated SQL** and apply it with `npm run db:migrate`.
+- Never edit an already applied migration; create another one.
+- In production the container runs `scripts/migrate.mjs` on the entrypoint (`RUN_MIGRATIONS=true`); the seed never runs automatically.
+- Runtime env: `DATABASE_URL` and `DATA_DIR` (or `NUXT_DATABASE_URL` / `NUXT_DATA_DIR`). The code falls back to `runtimeConfig`.
 
-## Convenções de código
+## Code conventions
 
-- TypeScript estrito, Vue 3 com `<script setup lang="ts">` e Composition API. Sem `any` gratuito.
-- Estilo do código existente: 2 espaços, aspas simples, sem ponto e vírgula.
-- Componentes reutilizáveis em `app/components`; evite criar variações quando `AppButton`, `AppModal`, `FormField`, `StatusBadge`, `EmptyState` etc. já resolvem.
-- Estilo com utilitários Tailwind e tokens do tema (`spider-*`, `comic`, sombras). Se precisar de uma cor ou animação nova, adicione ao `main.css` em vez de espalhar valores arbitrários.
-- Gráficos são componentes SVG próprios (`app/components/charts`); não adicione biblioteca de charts sem necessidade real.
-- Datas exibidas usam os utilitários de `shared/utils/format.ts`; telefones passam por `shared/utils/phone.ts` (E.164 brasileiro).
-- Textos de interface em pt-BR, com tom acolhedor e direto.
+- Strict TypeScript, Vue 3 with `<script setup lang="ts">` and the Composition API. No gratuitous `any`.
+- Existing code style: 2 spaces, single quotes, no semicolons.
+- Reusable components in `app/components`; avoid creating variations when `AppButton`, `AppModal`, `FormField`, `StatusBadge`, `EmptyState` etc. already solve the problem.
+- Styling with Tailwind utilities and theme tokens (`spider-*`, `comic`, shadows). If you need a new color or animation, add it to `main.css` instead of scattering arbitrary values.
+- Charts are custom SVG components (`app/components/charts`); do not add a chart library without a real need.
+- Displayed dates use the utilities from `shared/utils/format.ts`; phone numbers go through `shared/utils/phone.ts` (Brazilian E.164).
+- UI texts in pt-BR, with a welcoming and direct tone.
 
-## Testes
+## Tests
 
-- `tests/` cobre telefone, mensagens, RSVP, limites e configurações.
-- Ao mudar uma regra compartilhada, atualize/adicione o teste correspondente no mesmo PR.
-- Prefira testar funções puras; para banco, valide no ambiente de dev.
+- `tests/` covers phone numbers, messages, RSVP, limits and settings.
+- When you change a shared rule, update/add the corresponding test in the same PR.
+- Prefer testing pure functions; for the database, validate in the dev environment.
 
-## Git e GitHub Flow
+## Git and GitHub Flow
 
-`main` está sempre pronta para deploy. Nenhum trabalho entra direto nela.
+`main` is always ready to deploy. No work goes directly into it.
 
-1. Crie uma branch a partir de `main`: `feat/…`, `fix/…`, `docs/…` ou `chore/…`.
-2. Faça commits pequenos e coesos no formato `tipo: resumo no imperativo` (ex.: `fix: ancora o link do convite no RSVP`).
-3. Push cedo para a branch remota e abra um PR descrevendo o problema, a solução e como verificar.
-4. Responda à revisão com novos commits na mesma branch.
-5. Com testes/CI verdes, faça merge (squash) e apague a branch.
-6. Deploy sai de `main`.
+1. Create a branch from `main`: `feat/…`, `fix/…`, `docs/…` or `chore/…`.
+2. Make small, cohesive commits in the format `type: summary in the imperative` (e.g. `fix: ancora o link do convite no RSVP`).
+3. Push early to the remote branch and open a PR describing the problem, the solution and how to verify it.
+4. Answer the review with new commits on the same branch.
+5. With tests/CI green, merge (squash) and delete the branch.
+6. Deploy comes from `main`.
 
-CI e publicação:
+CI and publishing:
 
-- `.github/workflows/ci.yml` roda testes, typecheck, build e o build da imagem em PRs. Não faça merge com checks vermelhos.
-- `.github/workflows/publish.yml` publica `ghcr.io/pedronora/convite-festa` a cada push em `main` e em tags `v*.*.*` (`latest`, `main`, `sha-<commit>` e versões semver).
-- `docker-compose.ghcr.yml` é o override que troca o build local pela imagem publicada.
+- `.github/workflows/ci.yml` runs tests, typecheck, build and the image build on PRs. Do not merge with red checks.
+- `.github/workflows/publish.yml` publishes `ghcr.io/pedronora/convite-festa` on every push to `main` and on `v*.*.*` tags (`latest`, `main`, `sha-<commit>` and semver versions).
+- `docker-compose.ghcr.yml` is the override that swaps the local build for the published image.
 
-Nunca commite `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` ou artefatos de build — o `.gitignore` já cobre esses casos.
+Never commit `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` or build artifacts — `.gitignore` already covers those.
 
-## Ambiente
+## Environment
 
-- Banco de dev: `postgres://convite:convite@localhost:5433/convite_festa`.
-- Admin do seed: definido por `ADMIN_EMAIL`/`ADMIN_PASSWORD` no `.env` (senha mínima de 10 caracteres).
-- Convite de teste do seed: `/convite/11111111-1111-4111-8111-111111111111`.
-- A imagem de produção usa `node:22-bookworm-slim`. **Não volte para Alpine** sem retestar o build do cliente (o Rollup falha com `Code is nested too deeply`).
-- Compose de produção usa o projeto `convite-festa`, com os volumes `convite-festa_convite_pgdata` e `convite-festa_convite_uploads`.
-- Atrás de HTTPS, o cookie de sessão vira `Secure` automaticamente; o proxy reverso não faz parte do Compose.
+- Dev database: `postgres://convite:convite@localhost:5433/convite_festa`.
+- Seed admin: defined by `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env` (minimum 10-character password).
+- Seed test invitation: `/convite/11111111-1111-4111-8111-111111111111`.
+- The production image uses `node:22-bookworm-slim`. **Do not go back to Alpine** without retesting the client build (Rollup fails with `Code is nested too deeply`).
+- The production Compose uses the `convite-festa` project, with the `convite-festa_convite_pgdata` and `convite-festa_convite_uploads` volumes.
+- Behind HTTPS, the session cookie automatically becomes `Secure`; the reverse proxy is not part of the Compose file.
