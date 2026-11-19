@@ -191,7 +191,7 @@ function changePage(page: number) {
 
     <section class="card-surface overflow-hidden">
       <div class="hidden overflow-x-auto scrollbar-thin md:block">
-        <table class="w-full min-w-[820px] text-left">
+        <table class="w-full min-w-205 text-left">
           <caption class="sr-only">
             Histórico de envios de convites
           </caption>
