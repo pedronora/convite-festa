@@ -26,7 +26,7 @@ const partyNames = computed(() => celebrantNames(party.value.celebrants))
       <div class="absolute inset-0 bg-gradient-to-br from-spider-700/40 via-navy-950 to-navy-950" />
       <div class="absolute -right-20 top-1/3 h-80 w-80 rounded-full bg-spider-600/20 blur-3xl" />
       <div class="relative">
-        <AppLogo variant="light" />
+        <AppLogo variant="dark" />
       </div>
       <div class="relative max-w-lg">
         <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-extrabold uppercase tracking-widest text-sky-100">
@@ -77,7 +77,7 @@ const partyNames = computed(() => celebrantNames(party.value.celebrants))
     <section class="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
       <div class="w-full max-w-md">
         <div class="mb-6 flex justify-center lg:hidden">
-          <AppLogo variant="light" />
+          <AppLogo variant="dark" />
         </div>
         <slot />
         <p class="mt-6 text-center text-xs font-semibold text-navy-400">
