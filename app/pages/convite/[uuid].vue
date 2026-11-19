@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PublicInvitation, RsvpSummary } from '#shared/types'
-import { celebrantAgeLabel, formatDateLong } from '#shared/utils/format'
+import { defaultPartySettings } from '#shared/config/party'
+import { celebrantAgeLabel, celebrantNames, formatDateLong } from '#shared/utils/format'
 
 definePageMeta({ layout: 'public' })
 
@@ -15,14 +16,28 @@ if (error.value?.statusCode === 404) {
   setResponseStatus(404)
 }
 
+const settings = computed(() => invitation.value?.settings ?? defaultPartySettings)
+const config = useRuntimeConfig()
+const requestUrl = useRequestURL()
+const socialImage = computed(() => {
+  const base = (config.public.appUrl as string) || requestUrl.origin
+  return new URL(settings.value.inviteImageUrl || defaultPartySettings.inviteImageUrl, base).toString()
+})
+const socialTitle = computed(() => `Convite de ${celebrantNames(settings.value.celebrants)}`)
+const socialDescription = computed(() => `Confirme sua presença na festa de aniversário de ${celebrantNames(settings.value.celebrants)}.`)
+
 useHead(() => ({
   title: 'Seu convite',
   meta: [
     { name: 'robots', content: 'noindex, nofollow' },
-    {
-      name: 'description',
-      content: `Confirme sua presença na festa de aniversário de ${invitation.value?.settings.celebrants.map(celebrant => celebrant.name).join(' e ') ?? 'Luigi e Marco Antonio'}.`,
-    },
+    { name: 'description', content: socialDescription.value },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:locale', content: 'pt_BR' },
+    { property: 'og:title', content: socialTitle.value },
+    { property: 'og:description', content: socialDescription.value },
+    { property: 'og:image', content: socialImage.value },
+    { property: 'og:image:alt', content: 'Arte do convite da festa' },
+    { name: 'twitter:card', content: 'summary_large_image' },
   ],
 }))
 
@@ -93,7 +108,7 @@ onMounted(async () => {
           <div class="skeleton h-4 w-64 rounded" />
           <div class="skeleton h-32 w-full rounded-2xl" />
         </div>
-        <div class="skeleton aspect-[4/5] w-full rounded-3xl" />
+        <div class="skeleton aspect-[2/3] w-full rounded-3xl" />
       </div>
     </div>
 

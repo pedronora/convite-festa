@@ -66,7 +66,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 5. **Authorization on the server.** Every API under `server/api/admin/**` calls `requireAdmin(event)`. The `admin` middleware only protects navigation; never trust it alone.
 6. **Shared validation.** Zod schemas live in `shared/validation`; the server always revalidates. Client-side validation is a convenience only.
 7. **Security by default.** No `v-html` with user data; queries only through Drizzle (parameterized); do not expose sequential IDs in public routes; do not log phone numbers, emails or messages; internal errors never reach the client. Login, RSVP and password changes are rate limited.
-8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-padrao.svg`.
+8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback.
 9. **No dead buttons or mocks in production.** The seed is development-only. Every visible action must actually work.
 10. **Single instance.** Rate limiting is in memory and per process. If you scale horizontally, replace `server/utils/rate-limit.ts` with Redis before adding more replicas.
 

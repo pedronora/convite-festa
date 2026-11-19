@@ -1,11 +1,18 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
   src: string
   alt?: string
   eager?: boolean
 }>(), {
   alt: 'Convite da festa',
   eager: false,
+})
+
+const failed = ref(false)
+const resolvedSrc = computed(() => failed.value ? '/images/convite-padrao.svg' : props.src)
+
+watch(() => props.src, () => {
+  failed.value = false
 })
 </script>
 
@@ -21,10 +28,11 @@ withDefaults(defineProps<{
     />
     <div class="relative overflow-hidden rounded-2xl border-4 border-white bg-navy-950 shadow-2xl">
       <img
-        :src="src"
+        :src="resolvedSrc"
         :alt="alt"
         :loading="eager ? 'eager' : 'lazy'"
         class="block max-h-[70vh] w-full object-contain"
+        @error="failed = true"
       >
     </div>
     <div class="absolute -right-3 -top-3 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-spider-600 text-white shadow-lg">
