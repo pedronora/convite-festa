@@ -58,7 +58,7 @@ export const defaultPartySettings: PartySettings = {
   city: 'Cascavel',
   state: 'PR',
   mapsQuery: 'Rua Ernani Inocêncio de Medeiros, 380 - Santos Dumont, Cascavel - PR',
-  inviteImageUrl: '/images/convite-padrao.svg',
+  inviteImageUrl: '/images/convite-luigi-marco.jpg',
   whatsappTemplate: `Olá, [Nome]! ❤️
 
 Estamos preparando uma comemoração muito especial para celebrar os 3 anos do Luigi e o 1º aninho do Marco Antonio, e gostaríamos muito de contar com sua presença!

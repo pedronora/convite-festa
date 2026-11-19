@@ -191,7 +191,7 @@ At `/admin/configuracoes` you can change:
 
 Template placeholders: `[Nome]`, `[LINK]`, `[FESTA]`, `[DATA]`, `[HORARIO]`, `[LOCAL]`, `[ENDERECO]` and `[CIDADE]`.
 
-The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in production) and served by `/api/invite-image/...`. The default artwork is `public/images/convite-padrao.svg`.
+The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in production) and served by `/api/invite-image/...`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback if the image fails to load.
 
 ## Tests and checks
 
