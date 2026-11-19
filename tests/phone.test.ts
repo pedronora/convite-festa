@@ -3,6 +3,8 @@ import {
   formatPhoneBR,
   normalizePhoneBR,
   telUrl,
+  whatsappChatUrl,
+  whatsappShareUrl,
   whatsappUrl,
 } from '../shared/utils/phone'
 
@@ -47,9 +49,24 @@ describe('formatPhoneBR', () => {
 })
 
 describe('links de telefone', () => {
-  it('gera link wa.me codificando a mensagem', () => {
+  it('gera link do WhatsApp codificando a mensagem', () => {
     const url = whatsappUrl('(45) 99999-8888', 'Olá, Luigi & Marco!')
-    expect(url).toBe('https://wa.me/5545999998888?text=Ol%C3%A1%2C%20Luigi%20%26%20Marco!')
+    expect(url).toBe('https://api.whatsapp.com/send?phone=5545999998888&text=Ol%C3%A1%2C%20Luigi%20%26%20Marco!')
+  })
+
+  it('preserva emojis no texto do link', () => {
+    const url = whatsappUrl('(45) 99999-8888', 'Festa 🎉🕸️🕷️')
+    expect(new URL(url).searchParams.get('text')).toBe('Festa 🎉🕸️🕷️')
+  })
+
+  it('gera link de compartilhamento sem telefone', () => {
+    expect(whatsappShareUrl('Oi 🎉'))
+      .toBe('https://api.whatsapp.com/send?text=Oi%20%F0%9F%8E%89')
+  })
+
+  it('gera link de conversa com o número normalizado', () => {
+    expect(whatsappChatUrl('(45) 99999-8888'))
+      .toBe('https://api.whatsapp.com/send?phone=5545999998888')
   })
 
   it('gera link tel: com o número normalizado', () => {
