@@ -128,10 +128,10 @@ docker compose -f docker-compose.dev.yml down -v    # deletes the data
 
 ### WhatsApp limitations
 
-This project **does not send messages automatically** and does not use the official WhatsApp API. It builds a `https://wa.me/...` link and opens WhatsApp Web/app with the message ready.
+This project **does not send messages automatically** and does not use the official WhatsApp API. It builds an `https://api.whatsapp.com/send?...` link and opens WhatsApp Web/app with the message ready.
 
 - The actual send depends on the administrator tapping “send” in WhatsApp.
-- The `wa.me` link **cannot attach images**. The artwork must be downloaded/attached manually.
+- The `api.whatsapp.com/send` link **cannot attach images**. The artwork must be downloaded/attached manually.
 - The history is only recorded after the explicit confirmation in the UI.
 - Resends create new records with an incremented `attempt`.
 - Real automation would require integrating the WhatsApp Business Platform (official API), which is out of scope.

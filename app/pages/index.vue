@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { defaultPartySettings, type PartySettings } from '#shared/config/party'
+import { whatsappShareUrl } from '#shared/utils/phone'
 import { celebrantNames, celebrantsAgesLabel, formatDateLong } from '#shared/utils/format'
 
 definePageMeta({ layout: 'public' })
@@ -23,10 +24,9 @@ const otherCelebrants = computed(() => settings.value.celebrants
   .map(celebrant => celebrant.name.toUpperCase())
   .join(' & '))
 const agesLabel = computed(() => celebrantsAgesLabel(settings.value.celebrants))
-const helpWhatsAppUrl = computed(() => {
-  const message = `Olá! Preciso do link do convite da festa de ${celebrantNames(settings.value.celebrants)}.`
-  return `https://wa.me/?text=${encodeURIComponent(message)}`
-})
+const helpWhatsAppUrl = computed(() => whatsappShareUrl(
+  `Olá! Preciso do link do convite da festa de ${celebrantNames(settings.value.celebrants)}.`,
+))
 </script>
 
 <template>
