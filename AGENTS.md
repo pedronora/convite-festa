@@ -61,12 +61,12 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 
 1. **The invitation link is unique.** Use `buildInvitationLink()` from `shared/utils/format.ts`, which already includes the `#rsvp` anchor. Never build `/convite/${uuid}` by hand — the guest must land directly on the form.
 2. **Party data comes from the database.** Birthday people, ages, date, venue, image, texts and limit live in `party_settings` and are editable at `/admin/configuracoes`. The initial values live in `shared/config/party.ts`; do not hardcode names, address or date in pages.
-3. **WhatsApp is manual.** The system only opens `wa.me` with the message ready. Do not simulate automatic sending or attach images. The history (`invitation_sends`) is only recorded after the administrator's explicit confirmation and is append-only (a resend is a new record with a higher `attempt`).
+3. **WhatsApp is manual.** The system only opens an `api.whatsapp.com/send` link with the message ready. Do not simulate automatic sending or attach images. The history (`invitation_sends`) is only recorded after the administrator's explicit confirmation and is append-only (a resend is a new record with a higher `attempt`).
 4. **Invitations ≠ people.** An invitation is the row in `invitations`; people are adults + children aged 8–11 + children aged 0–7 from the RSVP. The dashboard computes everything from the database and shows both numbers separately.
 5. **Authorization on the server.** Every API under `server/api/admin/**` calls `requireAdmin(event)`. The `admin` middleware only protects navigation; never trust it alone.
 6. **Shared validation.** Zod schemas live in `shared/validation`; the server always revalidates. Client-side validation is a convenience only.
 7. **Security by default.** No `v-html` with user data; queries only through Drizzle (parameterized); do not expose sequential IDs in public routes; do not log phone numbers, emails or messages; internal errors never reach the client. Login, RSVP and password changes are rate limited.
-8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-padrao.svg`.
+8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback.
 9. **No dead buttons or mocks in production.** The seed is development-only. Every visible action must actually work.
 10. **Single instance.** Rate limiting is in memory and per process. If you scale horizontally, replace `server/utils/rate-limit.ts` with Redis before adding more replicas.
 

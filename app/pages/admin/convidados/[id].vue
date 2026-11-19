@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuestDetail, SendHistoryItem } from '#shared/types'
 import { buildInvitationLink, formatDateTime, formatPhoneDisplay } from '#shared/utils/format'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhoneBR, whatsappChatUrl } from '#shared/utils/phone'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
@@ -229,7 +229,7 @@ async function onSaved() {
               </dt>
               <dd class="mt-0.5 text-sm font-bold text-navy-800">
                 <a
-                  :href="`https://wa.me/${guest.phone}`"
+                  :href="whatsappChatUrl(guest.phone)"
                   target="_blank"
                   rel="noopener"
                   class="hover:text-spider-600"

@@ -55,8 +55,22 @@ export function whatsappNumber(value: string): string {
   return normalizePhoneBR(value) ?? onlyDigits(value)
 }
 
+// O redirect do wa.me corrompe UTF-8 de 4 bytes (emojis) no parâmetro `text`,
+// trocando cada caractere por U+FFFD. O endpoint final preserva o texto.
+const WHATSAPP_SEND_URL = 'https://api.whatsapp.com/send'
+
 export function whatsappUrl(phone: string, message: string): string {
-  return `https://wa.me/${whatsappNumber(phone)}?text=${encodeURIComponent(message)}`
+  return `${WHATSAPP_SEND_URL}?phone=${whatsappNumber(phone)}&text=${encodeURIComponent(message)}`
+}
+
+/** Compartilhar sem destinatário definido (o WhatsApp pede o contato). */
+export function whatsappShareUrl(message: string): string {
+  return `${WHATSAPP_SEND_URL}?text=${encodeURIComponent(message)}`
+}
+
+/** Abrir conversa com um número, sem mensagem pré-preenchida. */
+export function whatsappChatUrl(phone: string): string {
+  return `${WHATSAPP_SEND_URL}?phone=${whatsappNumber(phone)}`
 }
 
 export function telUrl(phone: string): string {

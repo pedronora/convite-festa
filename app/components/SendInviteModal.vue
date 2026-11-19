@@ -413,7 +413,7 @@ async function fail() {
             /> Atenção
           </p>
           <p class="mt-1 text-[11px] font-semibold leading-relaxed text-amber-800/90">
-            Links <code>wa.me</code> não anexam imagens automaticamente. Abra o WhatsApp, anexe a imagem
+            Links de clique para conversar não anexam imagens automaticamente. Abra o WhatsApp, anexe a imagem
             baixada e cole a mensagem se necessário. Depois, volte aqui e confirme o envio.
           </p>
         </div>
