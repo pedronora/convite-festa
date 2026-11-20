@@ -8,12 +8,7 @@ definePageMeta({ layout: 'public' })
 const { data } = await useFetch<PartySettings>('/api/public/party', { key: 'party-settings-public' })
 const settings = computed(() => data.value ?? defaultPartySettings)
 
-const config = useRuntimeConfig()
-const requestUrl = useRequestURL()
-const socialImage = computed(() => {
-  const base = (config.public.appUrl as string) || requestUrl.origin
-  return new URL(settings.value.inviteImageUrl || defaultPartySettings.inviteImageUrl, base).toString()
-})
+const { buildMeta } = useSocialMeta()
 const socialTitle = computed(() => `Aniversário de ${celebrantNames(settings.value.celebrants)}`)
 const socialDescription = computed(() => `Festa de aniversário de ${celebrantNames(settings.value.celebrants)} — ${settings.value.dateLabel}, em ${settings.value.city}/${settings.value.state}.`)
 
@@ -21,13 +16,11 @@ useHead(() => ({
   title: 'Convite de aniversário',
   meta: [
     { name: 'description', content: socialDescription.value },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:locale', content: 'pt_BR' },
-    { property: 'og:title', content: socialTitle.value },
-    { property: 'og:description', content: socialDescription.value },
-    { property: 'og:image', content: socialImage.value },
-    { property: 'og:image:alt', content: 'Arte do convite da festa' },
-    { name: 'twitter:card', content: 'summary_large_image' },
+    ...buildMeta({
+      title: socialTitle.value,
+      description: socialDescription.value,
+      imagePath: settings.value.inviteImageUrl || defaultPartySettings.inviteImageUrl,
+    }),
   ],
 }))
 

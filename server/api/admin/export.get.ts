@@ -1,6 +1,7 @@
 import { asc, eq } from 'drizzle-orm'
 import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
 import { formatPhoneBR } from '#shared/utils/phone'
+import { resolveAppBaseUrl } from '#shared/utils/social'
 
 function csvCell(value: unknown): string {
   let text = value === null || value === undefined ? '' : String(value)
@@ -46,7 +47,10 @@ export default defineEventHandler(async (event) => {
     .leftJoin(schema.rsvps, eq(schema.rsvps.invitationId, schema.invitations.id))
     .orderBy(asc(schema.guests.name))
 
-  const appUrl = (useRuntimeConfig().public.appUrl as string) || ''
+  const appUrl = resolveAppBaseUrl(
+    String(useRuntimeConfig().public.appUrl || ''),
+    getRequestURL(event).origin,
+  )
   const header = [
     'Nome',
     'Família/Grupo',
