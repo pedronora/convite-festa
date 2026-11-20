@@ -258,10 +258,13 @@ To disable automatic migrations, set `RUN_MIGRATIONS=false`. In that case, run `
 
 ### CI and the GHCR image
 
-Two GitHub Actions workflows handle quality and distribution:
+A single GitHub Actions workflow (`.github/workflows/ci.yml`) handles quality and distribution in three jobs:
 
-- **CI** (`.github/workflows/ci.yml`): on pull requests and pushes to `main`, runs tests, type checking and the build. On pull requests, it also validates the Docker image build without publishing.
-- **Publish image** (`.github/workflows/publish.yml`): on every push to `main`, publishes `ghcr.io/pedronora/convite-festa` to the GitHub Container Registry. `v*.*.*` tags also produce versioned images.
+- **Testes, tipos e build** (`check`): runs lint, tests, type checking and the build on pull requests, pushes to `main` and `v*.*.*` tags.
+- **Build da imagem** (`docker`): on pull requests, validates the Docker image build without publishing.
+- **Build e push no GHCR** (`publish`): publishes `ghcr.io/pedronora/convite-festa` on pushes to `main`, on `v*.*.*` tags and on manual dispatch. It depends on `check`, so a broken commit is never published.
+
+`main` is protected: changes go through a pull request with the `Testes, tipos e build` and `Build da imagem` checks green, squash merges only, and the branch is deleted after the merge.
 
 Published tags:
 
