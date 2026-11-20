@@ -86,7 +86,7 @@ Set `SEED_SAMPLE=false` to create only the administrator and the settings. The s
 | Variable | Default | Description |
 | --- | --- | --- |
 | `DATABASE_URL` | — | PostgreSQL connection string. Required. |
-| `NUXT_PUBLIC_APP_URL` | `http://localhost:3000` | Public URL used in the invitation links. No trailing slash. |
+| `NUXT_PUBLIC_APP_URL` | `http://localhost:3000` | Public URL used in the invitation links and in the WhatsApp link preview (`og:image`). No trailing slash. Empty, internal or example values fall back to the request origin. |
 | `DATA_DIR` | `./.data` | Persistent folder for uploaded images. In production: `/app/data`. |
 | `ADMIN_NAME` | `Administrador` | Name used by the seed/create-admin scripts. |
 | `ADMIN_EMAIL` | `admin@festa.local` | Email used by the scripts. |
@@ -135,6 +135,14 @@ This project **does not send messages automatically** and does not use the offic
 - The history is only recorded after the explicit confirmation in the UI.
 - Resends create new records with an incremented `attempt`.
 - Real automation would require integrating the WhatsApp Business Platform (official API), which is out of scope.
+
+### Link preview
+
+WhatsApp builds the preview card from the Open Graph tags. `og:image` must be an absolute URL on a public domain. The app resolves it from `NUXT_PUBLIC_APP_URL` (or `APP_URL` in Compose); when that value is empty, internal (`localhost`, container name) or still the example from `.env.production.example`, the request origin is used instead.
+
+Even with the fallback, set the real public URL (on TrueNAS SCALE, in the app environment variables) so exported links and previews do not depend on proxy headers.
+
+WhatsApp caches the preview per URL. After fixing the domain, links already sent may keep the old preview: use Facebook's Sharing Debugger to force a rescrape of the URL or test with a new invitation link.
 
 ## Routes
 
@@ -214,6 +222,8 @@ The tests cover the shared pure rules. HTTP and database flows must be verified 
    ```
 
    Use a long password for `POSTGRES_PASSWORD` (avoid characters that need escaping in URLs, such as `@`, `:`, `/`, `#` and `%`) and set `APP_URL` to the real public URL, for example `https://convite.seudominio.com`.
+
+   On platforms without a `.env` file (such as a TrueNAS SCALE app), set the same variables in the app environment instead — `APP_URL` (consumed as `NUXT_PUBLIC_APP_URL` by the container) must be the public HTTPS URL without a trailing slash.
 
    PostgreSQL only applies `POSTGRES_PASSWORD` when the volume is created for the first time. If you change it later, the existing data volume keeps the old password and the app fails with `password authentication failed`. In that case, either restore the original value or reset the volume with `docker compose down -v` (this deletes the data) and recreate the administrator.
 
