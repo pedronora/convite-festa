@@ -14,7 +14,8 @@ The interface, user-facing messages and commit messages are in **Brazilian Portu
 ## Commands
 
 ```bash
-npm install                 # Node >= 22.22 (a host with Node 20 only emits warnings)
+nvm use                     # Node 22.22 from .nvmrc — mandatory (ESLint 10 breaks on Node 20)
+npm install
 
 docker compose -f docker-compose.dev.yml up -d   # dev PostgreSQL on port 5433
 npm run db:migrate          # applies pending migrations
@@ -32,7 +33,7 @@ npm run db:studio
 npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "senha-longa"
 ```
 
-Before opening a PR, run **`npm run lint`, `npm test`, `npm run typecheck` and `npm run build`**. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test. Node 22 is pinned in `.nvmrc` (ESLint 10 requires Node 21+).
+Before opening a PR, run **`npm run lint`, `npm test`, `npm run typecheck` and `npm run build`**. Run `nvm use` first: on Node 20, `npm run lint` crashes with `Object.groupBy is not a function` (ESLint 10 requires Node 21+), even though `npm test` still passes. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test.
 
 ## Repository map
 
@@ -102,13 +103,15 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 2. Make small, cohesive commits in the format `type: summary in the imperative` (e.g. `fix: ancora o link do convite no RSVP`).
 3. Push early to the remote branch and open a PR describing the problem, the solution and how to verify it.
 4. Answer the review with new commits on the same branch.
-5. With tests/CI green, merge (squash) and delete the branch.
+5. With tests/CI green, merge (squash); the branch is deleted automatically.
 6. Deploy comes from `main`.
 
 CI and publishing:
 
-- `.github/workflows/ci.yml` runs tests, typecheck, build and the image build on PRs. Do not merge with red checks.
-- `.github/workflows/publish.yml` publishes `ghcr.io/pedronora/convite-festa` on every push to `main` and on `v*.*.*` tags (`latest`, `main`, `sha-<commit>` and semver versions).
+- `.github/workflows/ci.yml` runs lint, tests, typecheck and build, validates the image build on PRs and publishes to GHCR only after the checks pass (`main`, `v*.*.*` tags and manual dispatch). Do not merge with red checks.
+- `main` is protected by a ruleset: a pull request is required, the `Testes, tipos e build` and `Build da imagem` checks must be green, only squash merges are allowed, force pushes and deletions are blocked, and merged branches are deleted automatically.
+- `.github/pull_request_template.md` is the base for every PR description: problem, solution, how to verify and checklist.
+- Tags `v*.*.*` are optional and mark a release; they publish versioned images (`1.2.3` and `1.2`).
 - `docker-compose.ghcr.yml` is the override that swaps the local build for the published image.
 
 Never commit `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` or build artifacts — `.gitignore` already covers those.
