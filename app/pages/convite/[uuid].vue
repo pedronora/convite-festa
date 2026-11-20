@@ -278,13 +278,15 @@ onMounted(async () => {
 
       <!-- RSVP -->
       <section
-        id="rsvp"
-        ref="rsvpSection"
-        class="scroll-mt-20 py-10 sm:py-14"
+        class="py-10 sm:py-14"
       >
         <div class="mx-auto w-full max-w-5xl px-4 sm:px-6">
           <div class="grid gap-6 lg:grid-cols-[1fr_0.85fr] lg:items-start">
-            <div class="order-2 lg:order-1">
+            <div
+              id="rsvp"
+              ref="rsvpSection"
+              class="order-2 scroll-mt-20 lg:order-1"
+            >
               <RsvpSummary
                 v-if="mode === 'summary' && currentRsvp"
                 :invitation="invitation"
