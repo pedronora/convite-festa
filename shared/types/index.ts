@@ -118,6 +118,8 @@ export interface PublicInvitation {
   guest: {
     name: string
     groupName: string | null
+    phone: string
+    email: string | null
     maxGuests: number | null
   }
   settings: import('../config/party').PartySettings
