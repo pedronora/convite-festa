@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-11-21
+
+Security hardening release. No breaking changes for existing deployments, but the password policy and the public invitation payload changed.
+
 ### Added
 
 - Content Security Policy with a per-request nonce on HTML pages and `default-src 'none'` on API responses.
