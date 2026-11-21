@@ -15,8 +15,8 @@ const existing = props.invitation.existingRsvp
 const form = reactive({
   attendanceStatus: existing?.attendanceStatus ?? 'yes' as 'yes' | 'no',
   responsibleName: existing?.responsibleName || props.invitation.guest.name,
-  phone: existing?.phone || '',
-  email: existing?.email || '',
+  phone: existing?.phone || props.invitation.guest.phone,
+  email: existing?.email || props.invitation.guest.email || '',
   adults: existing?.adults ?? 1,
   children8to11: existing?.children8to11 ?? 0,
   children0to7: existing?.children0to7 ?? 0,

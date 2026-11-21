@@ -359,7 +359,7 @@ To restore, replace `:ro` with `:rw` and run `tar xzf /backup/uploads-....tar.gz
 - HTML pages use a `Content-Security-Policy` with a per-request nonce; API responses use `default-src 'none'`.
 - Request bodies are capped by route (128 KB for JSON, 6 MB for the image upload) and uploads are validated by magic bytes, not only by `Content-Type`.
 - The rate limiter uses the trusted client IP (`CF-Connecting-IP` or the last `X-Forwarded-For` hop) and adds per-email and per-admin scopes.
-- Admin, invitation and API responses use `Cache-Control: no-store`; the public invitation does not return the guest's phone or e-mail.
+- Admin, invitation and API responses use `Cache-Control: no-store`; the public invitation returns the guest's contact so the RSVP form can be pre-filled. The link is personal and the guest decides whether to forward it.
 
 ### Rate limiting
 

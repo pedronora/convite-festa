@@ -13,6 +13,8 @@ export const publicInvitationColumns = {
   invitationStatus: schema.invitations.status,
   guestName: schema.guests.name,
   groupName: schema.guests.groupName,
+  phone: schema.guests.phone,
+  email: schema.guests.email,
   maxGuests: schema.guests.maxGuests,
   rsvpId: schema.rsvps.id,
   attendanceStatus: schema.rsvps.attendanceStatus,
@@ -49,6 +51,8 @@ export async function getPublicInvitation(uuid: string): Promise<PublicInvitatio
     guest: {
       name: row.guestName,
       groupName: row.groupName,
+      phone: row.phone,
+      email: row.email,
       maxGuests: row.maxGuests,
     },
     settings,
