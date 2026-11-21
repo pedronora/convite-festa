@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-21
+
 ### Changed
 
 - The public invitation pre-fills the guest's phone and e-mail again. The link is personal: the guest decides whether to forward it, so the form saves the retyping introduced in 1.1.0.
