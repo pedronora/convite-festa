@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Content Security Policy with a per-request nonce on HTML pages and `default-src 'none'` on API responses.
+- Per-route request body limits (128 KB for JSON, 6 MB for the image upload) and image validation by magic bytes.
+- Per-email and per-admin rate limit scopes on top of the IP limit, with the trusted client IP taken from Cloudflare/proxy headers.
+- `APP_BIND` in the production Compose to restrict the published port to the local reverse proxy.
+- Shared password policy (minimum 12 characters, project examples rejected) used by the seed, `admin:create` and the password change form.
+
+### Changed
+
+- The public invitation payload no longer includes the guest's phone and e-mail; the RSVP form starts empty for them.
+- Calendar links respect `APP_URL` with fallback to the request origin.
+- Node requirement updated to `^22.22.3 || ^24.15.0 || >=26.0.0` and Nuxt to 4.6.4.
+
+### Security
+
+- Admin, invitation and API responses use `Cache-Control: no-store`, API responses no longer expose `x-powered-by` and HTML sends `Cross-Origin-Opener-Policy: same-origin`.
+
 ## [1.0.0] - 2026-11-20
 
 First stable release: public invitation, RSVP and admin panel in production.

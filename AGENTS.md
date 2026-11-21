@@ -30,7 +30,7 @@ npm run lint                # ESLint (@nuxt/eslint)
 npm run lint:fix            # ESLint with automatic fixes
 npm run db:generate         # generates a migration from the schema
 npm run db:studio
-npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "senha-longa"
+npm run admin:create -- --name "Ana" --email ana@exemplo.com --password "uma-senha-bem-longa"
 ```
 
 Before opening a PR, run **`npm run lint`, `npm test`, `npm run typecheck` and `npm run build`**. Run `nvm use` first: on Node 20, `npm run lint` crashes with `Object.groupBy is not a function` (ESLint 10 requires Node 21+), even though `npm test` still passes. The tests are unit tests; HTTP/database flows need manual verification in dev or a dedicated integration test.
@@ -66,7 +66,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 4. **Invitations ≠ people.** An invitation is the row in `invitations`; people are adults + children aged 8–11 + children aged 0–7 from the RSVP. The dashboard computes everything from the database and shows both numbers separately.
 5. **Authorization on the server.** Every API under `server/api/admin/**` calls `requireAdmin(event)`. The `admin` middleware only protects navigation; never trust it alone.
 6. **Shared validation.** Zod schemas live in `shared/validation`; the server always revalidates. Client-side validation is a convenience only.
-7. **Security by default.** No `v-html` with user data; queries only through Drizzle (parameterized); do not expose sequential IDs in public routes; do not log phone numbers, emails or messages; internal errors never reach the client. Login, RSVP and password changes are rate limited.
+7. **Security by default.** No `v-html` with user data; queries only through Drizzle (parameterized); do not expose sequential IDs in public routes; do not log phone numbers, emails or messages; internal errors never reach the client. Login, RSVP and password changes are rate limited by IP and by scope (email/admin). HTML pages use a CSP with a per-request nonce, API responses use `default-src 'none'`, bodies are capped per route and uploads are validated by magic bytes.
 8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback.
 9. **No dead buttons or mocks in production.** The seed is development-only. Every visible action must actually work.
 10. **Single instance.** Rate limiting is in memory and per process. If you scale horizontally, replace `server/utils/rate-limit.ts` with Redis before adding more replicas.
@@ -91,7 +91,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 
 ## Tests
 
-- `tests/` covers phone numbers, messages, RSVP, limits and settings.
+- `tests/` covers phone numbers, messages, RSVP, limits, settings, password policy, request size, uploads and the rate limiter.
 - When you change a shared rule, update/add the corresponding test in the same PR.
 - Prefer testing pure functions; for the database, validate in the dev environment.
 
@@ -132,7 +132,7 @@ Never commit `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` or build artif
 
 - Dev database: `postgres://convite:convite@localhost:5433/convite_festa`.
 - The dev Compose (`docker-compose.dev.yml`) is a separate project (`convite-festa-dev`) that only runs the database. Never combine it with `docker-compose.yml`.
-- Seed admin: defined by `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env` (minimum 10-character password).
+- Seed admin: defined by `ADMIN_EMAIL`/`ADMIN_PASSWORD` in `.env` (minimum 12-character password, not one of the examples in `shared/utils/password-policy.ts`).
 - Seed test invitation: `/convite/11111111-1111-4111-8111-111111111111`.
 - The production image uses `node:22-bookworm-slim`. **Do not go back to Alpine** without retesting the client build (Rollup fails with `Code is nested too deeply`).
 - The production Compose uses the `convite-festa` project, with the `convite-festa_convite_pgdata` and `convite-festa_convite_uploads` volumes.

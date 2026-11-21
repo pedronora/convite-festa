@@ -15,6 +15,8 @@ export default defineEventHandler(async (event) => {
 
   const db = useDb()
   const email = parsed.data.email.toLowerCase()
+  enforceScopedRateLimit(event, `login:email:${email}`, 20, 15 * 60 * 1000)
+
   const [admin] = await db
     .select()
     .from(schema.adminUsers)
@@ -37,7 +39,7 @@ export default defineEventHandler(async (event) => {
   if (!valid) throw invalid()
 
   await createAdminSession(event, admin.id)
-  console.info('[auth] login', { adminId: admin.id, ip: getRequestIP(event, { xForwardedFor: true }) })
+  console.info('[auth] login', { adminId: admin.id, ip: trustedClientIp(event) })
 
   return {
     admin: { id: admin.id, name: admin.name, email: admin.email },

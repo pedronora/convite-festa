@@ -12,6 +12,7 @@ import {
 import { hashPassword } from '../server/utils/password'
 import { defaultPartySettings } from '../shared/config/party'
 import { renderInviteMessage } from '../shared/utils/format'
+import { passwordPolicyError } from '../shared/utils/password-policy'
 
 const url = process.env.DATABASE_URL
 if (!url) {
@@ -27,11 +28,6 @@ const adminName = process.env.ADMIN_NAME || 'Administrador'
 const appUrl = process.env.NUXT_PUBLIC_APP_URL || 'http://localhost:3000'
 const seedSample = process.env.SEED_SAMPLE !== 'false'
 
-if (adminPassword.length < 10) {
-  console.error('Defina ADMIN_PASSWORD com ao menos 10 caracteres no .env antes de rodar o seed.')
-  process.exit(1)
-}
-
 async function seedAdmin() {
   const [existing] = await db
     .select({ id: adminUsers.id })
@@ -42,10 +38,15 @@ async function seedAdmin() {
     console.log(`✓ Administrador já existe: ${adminEmail}`)
     return
   }
-  if (adminPassword.length < 10) {
-    console.error('ADMIN_PASSWORD precisa ter ao menos 10 caracteres.')
+
+  const passwordError = adminPassword
+    ? passwordPolicyError(adminPassword)
+    : 'Defina ADMIN_PASSWORD no .env antes de rodar o seed.'
+  if (passwordError) {
+    console.error(passwordError)
     process.exit(1)
   }
+
   await db.insert(adminUsers).values({
     name: adminName,
     email: adminEmail,

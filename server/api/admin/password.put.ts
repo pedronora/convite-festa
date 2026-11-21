@@ -4,6 +4,7 @@ import { passwordChangeSchema, zodMessage } from '#shared/validation'
 export default defineEventHandler(async (event) => {
   const admin = await requireAdmin(event)
   enforceRateLimit(event, 'password-change', 5, 15 * 60 * 1000)
+  enforceScopedRateLimit(event, `password-change:admin:${admin.id}`, 5, 15 * 60 * 1000)
   const parsed = passwordChangeSchema.safeParse(await readBody(event))
   if (!parsed.success) {
     throw createError({

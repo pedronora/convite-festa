@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { normalizePhoneBR } from '../utils/phone'
+import { passwordPolicyError } from '../utils/password-policy'
 
 const phoneField = z
   .string()
@@ -86,8 +87,11 @@ export const passwordChangeSchema = z
     currentPassword: z.string().min(1, 'Informe a senha atual'),
     newPassword: z
       .string()
-      .min(10, 'A nova senha precisa ter ao menos 10 caracteres')
-      .max(200),
+      .max(200, 'A nova senha é muito longa')
+      .superRefine((value, ctx) => {
+        const error = passwordPolicyError(value)
+        if (error) ctx.addIssue({ code: 'custom', message: error })
+      }),
     confirmPassword: z.string().min(1),
   })
   .refine(data => data.newPassword === data.confirmPassword, {

@@ -22,7 +22,7 @@ The project has two areas:
 
 ## Requirements
 
-- Node.js **22.22+** (22 LTS recommended)
+- Node.js **22.22.3+** (22 LTS recommended; `.nvmrc` pins the exact version). Node 24.15+ and 26+ are also supported.
 - npm
 - Docker + Docker Compose (for the local database or production)
 
@@ -37,7 +37,7 @@ docker compose -f docker-compose.dev.yml up -d
 
 # 3. Create .env from the example file
 cp .env.example .env
-# Edit ADMIN_PASSWORD (at least 10 characters) before running the seed.
+# Edit ADMIN_PASSWORD (at least 12 characters, not one of the project examples) before running the seed.
 
 # 4. Apply migrations and load demo data
 npm run db:migrate
@@ -55,7 +55,7 @@ Open:
 
 ### Seed administrator
 
-The seed uses the `ADMIN_NAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables from `.env` (the password must have at least 10 characters). Set them before running `npm run db:seed`, for example:
+The seed uses the `ADMIN_NAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` variables from `.env` (the password must have at least 12 characters and cannot be one of the project examples, such as `troque-esta-senha`). Set them before running `npm run db:seed`, for example:
 
 ```text
 Email: admin@festa.local
@@ -91,7 +91,7 @@ Set `SEED_SAMPLE=false` to create only the administrator and the settings. The s
 | `DATA_DIR` | `./.data` | Persistent folder for uploaded images. In production: `/app/data`. |
 | `ADMIN_NAME` | `Administrador` | Name used by the seed/create-admin scripts. |
 | `ADMIN_EMAIL` | `admin@festa.local` | Email used by the scripts. |
-| `ADMIN_PASSWORD` | — | Initial password (at least 10 characters). |
+| `ADMIN_PASSWORD` | — | Initial password (at least 12 characters, not one of the project examples). |
 | `SEED_SAMPLE` | `true` | Creates the sample guests during the seed. Use `false` in production. |
 | `PORT` / `HOST` | `3000` / `0.0.0.0` | Nitro server port and interface. |
 
@@ -206,7 +206,7 @@ The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in produ
 
 ```bash
 npm run lint      # ESLint (@nuxt/eslint)
-npm test          # Vitest: phone, messages, RSVP, limits and settings
+npm test          # Vitest: phone, messages, RSVP, limits, settings, passwords, uploads and rate limit
 npm run typecheck # vue-tsc / Nuxt typecheck
 npm run build     # production build
 npm run preview   # preview the build
@@ -240,7 +240,7 @@ The tests cover the shared pure rules. HTTP and database flows must be verified 
    docker compose logs -f app
    ```
 
-The application container applies the migrations automatically (`RUN_MIGRATIONS=true`) and then starts Nitro on port 3000. Compose publishes the port defined in `APP_PORT`.
+The application container applies the migrations automatically (`RUN_MIGRATIONS=true`) and then starts Nitro on port 3000. Compose publishes the port defined in `APP_PORT` on the interface defined in `APP_BIND` (`0.0.0.0` by default; use `127.0.0.1` when the reverse proxy runs on the same host).
 
 4. Create the first administrator:
 
@@ -356,6 +356,10 @@ To restore, replace `:ro` with `:rw` and run `tar xzf /backup/uploads-....tar.gz
 - RSVP is limited per IP and per invitation, and does not reveal whether a UUID exists beyond what is necessary.
 - Internal errors never return stack traces to the client.
 - The CSV neutralizes spreadsheet formulas and uses UTF-8 with BOM and `;` as the delimiter.
+- HTML pages use a `Content-Security-Policy` with a per-request nonce; API responses use `default-src 'none'`.
+- Request bodies are capped by route (128 KB for JSON, 6 MB for the image upload) and uploads are validated by magic bytes, not only by `Content-Type`.
+- The rate limiter uses the trusted client IP (`CF-Connecting-IP` or the last `X-Forwarded-For` hop) and adds per-email and per-admin scopes.
+- Admin, invitation and API responses use `Cache-Control: no-store`; the public invitation does not return the guest's phone or e-mail.
 
 ### Rate limiting
 

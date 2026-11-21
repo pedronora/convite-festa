@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm'
 import { createDatabase } from '../server/database/client'
 import { adminUsers } from '../server/database/schema'
 import { hashPassword } from '../server/utils/password'
+import { passwordPolicyError } from '../shared/utils/password-policy'
 
 function arg(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`)
@@ -23,8 +24,11 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
   console.error('Informe um e-mail válido: npm run admin:create -- --email admin@exemplo.com --password "senha-forte"')
   process.exit(1)
 }
-if (password.length < 10) {
-  console.error('A senha precisa ter ao menos 10 caracteres.')
+const passwordError = password
+  ? passwordPolicyError(password)
+  : 'Informe a senha com --password ou ADMIN_PASSWORD.'
+if (passwordError) {
+  console.error(passwordError)
   process.exit(1)
 }
 
