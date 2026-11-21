@@ -6,7 +6,7 @@ import { exceedsGuestLimit, resolveGuestLimit, totalGuests } from '#shared/utils
 export default defineEventHandler(async (event) => {
   enforceRateLimit(event, 'rsvp-write', 12, 10 * 60 * 1000)
   const uuid = getRouterParam(event, 'uuid') || ''
-  enforceRateLimit(event, `rsvp-write-invite:${uuid}`, 30, 60 * 60 * 1000)
+  enforceScopedRateLimit(event, `rsvp-write-invite:${uuid}`, 30, 60 * 60 * 1000)
 
   const row = await findInvitationByUuid(uuid)
   if (!row) {
