@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import pkg from './package.json'
 
 export default defineNuxtConfig({
   modules: ['@nuxt/eslint'],
@@ -26,6 +27,7 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
+    version: pkg.version,
     databaseUrl: process.env.DATABASE_URL || '',
     dataDir: process.env.DATA_DIR || './.data',
     sessionCookieName: 'convite_session',
