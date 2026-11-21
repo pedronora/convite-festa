@@ -6,7 +6,7 @@
   "type": "module",
   "description": "Convites e confirmação de presença — Aniversário Luigi e Marco Antonio",
   "engines": {
-    "node": ">=22.22.0"
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
   },
   "scripts": {
     "dev": "nuxt dev",
@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.45.4",
-    "nuxt": "^4.4.5",
+    "nuxt": "^4.6.4",
     "postgres": "^4.1.1",
     "vue": "^3.5.45",
     "vue-router": "^5.5.1",
