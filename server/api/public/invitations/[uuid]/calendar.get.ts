@@ -1,7 +1,13 @@
 import { buildInvitationLink, partyEnd } from '#shared/utils/format'
+import { resolveAppBaseUrl } from '#shared/utils/social'
 
 function icsEscape(value: string): string {
-  return value.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;')
+  return value
+    .replace(/\r\n?/g, '\n')
+    .replace(/\\/g, '\\\\')
+    .replace(/\n/g, '\\n')
+    .replace(/,/g, '\\,')
+    .replace(/;/g, '\\;')
 }
 
 function utcStamp(date: Date): string {
@@ -18,12 +24,16 @@ export default defineEventHandler(async (event) => {
   const start = new Date(settings.partyDate)
   const end = partyEnd(settings.partyDate)
   const names = settings.celebrants.map(c => c.name).join(' & ')
-  const host = getRequestURL(event).host || 'convite.local'
+  const baseUrl = resolveAppBaseUrl(
+    String(useRuntimeConfig().public.appUrl || ''),
+    getRequestURL(event).origin,
+  )
+  const host = new URL(baseUrl).host
   const description = [
     `Aniversário de ${names}.`,
     `${settings.dateLabel}, às ${settings.timeLabel}.`,
     `${settings.venue} — ${settings.address}, ${settings.neighborhood}, ${settings.city} - ${settings.state}.`,
-    `Confirme sua presença: ${buildInvitationLink(getRequestURL(event).origin, uuid)}`,
+    `Confirme sua presença: ${buildInvitationLink(baseUrl, uuid)}`,
   ].join('\n')
 
   const ics = [
