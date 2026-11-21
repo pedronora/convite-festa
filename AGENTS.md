@@ -106,12 +106,24 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 5. With tests/CI green, merge (squash); the branch is deleted automatically.
 6. Deploy comes from `main`.
 
+### Releases
+
+`package.json` is the source of truth for the version, `CHANGELOG.md` records the changes and `/api/health` reports the version of the running image. To cut a release:
+
+1. Create `chore/release-x.y.z` from `main`.
+2. Move the `Unreleased` entries in `CHANGELOG.md` to the new version and update the date.
+3. Run `npm version x.y.z --no-git-tag-version` to update `package.json` and the lockfile.
+4. Open the PR and squash merge after the checks.
+5. Tag the merge commit (`git tag -a vx.y.z -m "vx.y.z"`) and push the tag.
+
+CI and documentation-only changes do not need a release. Bump `PATCH` for fixes, `MINOR` for new features and `MAJOR` for breaking changes. Never move or delete a published tag.
+
 CI and publishing:
 
 - `.github/workflows/ci.yml` runs lint, tests, typecheck and build, validates the image build on PRs and publishes to GHCR only after the checks pass (`main`, `v*.*.*` tags and manual dispatch). Do not merge with red checks.
 - `main` is protected by a ruleset: a pull request is required, the `Testes, tipos e build` and `Build da imagem` checks must be green, only squash merges are allowed, force pushes and deletions are blocked, and merged branches are deleted automatically.
 - `.github/pull_request_template.md` is the base for every PR description: problem, solution, how to verify and checklist.
-- Tags `v*.*.*` are optional and mark a release; they publish versioned images (`1.2.3` and `1.2`).
+- Tags `v*.*.*` follow Semantic Versioning and are the only way to create a release: the workflow publishes versioned images (`1.2.3`, `1.2` and `sha-<commit>`) and creates the GitHub Release with notes generated from the merged PRs. `latest` only follows `main`.
 - `docker-compose.ghcr.yml` is the override that swaps the local build for the published image.
 
 Never commit `.env`, `.data/`, `node_modules`, `.nuxt`, `.output` or build artifacts — `.gitignore` already covers those.

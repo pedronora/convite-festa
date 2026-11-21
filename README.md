@@ -1,6 +1,7 @@
 # Birthday Invitation — Luigi & Marco Antonio
 
 [![CI](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml/badge.svg)](https://github.com/pedronora/convite-festa/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/pedronora/convite-festa?display_name=tag&sort=semver)](https://github.com/pedronora/convite-festa/releases)
 
 A complete web application to manage guests, send invitations over WhatsApp and track RSVPs for **Luigi's (3 years old)** and **Marco Antonio's (1 year old)** birthday party.
 
@@ -258,11 +259,12 @@ To disable automatic migrations, set `RUN_MIGRATIONS=false`. In that case, run `
 
 ### CI and the GHCR image
 
-A single GitHub Actions workflow (`.github/workflows/ci.yml`) handles quality and distribution in three jobs:
+A single GitHub Actions workflow (`.github/workflows/ci.yml`) handles quality and distribution in four jobs:
 
 - **Testes, tipos e build** (`check`): runs lint, tests, type checking and the build on pull requests, pushes to `main` and `v*.*.*` tags.
 - **Build da imagem** (`docker`): on pull requests, validates the Docker image build without publishing.
 - **Build e push no GHCR** (`publish`): publishes `ghcr.io/pedronora/convite-festa` on pushes to `main`, on `v*.*.*` tags and on manual dispatch. It depends on `check`, so a broken commit is never published.
+- **Release no GitHub** (`release`): on `v*.*.*` tags, creates the GitHub Release with notes generated from the merged pull requests. It depends on `publish`, so a release only exists when the image does.
 
 `main` is protected: changes go through a pull request with the `Testes, tipos e build` and `Build da imagem` checks green, squash merges only, and the branch is deleted after the merge.
 
@@ -275,6 +277,8 @@ Published tags:
 | `sha-<commit>` | every build |
 | `1.2.3` and `1.2` | tag `v1.2.3` |
 
+`latest` follows `main` and is not moved by tags.
+
 To run the published image, use the `docker-compose.ghcr.yml` override, which skips the local build:
 
 ```bash
@@ -284,12 +288,32 @@ docker compose -f docker-compose.yml -f docker-compose.ghcr.yml up -d
 
 The image is public: `docker pull ghcr.io/pedronora/convite-festa:latest` works without logging in.
 
+For reproducible deploys, pin the version instead of relying on `latest`:
+
+```bash
+GHCR_IMAGE=ghcr.io/pedronora/convite-festa:1.0.0 docker compose -f docker-compose.yml -f docker-compose.ghcr.yml pull
+```
+
 ### Persistence
 
 - `convite_pgdata`: PostgreSQL data.
 - `convite_uploads`: uploaded images at `/app/data`.
 
 Back up both volumes. Recreating containers without removing volumes keeps the data; `docker compose down -v` deletes everything.
+
+## Versioning and releases
+
+The project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html): `MAJOR` for incompatible changes, `MINOR` for new features and `PATCH` for fixes. `package.json` is the source of truth and `/api/health` reports the version of the running image.
+
+To cut a release:
+
+1. Create `chore/release-x.y.z` from `main`.
+2. Move the `Unreleased` entries in `CHANGELOG.md` to the new version and update the date.
+3. Run `npm version x.y.z --no-git-tag-version` to update `package.json` and the lockfile.
+4. Open the PR, wait for the checks and squash merge.
+5. Tag the merge commit and push the tag: `git tag -a vx.y.z -m "vx.y.z" && git push origin vx.y.z`.
+
+The tag runs the full check, publishes `x.y.z`, `x.y` and `sha-<commit>` to GHCR and creates the GitHub Release with notes generated from the merged PRs. CI and documentation-only changes do not need a release.
 
 ## Backup and restore
 
@@ -357,6 +381,11 @@ drizzle/              # SQL migrations
 scripts/              # seed, create-admin and migrate
 tests/                # Vitest
 docker/               # production entrypoint
+.github/              # CI workflow and PR template
+.agents/              # agent skills and configuration
+public/               # static assets and default invitation artwork
+CHANGELOG.md          # release history (Keep a Changelog)
+LICENSE               # MIT
 ```
 
 ## Available scripts
@@ -384,3 +413,7 @@ docker/               # production entrypoint
 - Charts are custom SVG components (donut, bars and progress), with no heavy chart dependency.
 - The default event is set to **January 23, 2027, at 3 PM**, at Recanto Família Fernandes, in Cascavel/PR. The date can be changed in the admin panel.
 - The project does not include multiple image upload, guest segmentation by groups or email integration. Those can be added without changing the main model.
+
+## License
+
+[MIT](./LICENSE) © Pedro Nora

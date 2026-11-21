@@ -2,6 +2,7 @@
   "name": "convite-festa",
   "version": "1.0.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "description": "Convites e confirmação de presença — Aniversário Luigi e Marco Antonio",
   "engines": {
