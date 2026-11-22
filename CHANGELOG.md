@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-11-21
+
+### Fixed
+
+- Standardized the height of the **Importar CSV**, **Exportar CSV** and **Novo convidado** buttons in the guests header; the export link now uses the same `AppButton` size as the other actions.
+
 ## [1.2.0] - 2026-11-21
 
 ### Added
