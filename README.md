@@ -184,6 +184,26 @@ All of them require a valid session and are enforced on the server by `requireAd
 - **Invitation links** use UUID v4 and do not allow enumerating guests.
 - **Message and settings** are stored in the database and applied immediately on the public page.
 
+## Importing guests (CSV)
+
+On `/admin/convidados`, **Importar CSV** opens a two-step modal: upload the file, then review the result. Every accepted row creates the guest and its individual invitation in the same transaction.
+
+The first row must contain the headers. The separator is detected automatically (`;` or `,`), the encoding is UTF-8 with a Windows-1252 fallback, and the file can have up to **1 MB** and **500 data rows**.
+
+| Column | Required | Rules |
+| --- | --- | --- |
+| `Nome` | Yes | 2–160 characters |
+| `Telefone` | Yes | normalized to Brazilian E.164 |
+| `Família/Grupo` | No | up to 160 characters |
+| `E-mail` | No | validated and stored in lowercase |
+| `Observações` | No | up to 2,000 characters |
+| `Limite de pessoas` | No | 1–50; empty means no limit |
+| `Convidados estimados` | No | 0–100 |
+
+Header names are matched without accents and case (`Nome`/`name`, `Telefone`/`WhatsApp`/`Celular`, `Família/Grupo`/`Familia`/`Grupo`, and so on).
+
+**Duplicates:** the phone (normalized to E.164) is the identity key. A phone already registered, or repeated in the same file, is skipped; the first occurrence wins. E-mail is not used for duplicate detection because families may share the same address. The result screen shows how many rows were imported and skipped, with the line, name, phone and reason for each skipped row. Rows with an invalid phone, invalid e-mail or out-of-range limit are skipped with the validation message.
+
 ## Party settings
 
 At `/admin/configuracoes` you can change:
@@ -206,7 +226,7 @@ The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in produ
 
 ```bash
 npm run lint      # ESLint (@nuxt/eslint)
-npm test          # Vitest: phone, messages, RSVP, limits, settings, passwords, uploads and rate limit
+npm test          # Vitest: phone, messages, RSVP, limits, settings, passwords, uploads, CSV import and rate limit
 npm run typecheck # vue-tsc / Nuxt typecheck
 npm run build     # production build
 npm run preview   # preview the build

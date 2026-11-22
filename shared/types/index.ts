@@ -136,3 +136,28 @@ export interface PublicInvitation {
     updatedAt: string
   } | null
 }
+
+export interface GuestImportAccepted {
+  /** Linha física do arquivo onde o convidado estava. */
+  line: number
+  name: string
+  phone: string
+  groupName: string | null
+  email: string | null
+  notes: string | null
+  estimatedGuests: number | null
+  maxGuests: number | null
+}
+
+export interface GuestImportSkipped {
+  line: number
+  name: string
+  phone: string
+  reason: string
+}
+
+export interface GuestImportResult {
+  total: number
+  imported: GuestImportAccepted[]
+  skipped: GuestImportSkipped[]
+}

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `[GRUPO]` placeholder in the WhatsApp message template. It renders the guest's family/group and falls back to the guest's name when no group is set.
+- Bulk guest import from CSV at `/admin/convidados`, with required and optional headers, duplicate detection by normalized phone and a per-row result report (imported and skipped with reasons).
 
 ## [1.1.1] - 2026-11-21
 

@@ -44,6 +44,7 @@ const pagination = computed(() => data.value?.pagination)
 
 // Modais
 const formOpen = ref(false)
+const importOpen = ref(false)
 const editingGuest = ref<GuestListItem | null>(null)
 const sendOpen = ref(false)
 const sendQueue = ref<GuestListItem[]>([])
@@ -146,6 +147,10 @@ async function onSaved() {
   }
 }
 
+async function onImported() {
+  await refresh()
+}
+
 function copyInviteLink(guest: GuestListItem) {
   const url = buildInvitationLink(window.location.origin, guest.invitationUuid)
   navigator.clipboard.writeText(url)
@@ -164,6 +169,19 @@ const hasActiveFilters = computed(() => Boolean(filters.search) || filters.send 
       subtitle="Cadastre pessoas, famílias ou grupos, envie o link individual e acompanhe as respostas."
     >
       <template #actions>
+        <AppButton
+          variant="outline"
+          size="sm"
+          @click="importOpen = true"
+        >
+          <template #icon>
+            <AppIcon
+              name="upload"
+              :size="16"
+            />
+          </template>
+          Importar CSV
+        </AppButton>
         <a
           href="/api/admin/export"
           class="inline-flex items-center gap-2 rounded-xl border-2 border-navy-200 bg-white px-4 py-2.5 text-sm font-extrabold text-navy-800 transition hover:border-navy-300 hover:bg-navy-50"
@@ -844,6 +862,10 @@ const hasActiveFilters = computed(() => Boolean(filters.search) || filters.send 
       </div>
     </Transition>
 
+    <GuestImportModal
+      v-model="importOpen"
+      @imported="onImported"
+    />
     <GuestFormModal
       v-model="formOpen"
       :guest="editingGuest"
