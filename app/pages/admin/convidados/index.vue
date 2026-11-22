@@ -182,16 +182,19 @@ const hasActiveFilters = computed(() => Boolean(filters.search) || filters.send 
           </template>
           Importar CSV
         </AppButton>
-        <a
+        <AppButton
+          variant="outline"
+          size="sm"
           href="/api/admin/export"
-          class="inline-flex items-center gap-2 rounded-xl border-2 border-navy-200 bg-white px-4 py-2.5 text-sm font-extrabold text-navy-800 transition hover:border-navy-300 hover:bg-navy-50"
         >
-          <AppIcon
-            name="download"
-            :size="16"
-          />
+          <template #icon>
+            <AppIcon
+              name="download"
+              :size="16"
+            />
+          </template>
           Exportar CSV
-        </a>
+        </AppButton>
         <AppButton
           size="sm"
           @click="openCreate"
