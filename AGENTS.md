@@ -91,7 +91,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 
 ## Tests
 
-- `tests/` covers phone numbers, messages, RSVP, limits, settings, password policy, request size, uploads and the rate limiter.
+- `tests/` covers phone numbers, messages, RSVP, limits, settings, password policy, request size, uploads, CSV import and the rate limiter.
 - When you change a shared rule, update/add the corresponding test in the same PR.
 - Prefer testing pure functions; for the database, validate in the dev environment.
 
