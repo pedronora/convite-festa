@@ -69,6 +69,7 @@ function buildMessage() {
   const activeSettings = settings.value ?? defaultPartySettings
   message.value = renderInviteMessage(activeSettings.whatsappTemplate, {
     name: inviteeFirstName(current.value.name),
+    groupName: current.value.groupName,
     link: inviteLink.value,
     settings: activeSettings,
   })

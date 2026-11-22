@@ -34,6 +34,7 @@ const previewLink = computed(() => {
 
 const previewMessage = computed(() => renderInviteMessage(form.whatsappTemplate || '', {
   name: 'Maria',
+  groupName: 'Família Silva',
   link: previewLink.value,
   settings: form,
 }))
@@ -527,10 +528,11 @@ async function changePassword() {
           </h2>
           <p class="mt-1 text-xs font-semibold text-navy-400">
             Use os marcadores abaixo. O <strong>[LINK]</strong> é obrigatório e vira o link individual do convidado.
+            O <strong>[GRUPO]</strong> usa a família/grupo do convidado e, quando não houver, o nome dele.
           </p>
           <div class="mt-3 flex flex-wrap gap-1.5">
             <span
-              v-for="token in ['[Nome]', '[DATA]', '[HORARIO]', '[LOCAL]', '[ENDERECO]', '[CIDADE]', '[LINK]']"
+              v-for="token in ['[Nome]', '[GRUPO]', '[DATA]', '[HORARIO]', '[LOCAL]', '[ENDERECO]', '[CIDADE]', '[LINK]']"
               :key="token"
               class="rounded-md bg-navy-100 px-2 py-1 font-mono text-[10px] font-bold text-navy-600"
             >{{ token }}</span>
