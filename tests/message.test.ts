@@ -50,6 +50,36 @@ describe('renderInviteMessage', () => {
     expect(message).toBe('[LINK]')
   })
 
+  it('substitui [GRUPO] pela família do convidado', () => {
+    const message = renderInviteMessage('Olá, [GRUPO]! [Nome], tudo bem?', {
+      name: 'João',
+      groupName: 'Família Silva',
+      link: 'https://festa.test',
+      settings: defaultPartySettings,
+    })
+    expect(message).toBe('Olá, Família Silva! João, tudo bem?')
+  })
+
+  it('usa o nome quando o convidado não tem grupo', () => {
+    const message = renderInviteMessage('Olá, [GRUPO]!', {
+      name: 'João Silva',
+      groupName: null,
+      link: 'https://festa.test',
+      settings: defaultPartySettings,
+    })
+    expect(message).toBe('Olá, João Silva!')
+  })
+
+  it('usa o nome quando o grupo está vazio', () => {
+    const message = renderInviteMessage('Olá, [GRUPO]!', {
+      name: 'Ana',
+      groupName: '   ',
+      link: 'https://festa.test',
+      settings: defaultPartySettings,
+    })
+    expect(message).toBe('Olá, Ana!')
+  })
+
   it('gera prévia com o modelo persistido', () => {
     expect(whatsappPreview(defaultPartySettings, 'Bia', 'https://x.test/convite/1'))
       .toContain('https://x.test/convite/1')

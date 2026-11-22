@@ -103,16 +103,19 @@ export interface MessageVariables {
   name: string
   link: string
   settings: PartySettings
+  /** Família/grupo do convidado. Sem grupo, [GRUPO] usa o nome. */
+  groupName?: string | null
 }
 
 /**
- * Substitui marcadores tipo [Nome], [LINK], [DATA], [HORARIO], [LOCAL],
- * [ENDERECO] e [CIDADE] no modelo de mensagem.
+ * Substitui marcadores tipo [Nome], [GRUPO], [LINK], [DATA], [HORARIO],
+ * [LOCAL], [ENDERECO] e [CIDADE] no modelo de mensagem.
  */
 export function renderInviteMessage(template: string, vars: MessageVariables): string {
   const { settings } = vars
   const tokens: Record<string, string> = {
     nome: vars.name,
+    grupo: vars.groupName?.trim() || vars.name,
     link: vars.link,
     festa: settings.celebrants.map(c => c.name).join(' e '),
     data: settings.dateLabel,

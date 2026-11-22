@@ -198,7 +198,7 @@ At `/admin/configuracoes` you can change:
 - default people limit per invitation;
 - administrator password.
 
-Template placeholders: `[Nome]`, `[LINK]`, `[FESTA]`, `[DATA]`, `[HORARIO]`, `[LOCAL]`, `[ENDERECO]` and `[CIDADE]`.
+Template placeholders: `[Nome]`, `[GRUPO]`, `[LINK]`, `[FESTA]`, `[DATA]`, `[HORARIO]`, `[LOCAL]`, `[ENDERECO]` and `[CIDADE]`. `[GRUPO]` uses the guest's family/group and falls back to the guest's name when no group is set.
 
 The uploaded image is stored in `DATA_DIR/uploads` (a persistent volume in production) and served by `/api/invite-image/...`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback if the image fails to load.
 

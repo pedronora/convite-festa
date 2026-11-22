@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `[GRUPO]` placeholder in the WhatsApp message template. It renders the guest's family/group and falls back to the guest's name when no group is set.
+
 ## [1.1.1] - 2026-11-21
 
 ### Changed
