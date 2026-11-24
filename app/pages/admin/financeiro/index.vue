@@ -287,7 +287,7 @@ function closePay(open: boolean) {
 
       <div class="mt-4 grid gap-4 lg:grid-cols-[1.1fr_1fr]">
         <!-- Termômetro do orçamento -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -309,20 +309,20 @@ function closePay(open: boolean) {
               aria-label="Distribuição do valor contratado"
             />
           </div>
-          <div class="mt-5 flex items-center justify-between gap-3 rounded-2xl bg-navy-950 px-4 py-3 text-white">
-            <div>
+          <div class="mt-5 flex flex-wrap items-end justify-between gap-x-3 gap-y-2 rounded-2xl bg-navy-950 px-4 py-3 text-white">
+            <div class="min-w-0">
               <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-300">
                 Falta pagar
               </p>
-              <p class="font-display text-2xl leading-tight">
+              <p class="font-display text-xl leading-tight tabular-nums sm:text-2xl">
                 {{ formatCentsBRL(metrics.openCents) }}
               </p>
             </div>
-            <div class="text-right">
+            <div class="ml-auto text-right">
               <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-300">
                 Contratado
               </p>
-              <p class="text-sm font-extrabold">
+              <p class="text-sm font-extrabold tabular-nums">
                 {{ formatCentsBRL(metrics.contractedCents) }}
               </p>
             </div>
@@ -345,7 +345,7 @@ function closePay(open: boolean) {
         </section>
 
         <!-- Situação dos contratos -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -425,7 +425,7 @@ function closePay(open: boolean) {
 
       <div class="mt-4 grid gap-4 lg:grid-cols-[1.25fr_1fr]">
         <!-- Próximos vencimentos -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -472,11 +472,11 @@ function closePay(open: boolean) {
             <li
               v-for="item in visibleUpcoming.slice(0, 8)"
               :key="item.id"
-              class="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
+              class="flex items-start gap-2 py-3 first:pt-0 last:pb-0 sm:items-center sm:gap-3"
             >
               <span
                 :class="[
-                  'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                  'hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:flex',
                   item.status === 'overdue' ? 'bg-rose-50 text-rose-600' : item.status === 'due_soon' ? 'bg-amber-50 text-amber-600' : 'bg-navy-50 text-navy-500',
                 ]"
               >
@@ -488,26 +488,26 @@ function closePay(open: boolean) {
               <div class="min-w-0 flex-1">
                 <NuxtLink
                   :to="`/admin/financeiro/contratos/${item.contractId}`"
-                  class="block truncate text-sm font-extrabold text-navy-900 hover:text-spider-700"
+                  class="block break-words text-sm font-extrabold leading-snug text-navy-900 hover:text-spider-700"
                 >
                   {{ item.supplierName }}
                 </NuxtLink>
-                <p class="truncate text-[11px] font-semibold text-navy-400">
+                <p class="text-[11px] font-semibold leading-snug text-navy-400">
                   {{ item.label || EXPENSE_CATEGORY_LABELS[item.category] }}
                   · {{ dueLabel(item) }}
                 </p>
               </div>
-              <div class="text-right">
-                <p class="text-sm font-extrabold text-navy-900">
+              <div class="shrink-0 text-right">
+                <p class="text-sm font-extrabold tabular-nums text-navy-900">
                   {{ formatCentsBRL(item.amountCents) }}
                 </p>
-                <p class="text-[10px] font-semibold text-navy-400">
+                <p class="text-[10px] font-semibold tabular-nums text-navy-400">
                   {{ formatDateOnly(item.dueDate) }}
                 </p>
               </div>
               <button
                 type="button"
-                class="shrink-0 rounded-lg p-2 text-emerald-600 transition hover:bg-emerald-50"
+                class="-mr-1 shrink-0 rounded-lg p-2.5 text-emerald-600 transition hover:bg-emerald-50"
                 :aria-label="`Registrar pagamento de ${item.supplierName}`"
                 title="Registrar pagamento"
                 @click="paying = item"
@@ -544,7 +544,7 @@ function closePay(open: boolean) {
         </section>
 
         <!-- Categorias -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -607,7 +607,7 @@ function closePay(open: boolean) {
       </div>
 
       <!-- Evolução -->
-      <section class="card-surface mt-4 p-6">
+      <section class="card-surface mt-4 p-4 sm:p-6">
         <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 class="text-sm font-extrabold text-navy-900">
@@ -632,7 +632,7 @@ function closePay(open: boolean) {
 
       <div class="mt-4 grid gap-4 lg:grid-cols-2">
         <!-- Maiores saldos -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -662,18 +662,18 @@ function closePay(open: boolean) {
                 :to="`/admin/financeiro/contratos/${contract.id}`"
                 class="block rounded-xl border border-navy-100 p-3 transition hover:border-navy-200 hover:bg-navy-50/40"
               >
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                   <div class="min-w-0">
-                    <p class="truncate text-sm font-extrabold text-navy-900">
+                    <p class="break-words text-sm font-extrabold leading-snug text-navy-900">
                       {{ contract.supplierName }}
                     </p>
-                    <p class="text-[11px] font-semibold text-navy-400">
+                    <p class="text-[11px] font-semibold leading-snug text-navy-400">
                       {{ EXPENSE_CATEGORY_LABELS[contract.category] }}
                       · {{ contract.paymentCount }} {{ contract.paymentCount === 1 ? 'parcela' : 'parcelas' }}
                     </p>
                   </div>
-                  <div class="text-right">
-                    <p class="text-sm font-extrabold text-spider-700">
+                  <div class="flex items-baseline gap-1.5 sm:block sm:shrink-0 sm:text-right">
+                    <p class="text-sm font-extrabold tabular-nums text-spider-700">
                       {{ formatCentsBRL(contract.openCents) }}
                     </p>
                     <p class="text-[10px] font-semibold text-navy-400">
@@ -687,7 +687,7 @@ function closePay(open: boolean) {
                     :style="{ width: `${openPercent(contract.paidCents, contract.totalCents)}%` }"
                   />
                 </div>
-                <p class="mt-1 text-[10px] font-semibold text-navy-400">
+                <p class="mt-1 text-[10px] font-semibold leading-snug text-navy-400">
                   {{ openPercent(contract.paidCents, contract.totalCents) }}% de {{ formatCentsBRL(contract.totalCents) }} pago
                   <span v-if="contract.nextDueDate"> · próximo vencimento {{ formatDateOnly(contract.nextDueDate) }}</span>
                 </p>
@@ -707,7 +707,7 @@ function closePay(open: boolean) {
         </section>
 
         <!-- Pagamentos recentes -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -732,22 +732,23 @@ function closePay(open: boolean) {
             <li
               v-for="payment in data.recentPayments"
               :key="payment.id"
-              class="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
             >
-              <div class="min-w-0">
-                <NuxtLink
-                  :to="`/admin/financeiro/contratos/${payment.contractId}`"
-                  class="block truncate text-sm font-extrabold text-navy-900 hover:text-spider-700"
-                >
-                  {{ payment.supplierName }}
-                </NuxtLink>
-                <p class="truncate text-[11px] font-semibold text-navy-400">
-                  {{ payment.label || 'Pagamento' }} · {{ formatDateOnly(payment.paidOn) }}
+              <NuxtLink
+                :to="`/admin/financeiro/contratos/${payment.contractId}`"
+                class="group flex items-start justify-between gap-2 py-3 sm:gap-3"
+              >
+                <div class="min-w-0 flex-1">
+                  <p class="break-words text-sm font-extrabold leading-snug text-navy-900 group-hover:text-spider-700">
+                    {{ payment.supplierName }}
+                  </p>
+                  <p class="text-[11px] font-semibold leading-snug text-navy-400">
+                    {{ payment.label || 'Pagamento' }} · {{ formatDateOnly(payment.paidOn) }}
+                  </p>
+                </div>
+                <p class="shrink-0 text-sm font-extrabold tabular-nums text-emerald-700">
+                  {{ formatCentsBRL(payment.amountCents) }}
                 </p>
-              </div>
-              <p class="shrink-0 text-sm font-extrabold text-emerald-700">
-                {{ formatCentsBRL(payment.amountCents) }}
-              </p>
+              </NuxtLink>
             </li>
           </ul>
           <p

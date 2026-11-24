@@ -80,100 +80,104 @@ const aria = computed(() => {
       </span>
     </div>
 
-    <svg
+    <div
       v-if="points.length"
-      :viewBox="`0 0 ${width} ${height}`"
-      class="h-auto w-full"
-      role="img"
-      :aria-label="aria"
+      class="scrollbar-thin overflow-x-auto pb-1"
     >
-      <g>
+      <svg
+        :viewBox="`0 0 ${width} ${height}`"
+        class="h-auto w-full min-w-[640px] sm:min-w-0"
+        role="img"
+        :aria-label="aria"
+      >
+        <g>
+          <line
+            v-for="line in gridLines"
+            :key="line.y"
+            :x1="padding.left"
+            :x2="width - padding.right"
+            :y1="line.y"
+            :y2="line.y"
+            stroke="#e0e9f7"
+            stroke-width="1"
+          />
+          <text
+            v-for="line in gridLines"
+            :key="`label-${line.y}`"
+            :x="padding.left - 8"
+            :y="line.y"
+            text-anchor="end"
+            dominant-baseline="middle"
+            fill="#5f8cc8"
+            font-size="10"
+            font-weight="700"
+          >
+            {{ formatCentsCompactBRL(line.value) }}
+          </text>
+        </g>
+
         <line
-          v-for="line in gridLines"
-          :key="line.y"
+          v-if="contractedCents > 0"
           :x1="padding.left"
           :x2="width - padding.right"
-          :y1="line.y"
-          :y2="line.y"
-          stroke="#e0e9f7"
-          stroke-width="1"
-        />
-        <text
-          v-for="line in gridLines"
-          :key="`label-${line.y}`"
-          :x="padding.left - 8"
-          :y="line.y"
-          text-anchor="end"
-          dominant-baseline="middle"
-          fill="#5f8cc8"
-          font-size="9"
-          font-weight="700"
-        >
-          {{ formatCentsCompactBRL(line.value) }}
-        </text>
-      </g>
-
-      <line
-        v-if="contractedCents > 0"
-        :x1="padding.left"
-        :x2="width - padding.right"
-        :y1="y(contractedCents)"
-        :y2="y(contractedCents)"
-        stroke="#f65c6c"
-        stroke-width="1.5"
-        stroke-dasharray="2 5"
-      />
-
-      <polygon
-        :points="paidArea"
-        fill="#10b981"
-        opacity="0.08"
-      />
-      <polyline
-        :points="plannedPoints"
-        fill="none"
-        stroke="#3d6dae"
-        stroke-width="2"
-        stroke-dasharray="6 4"
-        stroke-linejoin="round"
-        stroke-linecap="round"
-      />
-      <polyline
-        :points="paidPoints"
-        fill="none"
-        stroke="#10b981"
-        stroke-width="2.5"
-        stroke-linejoin="round"
-        stroke-linecap="round"
-      />
-
-      <g
-        v-for="(point, index) in points"
-        :key="point.month"
-      >
-        <circle
-          :cx="x(index)"
-          :cy="y(point.cumulativePaidCents)"
-          r="3.5"
-          fill="#10b981"
-          stroke="#fff"
+          :y1="y(contractedCents)"
+          :y2="y(contractedCents)"
+          stroke="#f65c6c"
           stroke-width="1.5"
+          stroke-dasharray="2 5"
+        />
+
+        <polygon
+          :points="paidArea"
+          fill="#10b981"
+          opacity="0.08"
+        />
+        <polyline
+          :points="plannedPoints"
+          fill="none"
+          stroke="#3d6dae"
+          stroke-width="2"
+          stroke-dasharray="6 4"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+        <polyline
+          :points="paidPoints"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="2.5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+
+        <g
+          v-for="(point, index) in points"
+          :key="point.month"
         >
-          <title>{{ formatMonthShort(point.month) }}: pago {{ formatCentsBRL(point.cumulativePaidCents) }}, planejado {{ formatCentsBRL(point.cumulativePlannedCents) }}</title>
-        </circle>
-        <text
-          v-if="index % xLabelStep === 0 || index === points.length - 1"
-          :x="x(index)"
-          :y="height - 12"
-          :text-anchor="index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'"
-          fill="#5f8cc8"
-          font-size="9"
-          font-weight="700"
-        >
-          {{ formatMonthShort(point.month) }}
-        </text>
-      </g>
-    </svg>
+          <circle
+            :cx="x(index)"
+            :cy="y(point.cumulativePaidCents)"
+            r="3.5"
+            fill="#10b981"
+            stroke="#fff"
+            stroke-width="1.5"
+          >
+            <title>{{ formatMonthShort(point.month) }}: pago {{ formatCentsBRL(point.cumulativePaidCents) }}, planejado {{ formatCentsBRL(point.cumulativePlannedCents) }}</title>
+          </circle>
+          <text
+            v-if="index % xLabelStep === 0 || index === points.length - 1"
+            :x="x(index)"
+            :y="height - 12"
+            :text-anchor="index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'"
+            fill="#5f8cc8"
+            font-size="10"
+            font-weight="700"
+          >
+            {{ formatMonthShort(point.month) }}
+          </text>
+        </g>
+      </svg>
+    </div>
 
     <p
       v-else

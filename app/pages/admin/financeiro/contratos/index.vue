@@ -564,36 +564,37 @@ function statusHint(contract: ContractSummary): string {
         :key="contract.id"
         class="card-surface p-4"
       >
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
+        <div class="flex items-start justify-between gap-2">
+          <div class="min-w-0 flex-1">
             <NuxtLink
               :to="`/admin/financeiro/contratos/${contract.id}`"
-              class="block truncate text-sm font-extrabold text-navy-900"
+              class="block break-words text-sm font-extrabold leading-snug text-navy-900"
             >
               {{ contract.supplierName }}
             </NuxtLink>
-            <p class="mt-0.5 flex items-center gap-1.5 text-[11px] font-semibold text-navy-400">
-              <span
-                class="h-1.5 w-1.5 rounded-full"
-                :style="{ backgroundColor: EXPENSE_CATEGORY_COLORS[contract.category] }"
-                aria-hidden="true"
-              />
-              {{ EXPENSE_CATEGORY_LABELS[contract.category] }}
-            </p>
           </div>
           <StatusBadge
             kind="contract"
             :status="contract.status"
             size="sm"
+            class="mt-0.5 shrink-0"
           />
         </div>
+        <p class="mt-0.5 flex items-center gap-1.5 text-[11px] font-semibold text-navy-400">
+          <span
+            class="h-1.5 w-1.5 shrink-0 rounded-full"
+            :style="{ backgroundColor: EXPENSE_CATEGORY_COLORS[contract.category] }"
+            aria-hidden="true"
+          />
+          {{ EXPENSE_CATEGORY_LABELS[contract.category] }}
+        </p>
 
-        <div class="mt-3 grid grid-cols-3 gap-2 rounded-xl bg-navy-50 p-2.5 text-center">
+        <div class="mt-3 grid grid-cols-3 gap-1.5 rounded-xl bg-navy-50 p-2 text-center sm:gap-2 sm:p-2.5">
           <div>
             <p class="text-[9px] font-extrabold uppercase tracking-wide text-navy-400">
               Contratado
             </p>
-            <p class="mt-0.5 text-[11px] font-extrabold text-navy-900">
+            <p class="mt-0.5 text-[10px] font-extrabold tabular-nums text-navy-900 sm:text-[11px]">
               {{ formatCentsBRL(contract.totalCents) }}
             </p>
           </div>
@@ -601,7 +602,7 @@ function statusHint(contract: ContractSummary): string {
             <p class="text-[9px] font-extrabold uppercase tracking-wide text-navy-400">
               Pago
             </p>
-            <p class="mt-0.5 text-[11px] font-extrabold text-emerald-700">
+            <p class="mt-0.5 text-[10px] font-extrabold tabular-nums text-emerald-700 sm:text-[11px]">
               {{ formatCentsBRL(contract.paidCents) }}
             </p>
           </div>
@@ -609,7 +610,7 @@ function statusHint(contract: ContractSummary): string {
             <p class="text-[9px] font-extrabold uppercase tracking-wide text-navy-400">
               Aberto
             </p>
-            <p class="mt-0.5 text-[11px] font-extrabold text-spider-700">
+            <p class="mt-0.5 text-[10px] font-extrabold tabular-nums text-spider-700 sm:text-[11px]">
               {{ formatCentsBRL(contract.openCents) }}
             </p>
           </div>
@@ -658,7 +659,7 @@ function statusHint(contract: ContractSummary): string {
           </div>
           <NuxtLink
             :to="`/admin/financeiro/contratos/${contract.id}`"
-            class="text-xs font-extrabold text-spider-600"
+            class="-mr-1 rounded-lg px-2 py-2 text-xs font-extrabold text-spider-600 transition hover:bg-spider-50"
           >Parcelas e detalhes</NuxtLink>
         </div>
       </article>

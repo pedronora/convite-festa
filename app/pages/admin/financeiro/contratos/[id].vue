@@ -142,7 +142,7 @@ function paymentStatusHint(payment: PaymentItem): string {
       v-if="pending && !contract"
       class="space-y-4"
     >
-      <div class="card-surface p-6">
+      <div class="card-surface p-4 sm:p-6">
         <div class="skeleton h-6 w-52 rounded" />
         <div class="skeleton mt-3 h-4 w-72 rounded" />
       </div>
@@ -260,7 +260,7 @@ function paymentStatusHint(payment: PaymentItem): string {
 
       <div class="mt-4 grid gap-4 lg:grid-cols-[1.15fr_1fr]">
         <!-- Orçamento -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <div class="flex items-start justify-between gap-3">
             <div>
               <h2 class="text-sm font-extrabold text-navy-900">
@@ -319,7 +319,7 @@ function paymentStatusHint(payment: PaymentItem): string {
         </section>
 
         <!-- Informações -->
-        <section class="card-surface p-6">
+        <section class="card-surface p-4 sm:p-6">
           <h2 class="text-sm font-extrabold text-navy-900">
             Dados do fornecedor
           </h2>
@@ -389,22 +389,24 @@ function paymentStatusHint(payment: PaymentItem): string {
 
           <div
             v-if="nextPayment"
-            class="mt-4 flex items-center justify-between gap-3 rounded-xl border border-navy-100 p-3"
+            class="mt-4 flex flex-col gap-2.5 rounded-xl border border-navy-100 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
           >
             <div class="min-w-0">
               <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-400">
                 Próxima parcela
               </p>
-              <p class="truncate text-sm font-extrabold text-navy-900">
+              <p class="break-words text-sm font-extrabold leading-snug text-navy-900">
                 {{ nextPayment.label || 'Parcela' }} · {{ formatCentsBRL(nextPayment.amountCents) }}
               </p>
-              <p class="text-[11px] font-semibold text-navy-400">
+              <p class="text-[11px] font-semibold leading-snug text-navy-400">
                 {{ formatDateOnly(nextPayment.dueDate) }} · {{ paymentStatusHint(nextPayment) }}
               </p>
             </div>
             <AppButton
               variant="outline"
               size="sm"
+              block
+              class="sm:w-auto"
               @click="paying = nextPayment"
             >
               Pagar
@@ -415,7 +417,7 @@ function paymentStatusHint(payment: PaymentItem): string {
 
       <!-- Parcelas -->
       <section class="card-surface mt-4 overflow-hidden">
-        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy-100 px-5 py-4 sm:px-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-navy-100 px-4 py-4 sm:px-6">
           <div>
             <h2 class="text-sm font-extrabold text-navy-900">
               Parcelas do contrato
@@ -475,11 +477,11 @@ function paymentStatusHint(payment: PaymentItem): string {
           <li
             v-for="payment in contract.payments"
             :key="payment.id"
-            class="flex flex-wrap items-center gap-3 px-5 py-3.5 transition hover:bg-navy-50/40 sm:flex-nowrap sm:px-6"
+            class="grid grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 px-4 py-3.5 transition hover:bg-navy-50/40 sm:flex sm:flex-wrap sm:gap-3 sm:px-6"
           >
             <span
               :class="[
-                'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl',
+                'hidden h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:flex',
                 payment.status === 'paid' ? 'bg-emerald-50 text-emerald-600' : payment.status === 'overdue' ? 'bg-rose-50 text-rose-600' : payment.status === 'due_soon' ? 'bg-amber-50 text-amber-600' : 'bg-navy-50 text-navy-500',
               ]"
             >
@@ -489,11 +491,11 @@ function paymentStatusHint(payment: PaymentItem): string {
               />
             </span>
 
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-sm font-extrabold text-navy-900">
+            <div class="min-w-0 sm:flex-1">
+              <p class="break-words text-sm font-extrabold leading-snug text-navy-900">
                 {{ payment.label || 'Parcela' }}
               </p>
-              <p class="text-[11px] font-semibold text-navy-400">
+              <p class="text-[11px] font-semibold leading-snug text-navy-400">
                 Vence {{ formatDateOnly(payment.dueDate) }}
                 <span v-if="payment.method"> · {{ PAYMENT_METHOD_LABELS[payment.method] }}</span>
                 <span v-if="payment.notes"> · {{ payment.notes }}</span>
@@ -501,7 +503,7 @@ function paymentStatusHint(payment: PaymentItem): string {
             </div>
 
             <div class="text-right">
-              <p class="text-sm font-extrabold text-navy-900">
+              <p class="text-sm font-extrabold tabular-nums text-navy-900">
                 {{ formatCentsBRL(payment.amountCents) }}
               </p>
               <p class="text-[10px] font-semibold text-navy-400">
@@ -509,7 +511,7 @@ function paymentStatusHint(payment: PaymentItem): string {
               </p>
             </div>
 
-            <div class="flex shrink-0 items-center gap-1">
+            <div class="col-span-2 flex items-center justify-end gap-1 border-t border-navy-100 pt-2 sm:col-span-1 sm:shrink-0 sm:border-0 sm:pt-0">
               <StatusBadge
                 kind="payment"
                 :status="payment.status"
