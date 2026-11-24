@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-23
+
 ### Added
 
 - Expense control at `/admin/financeiro`: register suppliers and contracts (object, contracted value, contact and internal notes) with any number of installments, each with due date, optional paid date, payment method and notes.
