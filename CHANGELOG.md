@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `/admin/financeiro` is now mobile-first: cards use compact padding on small screens, long supplier names wrap instead of being truncated, currency values use tabular figures and the upcoming payments rows no longer squeeze the name between the amount and the payment button.
+- **Maiores saldos em aberto** and **Pagamentos recentes** stack on mobile — the amount gets its own line in the first and the whole row is tappable in the second — and the planned-vs-paid chart scrolls horizontally below `sm` so the axis labels stay legible.
+- Contract list and contract detail follow the same rules: the status badge moved below the name, the three money columns fit 320 px and the installment actions wrap to their own row.
+
 ## [1.3.0] - 2026-11-23
 
 ### Added

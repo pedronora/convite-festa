@@ -129,12 +129,12 @@ async function submit() {
         {{ serverError }}
       </AppAlert>
 
-      <div class="grid grid-cols-3 gap-2 rounded-2xl bg-navy-50 p-3 text-center">
+      <div class="grid grid-cols-3 gap-1.5 rounded-2xl bg-navy-50 p-3 text-center sm:gap-2">
         <div>
           <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-400">
             Contratado
           </p>
-          <p class="mt-0.5 text-xs font-extrabold text-navy-900">
+          <p class="mt-0.5 text-[11px] font-extrabold tabular-nums text-navy-900 sm:text-xs">
             {{ formatCentsBRL(contractTotalCents) }}
           </p>
         </div>
@@ -142,7 +142,7 @@ async function submit() {
           <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-400">
             Já parcelado
           </p>
-          <p class="mt-0.5 text-xs font-extrabold text-navy-900">
+          <p class="mt-0.5 text-[11px] font-extrabold tabular-nums text-navy-900 sm:text-xs">
             {{ formatCentsBRL(scheduledCents) }}
           </p>
         </div>
@@ -150,7 +150,7 @@ async function submit() {
           <p class="text-[10px] font-extrabold uppercase tracking-wide text-navy-400">
             Disponível
           </p>
-          <p class="mt-0.5 text-xs font-extrabold text-emerald-700">
+          <p class="mt-0.5 text-[11px] font-extrabold tabular-nums text-emerald-700 sm:text-xs">
             {{ formatCentsBRL(availableCents) }}
           </p>
         </div>
