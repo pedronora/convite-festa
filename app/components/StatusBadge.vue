@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  kind: 'send' | 'rsvp'
+  kind: 'send' | 'rsvp' | 'payment' | 'contract'
   status: string
   size?: 'sm' | 'md'
 }>(), {
@@ -14,6 +14,22 @@ const config = computed(() => {
       sent: { label: 'Enviado', icon: 'check-circle', classes: 'bg-sky-50 text-sky-800 border-sky-200' },
       failed: { label: 'Falha no envio', icon: 'alert', classes: 'bg-amber-50 text-amber-800 border-amber-200' },
     }[props.status] ?? { label: 'Não enviado', icon: 'clock', classes: 'bg-navy-100 text-navy-600 border-navy-200' }
+  }
+  if (props.kind === 'payment') {
+    return {
+      paid: { label: 'Pago', icon: 'check-circle', classes: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+      pending: { label: 'A vencer', icon: 'clock', classes: 'bg-navy-100 text-navy-700 border-navy-200' },
+      due_soon: { label: 'Vence em breve', icon: 'alert', classes: 'bg-amber-50 text-amber-800 border-amber-200' },
+      overdue: { label: 'Em atraso', icon: 'alert', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
+    }[props.status] ?? { label: 'A vencer', icon: 'clock', classes: 'bg-navy-100 text-navy-700 border-navy-200' }
+  }
+  if (props.kind === 'contract') {
+    return {
+      paid: { label: 'Quitado', icon: 'check-circle', classes: 'bg-emerald-50 text-emerald-800 border-emerald-200' },
+      open: { label: 'Em aberto', icon: 'clock', classes: 'bg-navy-100 text-navy-700 border-navy-200' },
+      due_soon: { label: 'Vence em breve', icon: 'alert', classes: 'bg-amber-50 text-amber-800 border-amber-200' },
+      overdue: { label: 'Em atraso', icon: 'alert', classes: 'bg-rose-50 text-rose-700 border-rose-200' },
+    }[props.status] ?? { label: 'Em aberto', icon: 'clock', classes: 'bg-navy-100 text-navy-700 border-navy-200' }
   }
   return {
     awaiting: { label: 'Aguardando resposta', icon: 'clock', classes: 'bg-navy-100 text-navy-700 border-navy-200' },

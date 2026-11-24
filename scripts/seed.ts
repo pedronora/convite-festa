@@ -3,6 +3,8 @@ import { count, eq } from 'drizzle-orm'
 import { createDatabase } from '../server/database/client'
 import {
   adminUsers,
+  contractPayments,
+  contracts,
   guests,
   invitationSends,
   invitations,
@@ -11,7 +13,7 @@ import {
 } from '../server/database/schema'
 import { hashPassword } from '../server/utils/password'
 import { defaultPartySettings } from '../shared/config/party'
-import { renderInviteMessage } from '../shared/utils/format'
+import { addDaysToDateOnly, renderInviteMessage, todayInSaoPaulo } from '../shared/utils/format'
 import { passwordPolicyError } from '../shared/utils/password-policy'
 
 const url = process.env.DATABASE_URL
@@ -242,10 +244,142 @@ async function seedGuests() {
   console.log(`  Link de teste: ${appUrl.replace(/\/$/, '')}/convite/${samples[0]!.uuid}`)
 }
 
+interface FinanceSample {
+  supplierName: string
+  category: 'espaco' | 'buffet' | 'bebidas' | 'bolo_doces' | 'decoracao' | 'fotografia' | 'musica_animacao' | 'convites' | 'outros'
+  contact: string
+  description: string
+  totalCents: number
+  notes?: string
+  payments: Array<{
+    label: string
+    amountCents: number
+    dueInDays: number
+    paidInDays?: number
+    method?: 'pix' | 'transferencia' | 'cartao_credito' | 'cartao_debito' | 'dinheiro' | 'boleto' | 'outro'
+  }>
+}
+
+const financeSamples: FinanceSample[] = [
+  {
+    supplierName: 'Sabor da Festa Buffet',
+    category: 'buffet',
+    contact: 'Ana Paula · (45) 99999-1010',
+    description: 'Buffet completo para 80 convidados, incluindo salgados, doces, bebidas não alcoólicas e equipe de apoio.',
+    totalCents: 480_000,
+    notes: 'Cardápio fechado em reunião. Confirmar número final de pessoas uma semana antes.',
+    payments: [
+      { label: 'Entrada', amountCents: 160_000, dueInDays: -35, paidInDays: -35, method: 'pix' },
+      { label: 'Parcela 2/3', amountCents: 160_000, dueInDays: 3, method: 'transferencia' },
+      { label: 'Parcela 3/3', amountCents: 160_000, dueInDays: 35, method: 'pix' },
+    ],
+  },
+  {
+    supplierName: 'Ateliê Aranha Decoração',
+    category: 'decoracao',
+    contact: 'Marcos · (45) 98888-2020',
+    description: 'Decoração temática do Homem-Aranha, painel de fundo, balões e mesa dos aniversariantes.',
+    totalCents: 220_000,
+    notes: 'Montagem a partir das 10h. Retirada no mesmo dia após a festa.',
+    payments: [
+      { label: 'Sinal', amountCents: 110_000, dueInDays: -25, paidInDays: -25, method: 'pix' },
+      { label: 'Saldo na montagem', amountCents: 110_000, dueInDays: -5, method: 'dinheiro' },
+    ],
+  },
+  {
+    supplierName: 'Click Feliz Fotografia',
+    category: 'fotografia',
+    contact: 'Juliana · (45) 97777-3030',
+    description: 'Cobertura fotográfica de 4 horas e entrega de 200 fotos tratadas em galeria digital.',
+    totalCents: 180_000,
+    payments: [
+      { label: 'Reserva de data', amountCents: 90_000, dueInDays: -18, paidInDays: -18, method: 'transferencia' },
+      { label: 'Saldo', amountCents: 90_000, dueInDays: 20, method: 'pix' },
+    ],
+  },
+  {
+    supplierName: 'Doce Teia Confeitaria',
+    category: 'bolo_doces',
+    contact: 'Camila · (45) 96666-4040',
+    description: 'Bolo temático de 3 andares e mesa de doces finos para 80 pessoas.',
+    totalCents: 95_000,
+    notes: 'Ainda sem parcelas cadastradas: o saldo aparece como “sem parcelamento” no painel.',
+    payments: [],
+  },
+  {
+    supplierName: 'Salão Teia de Heróis',
+    category: 'espaco',
+    contact: 'Recepção · (45) 95555-5050',
+    description: 'Locação do salão por 6 horas, com mesas, cadeiras, som básico e estacionamento.',
+    totalCents: 350_000,
+    notes: 'Contrato quitado. Entrada liberada às 9h para a equipe de decoração.',
+    payments: [
+      { label: 'Entrada', amountCents: 175_000, dueInDays: -40, paidInDays: -40, method: 'pix' },
+      { label: 'Saldo', amountCents: 175_000, dueInDays: -10, paidInDays: -10, method: 'transferencia' },
+    ],
+  },
+  {
+    supplierName: 'DJ Teioso',
+    category: 'musica_animacao',
+    contact: 'Rafael · (45) 94444-6060',
+    description: 'Som, iluminação e animação infantil por 5 horas.',
+    totalCents: 120_000,
+    payments: [
+      { label: 'Pagamento único', amountCents: 120_000, dueInDays: 45, method: 'pix' },
+    ],
+  },
+]
+
+async function seedFinances() {
+  const [contractCount] = await db.select({ value: count() }).from(contracts)
+  if (Number(contractCount?.value ?? 0) > 0) {
+    console.log('✓ Já existem contratos cadastrados; seed financeiro ignorado')
+    return
+  }
+  if (!seedSample) {
+    console.log('• Seed financeiro desativado (SEED_SAMPLE=false)')
+    return
+  }
+
+  const today = todayInSaoPaulo()
+  for (const sample of financeSamples) {
+    const [contract] = await db
+      .insert(contracts)
+      .values({
+        supplierName: sample.supplierName,
+        category: sample.category,
+        contact: sample.contact,
+        description: sample.description,
+        totalCents: sample.totalCents,
+        notes: sample.notes ?? null,
+      })
+      .returning({ id: contracts.id })
+    if (!contract) continue
+
+    for (const payment of sample.payments) {
+      const dueDate = addDaysToDateOnly(today, payment.dueInDays)
+      const paidOn = payment.paidInDays === undefined
+        ? null
+        : addDaysToDateOnly(today, payment.paidInDays)
+      if (!dueDate || (payment.paidInDays !== undefined && !paidOn)) continue
+      await db.insert(contractPayments).values({
+        contractId: contract.id,
+        label: payment.label,
+        amountCents: payment.amountCents,
+        dueDate,
+        paidOn,
+        method: payment.method ?? null,
+      })
+    }
+  }
+  console.log(`✓ ${financeSamples.length} fornecedores de exemplo com parcelas criados`)
+}
+
 async function main() {
   await seedAdmin()
   await seedSettings()
   await seedGuests()
+  await seedFinances()
 }
 
 main()

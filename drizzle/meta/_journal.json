@@ -15,6 +15,13 @@
       "when": 1795049291602,
       "tag": "0001_use_real_invite_art",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795388064156,
+      "tag": "0002_medical_purifiers",
+      "breakpoints": true
     }
   ]
 }
