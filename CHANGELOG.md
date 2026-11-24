@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2026-11-24
+
 ### Fixed
 
 - `/admin/financeiro` is now mobile-first: cards use compact padding on small screens, long supplier names wrap instead of being truncated, currency values use tabular figures and the upcoming payments rows no longer squeeze the name between the amount and the payment button.
