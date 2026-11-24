@@ -78,7 +78,8 @@ The command also accepts `ADMIN_NAME`, `ADMIN_EMAIL` and `ADMIN_PASSWORD` from t
 
 - the administrator defined in `.env`;
 - the default party settings;
-- 8 sample guests, with sends, confirmations and declines.
+- 8 sample guests, with sends, confirmations and declines;
+- 6 sample suppliers with installments that exercise the financial dashboard (paid, due soon, overdue and balance without installments).
 
 Set `SEED_SAMPLE=false` to create only the administrator and the settings. The seed never runs automatically in production.
 
@@ -171,11 +172,17 @@ All of them require a valid session and are enforced on the server by `requireAd
 | `/admin/convidados/[id]` | Details, editing, resend, link regeneration and deletion. |
 | `/admin/envios` | Send and resend history. |
 | `/admin/confirmacoes` | Answers, age groups and messages. |
+| `/admin/financeiro` | Expense dashboard: contracted, paid, open, due soon, categories and planned-vs-paid curve. |
+| `/admin/financeiro/contratos` | Suppliers and contracts with search, filters, totals and quick payment. |
+| `/admin/financeiro/contratos/[id]` | Contract details, installments, payment history and balances. |
 | `/admin/configuracoes` | Party details, image, template, limit and password. |
 
 ## Business rules
 
 - **Invitations and people are separate counts.** The dashboard shows sent/confirmed invitations separately from the total number of people (adults + children aged 8–11 + children aged 0–7).
+- **Contracts are not invitations.** Each supplier has one contract (object, contracted value, notes) and any number of installments. The financial dashboard derives paid, scheduled and unallocated balances from payment dates and due dates; no status or balance is stored.
+- **Installments cannot exceed the contract.** The server blocks an installment whose value passes the remaining balance and also blocks reducing the contract total below the installments already registered.
+- **Money is stored in integer cents.** BRL parsing and formatting live in `shared/utils/money.ts`; dates without time (`YYYY-MM-DD`) are never converted through the server timezone.
 - **One RSVP per invitation.** The answer can be edited; the send history is kept.
 - **Separate age groups:** adults, children aged 8 to 11 and children aged 0 to 7.
 - **A decline requires no people.** A positive confirmation must include at least one person.
@@ -399,7 +406,7 @@ server/
   database/           # Drizzle schema and client
   middleware/         # security headers
   plugins/            # global error log
-  utils/              # auth, dashboard, queries, uploads, rate limit
+  utils/              # auth, dashboard, contracts, queries, uploads, rate limit
 shared/               # validation, types, config and utilities
 drizzle/              # SQL migrations
 scripts/              # seed, create-admin and migrate
@@ -434,7 +441,8 @@ LICENSE               # MIT
 
 - There is no mocked data in the application: everything is read from PostgreSQL. The seed is only a development convenience.
 - There is no automatic WhatsApp sending, and no buttons without an action.
-- Charts are custom SVG components (donut, bars and progress), with no heavy chart dependency.
+- Charts are custom SVG components (donut, bars, cumulative lines and progress), with no heavy chart dependency.
+- The financial module tracks suppliers, contracts and installments registered by the administrator. It does not connect to bank accounts, import statements or pay anything automatically.
 - The default event is set to **January 23, 2027, at 3 PM**, at Recanto Família Fernandes, in Cascavel/PR. The date can be changed in the admin panel.
 - The project does not include multiple image upload, guest segmentation by groups or email integration. Those can be added without changing the main model.
 

@@ -70,6 +70,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 8. **Controlled uploads.** Invitation image in `DATA_DIR/uploads`, accepting PNG/JPG/WebP up to 5 MB, served by `/api/invite-image/[name]`. The default artwork is `public/images/convite-luigi-marco.jpg`, with `public/images/convite-padrao.svg` as a fallback.
 9. **No dead buttons or mocks in production.** The seed is development-only. Every visible action must actually work.
 10. **Single instance.** Rate limiting is in memory and per process. If you scale horizontally, replace `server/utils/rate-limit.ts` with Redis before adding more replicas.
+11. **Finance is derived, never stored twice.** A supplier is one `contracts` row with any number of `contract_payments`. Paid, open, scheduled and unallocated amounts plus payment/contract statuses are computed from `paid_on`/`due_date` in `shared/utils/finance.ts`; do not add status or balance columns. Money is integer cents (`shared/utils/money.ts`), date-only fields (`YYYY-MM-DD`) never go through the server timezone, and the server blocks installments above the contract balance and contract totals below the registered installments.
 
 ## Database and migrations
 
