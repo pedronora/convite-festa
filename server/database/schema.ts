@@ -1,4 +1,5 @@
 import {
+  date,
   index,
   integer,
   jsonb,
@@ -12,6 +13,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core'
 import type { PartySettings } from '../../shared/config/party'
+import type { ExpenseCategory, PaymentMethod } from '../../shared/config/finance'
 
 export const invitationStatusEnum = pgEnum('invitation_status', ['not_sent', 'sent', 'failed'])
 export const sendResultEnum = pgEnum('send_result', ['sent', 'failed'])
@@ -140,8 +142,52 @@ export const partySettings = pgTable('party_settings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
+export const contracts = pgTable(
+  'contracts',
+  {
+    id: serial('id').primaryKey(),
+    supplierName: varchar('supplier_name', { length: 160 }).notNull(),
+    category: varchar('category', { length: 40 }).$type<ExpenseCategory>().notNull().default('outros'),
+    contact: varchar('contact', { length: 160 }),
+    description: text('description').notNull(),
+    totalCents: integer('total_cents').notNull(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  table => [
+    index('contracts_supplier_name_idx').on(table.supplierName),
+    index('contracts_category_idx').on(table.category),
+  ],
+)
+
+export const contractPayments = pgTable(
+  'contract_payments',
+  {
+    id: serial('id').primaryKey(),
+    contractId: integer('contract_id')
+      .notNull()
+      .references(() => contracts.id, { onDelete: 'cascade' }),
+    label: varchar('label', { length: 80 }),
+    amountCents: integer('amount_cents').notNull(),
+    dueDate: date('due_date').notNull(),
+    paidOn: date('paid_on'),
+    method: varchar('method', { length: 30 }).$type<PaymentMethod>(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  table => [
+    index('contract_payments_contract_idx').on(table.contractId),
+    index('contract_payments_due_date_idx').on(table.dueDate),
+    index('contract_payments_paid_on_idx').on(table.paidOn),
+  ],
+)
+
 export type AdminUser = typeof adminUsers.$inferSelect
 export type Guest = typeof guests.$inferSelect
 export type Invitation = typeof invitations.$inferSelect
 export type Rsvp = typeof rsvps.$inferSelect
 export type InvitationSend = typeof invitationSends.$inferSelect
+export type Contract = typeof contracts.$inferSelect
+export type ContractPayment = typeof contractPayments.$inferSelect

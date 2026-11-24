@@ -53,6 +53,118 @@ export function formatDayMonth(iso: string | null | undefined): string {
   }).format(date)
 }
 
+const DATE_ONLY_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/
+
+/**
+ * Converte uma data sem hora (YYYY-MM-DD) em Date UTC. Retorna null para
+ * datas inválidas, incluindo dias que não existem (ex.: 2026-02-31).
+ */
+export function parseDateOnly(value: string | null | undefined): Date | null {
+  if (!value) return null
+  const match = DATE_ONLY_PATTERN.exec(value.trim())
+  if (!match) return null
+  const year = Number(match[1])
+  const month = Number(match[2])
+  const day = Number(match[3])
+  const date = new Date(Date.UTC(year, month - 1, day))
+  if (
+    date.getUTCFullYear() !== year
+    || date.getUTCMonth() !== month - 1
+    || date.getUTCDate() !== day
+  ) {
+    return null
+  }
+  return date
+}
+
+/** Formata uma data sem hora (YYYY-MM-DD) sem deslocar o dia pelo fuso. */
+export function formatDateOnly(value: string | null | undefined): string {
+  const date = parseDateOnly(value)
+  if (!date) return '—'
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+}
+
+/** Data sem hora por extenso: 2026-01-23 -> 23 de janeiro de 2026. */
+export function formatDateOnlyLong(value: string | null | undefined): string {
+  const date = parseDateOnly(value)
+  if (!date) return '—'
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(date)
+}
+
+/** Rótulo curto de um mês YYYY-MM: 2026-01 -> jan/26. */
+export function formatMonthShort(value: string | null | undefined): string {
+  if (!value) return '—'
+  const match = /^(\d{4})-(\d{2})$/.exec(value.trim())
+  if (!match) return '—'
+  const year = Number(match[1])
+  const month = Number(match[2])
+  if (month < 1 || month > 12) return '—'
+  const date = new Date(Date.UTC(year, month - 1, 1))
+  const label = new Intl.DateTimeFormat('pt-BR', {
+    month: 'short',
+    timeZone: 'UTC',
+  }).format(date).replace('.', '')
+  return `${label}/${String(year).slice(-2)}`
+}
+
+/** Data de hoje (YYYY-MM-DD) no fuso da festa, independente do fuso do servidor. */
+export function todayInSaoPaulo(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat('sv-SE', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: TIME_ZONE,
+  }).format(now)
+}
+
+/** Extrai a data sem hora de um timestamp ISO no fuso da festa. */
+export function toDateOnlyInSaoPaulo(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ''
+  return new Intl.DateTimeFormat('sv-SE', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: TIME_ZONE,
+  }).format(date)
+}
+
+/** Diferença em dias entre duas datas sem hora. Positivo quando `to` é futuro. */
+export function daysBetweenDateOnly(from: string | null | undefined, to: string | null | undefined): number | null {
+  const start = parseDateOnly(from)
+  const end = parseDateOnly(to)
+  if (!start || !end) return null
+  return Math.round((end.getTime() - start.getTime()) / 86_400_000)
+}
+
+/** Soma dias a uma data sem hora, preservando o formato YYYY-MM-DD. */
+export function addDaysToDateOnly(value: string | null | undefined, days: number): string | null {
+  const date = parseDateOnly(value)
+  if (!date || !Number.isInteger(days)) return null
+  return new Date(date.getTime() + days * 86_400_000).toISOString().slice(0, 10)
+}
+
+/** Soma meses a uma data sem hora, ajustando o dia para o fim do mês quando necessário. */
+export function addMonthsToDateOnly(value: string | null | undefined, months: number): string | null {
+  const date = parseDateOnly(value)
+  if (!date || !Number.isInteger(months)) return null
+  const target = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1))
+  const lastDay = new Date(Date.UTC(target.getUTCFullYear(), target.getUTCMonth() + 1, 0)).getUTCDate()
+  target.setUTCDate(Math.min(date.getUTCDate(), lastDay))
+  return target.toISOString().slice(0, 10)
+}
+
 export function toDateTimeLocalValue(iso: string): string {
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return ''

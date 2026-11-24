@@ -9,6 +9,7 @@ const navigation = [
   { label: 'Convidados', to: '/admin/convidados', icon: 'users' },
   { label: 'Envios', to: '/admin/envios', icon: 'send' },
   { label: 'Confirmações', to: '/admin/confirmacoes', icon: 'calendar-check' },
+  { label: 'Financeiro', to: '/admin/financeiro', icon: 'wallet' },
   { label: 'Configurações', to: '/admin/configuracoes', icon: 'settings' },
 ]
 

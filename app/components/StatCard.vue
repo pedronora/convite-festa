@@ -8,9 +8,11 @@ const props = withDefaults(defineProps<{
   icon?: string
   tone?: Tone
   suffix?: string
+  compact?: boolean
 }>(), {
   icon: 'chart',
   tone: 'blue',
+  compact: false,
 })
 
 const tones: Record<Tone, { bg: string, text: string, ring: string }> = {
@@ -35,7 +37,7 @@ const formatted = computed(() => typeof props.value === 'number'
           {{ label }}
         </p>
         <p class="mt-2 flex items-baseline gap-1">
-          <span class="font-display text-4xl leading-none text-navy-950">{{ formatted }}</span>
+          <span :class="['font-display leading-none text-navy-950', compact ? 'text-2xl sm:text-3xl' : 'text-4xl']">{{ formatted }}</span>
           <span
             v-if="suffix"
             class="text-sm font-bold text-navy-400"

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Expense control at `/admin/financeiro`: register suppliers and contracts (object, contracted value, contact and internal notes) with any number of installments, each with due date, optional paid date, payment method and notes.
+- Financial dashboard with contracted/paid/open totals, overdue and due-soon alerts, budget breakdown between paid, scheduled and unallocated balance, category view, upcoming payments with quick payment, top open contracts, recent payments and a cumulative planned-vs-paid chart.
+- Contract list with search, category and status filters, sorting, totals and quick payment; contract detail with installment management and payment history.
+- `contracts` and `contract_payments` tables (money in integer cents, date-only due/paid fields) and the matching migration.
+- 6 sample suppliers in the development seed covering paid, due soon, overdue and unallocated balances.
+
 ## [1.2.1] - 2026-11-21
 
 ### Fixed
