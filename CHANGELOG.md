@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-24
+
 ### Added
 
 - International phone numbers for guests and RSVPs, with a country selector in the forms and E.164 validation via `libphonenumber-js`. Brazilian, Argentine and US numbers have dedicated validation; other countries are supported by the selector. Brazil is the default and international numbers are selected explicitly.
