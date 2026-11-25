@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The phone country selector is a compact searchable dropdown with the flag and dial code; it searches by country name, ISO code or DDI and keeps Brazil, Argentina and the United States at the top.
 - Phone display and CSV export now format Brazilian numbers nationally and other countries in the international format.
 
+### Security
+
+- Upgraded to Nuxt 4.7.0 and Vue 3.5.46, picking up the route-rule payload, catch-all encoded slash and development runtime-config fixes.
+
 ## [1.3.1] - 2026-11-24
 
 ### Fixed
