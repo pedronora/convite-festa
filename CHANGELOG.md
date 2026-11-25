@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-11-25
+
+### Changed
+
+- The logo emblem is now a stylized spider instead of the shield with eyes, and the favicon follows the same artwork. The wordmark, colors and logo variants are unchanged.
+
 ## [1.4.0] - 2026-11-24
 
 ### Added
