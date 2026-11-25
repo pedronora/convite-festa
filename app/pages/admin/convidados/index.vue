@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuestListItem, GuestListResponse } from '#shared/types'
 import { buildInvitationLink, formatDateShort, formatDateTime } from '#shared/utils/format'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 useHead({ title: 'Convidados' })
@@ -473,7 +473,7 @@ const hasActiveFilters = computed(() => Boolean(filters.search) || filters.send 
               </td>
               <td class="px-3 py-3">
                 <p class="text-xs font-bold text-navy-700">
-                  {{ formatPhoneBR(guest.phone) }}
+                  {{ formatPhone(guest.phone) }}
                 </p>
                 <p
                   v-if="guest.email"
@@ -690,7 +690,7 @@ const hasActiveFilters = computed(() => Boolean(filters.search) || filters.send 
           >
         </div>
         <p class="mt-2 text-xs font-bold text-navy-600">
-          {{ formatPhoneBR(guest.phone) }}
+          {{ formatPhone(guest.phone) }}
         </p>
         <div class="mt-3 flex flex-wrap gap-1.5">
           <StatusBadge

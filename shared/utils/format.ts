@@ -1,6 +1,5 @@
 import type { PartySettings } from '../config/party'
 import { defaultPartySettings } from '../config/party'
-import { formatPhoneBR } from './phone'
 
 const TIME_ZONE = 'America/Sao_Paulo'
 
@@ -293,10 +292,6 @@ export function resolveGuestLimit(
 
 export function exceedsGuestLimit(total: number, limit: number | null | undefined): boolean {
   return typeof limit === 'number' && limit > 0 && total > limit
-}
-
-export function formatPhoneDisplay(phone: string): string {
-  return formatPhoneBR(phone)
 }
 
 export { defaultPartySettings }

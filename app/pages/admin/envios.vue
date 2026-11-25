@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuestDetail, SendHistoryItem } from '#shared/types'
 import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 useHead({ title: 'Envios' })
@@ -252,7 +252,7 @@ function changePage(page: number) {
                 </p>
               </td>
               <td class="px-3 py-3 text-xs font-bold text-navy-700">
-                {{ formatPhoneBR(item.phone) }}
+                {{ formatPhone(item.phone) }}
               </td>
               <td class="px-3 py-3">
                 <StatusBadge
@@ -331,7 +331,7 @@ function changePage(page: number) {
                 class="text-sm font-extrabold text-navy-900"
               >{{ item.guestName }}</NuxtLink>
               <p class="text-[11px] font-semibold text-navy-400">
-                {{ formatPhoneBR(item.phone) }}
+                {{ formatPhone(item.phone) }}
               </p>
             </div>
             <StatusBadge
@@ -432,7 +432,7 @@ function changePage(page: number) {
           <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ selectedSend.guestName }}</span>
           <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatDateTime(selectedSend.sentAt) }}</span>
           <span class="rounded-full bg-navy-100 px-2.5 py-1">Tentativa {{ selectedSend.attempt }}</span>
-          <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatPhoneBR(selectedSend.phone) }}</span>
+          <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatPhone(selectedSend.phone) }}</span>
         </div>
         <p class="whitespace-pre-line rounded-2xl border border-navy-100 bg-navy-50/60 p-4 text-sm font-medium leading-relaxed text-navy-700">
           {{ selectedSend.message }}

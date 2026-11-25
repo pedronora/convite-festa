@@ -1,5 +1,5 @@
 import { guestInputSchema, zodMessage } from '#shared/validation'
-import { normalizePhoneBR } from '#shared/utils/phone'
+import { normalizePhone } from '#shared/utils/phone'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
     })
   }
   const input = parsed.data
-  const phone = normalizePhoneBR(input.phone)
+  const phone = normalizePhone(input.phone, input.phoneCountry)
   if (!phone) {
     throw createError({ statusCode: 422, message: 'Telefone inválido' })
   }

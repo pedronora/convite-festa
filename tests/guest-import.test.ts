@@ -86,6 +86,22 @@ describe('planGuestImport', () => {
     expect(result.skipped[0]?.reason).toBe('Já cadastrado como João Antigo')
   })
 
+  it('importa números internacionais com DDI', () => {
+    const result = plan('Nome;Telefone\nJuan;+54 9 11 1234-5678\nJohn;+1 202 555 0143')
+
+    expect(result.skipped).toEqual([])
+    expect(result.imported.map(row => row.phone)).toEqual([
+      '5491112345678',
+      '12025550143',
+    ])
+  })
+
+  it('aceita DDI colado sem "+" em números longos', () => {
+    const result = plan('Nome;Telefone\nJuan;5491112345678')
+
+    expect(result.imported[0]?.phone).toBe('5491112345678')
+  })
+
   it('não usa o e-mail como chave de duplicidade', () => {
     const result = plan('Nome;Telefone;E-mail\nAna;45988887777;familia@example.com\nBia;45977776666;familia@example.com')
     expect(result.imported).toHaveLength(2)

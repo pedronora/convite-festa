@@ -6,7 +6,7 @@ import {
   type GuestImportField,
 } from '../config/guest-import'
 import { guestInputSchema, zodMessage } from '../validation'
-import { normalizePhoneBR } from './phone'
+import { normalizePhone, normalizeStoredPhone } from './phone'
 import type { ParsedCsv } from './csv'
 
 export type GuestImportErrorCode = 'missing_headers' | 'too_many_rows'
@@ -72,7 +72,7 @@ export function planGuestImport(csv: ParsedCsv, existing: ExistingGuest[]): Gues
 
   const existingByPhone = new Map<string, string>()
   for (const guest of existing) {
-    const phone = normalizePhoneBR(guest.phone)
+    const phone = normalizeStoredPhone(guest.phone)
     if (phone && !existingByPhone.has(phone)) existingByPhone.set(phone, guest.name)
   }
 
@@ -106,7 +106,7 @@ export function planGuestImport(csv: ParsedCsv, existing: ExistingGuest[]): Gues
       continue
     }
 
-    const normalizedPhone = normalizePhoneBR(parsed.data.phone)
+    const normalizedPhone = normalizePhone(parsed.data.phone, parsed.data.phoneCountry)
     if (!normalizedPhone) {
       skipped.push({ line: record.line, name, phone, reason: 'Telefone inválido' })
       continue

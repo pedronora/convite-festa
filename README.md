@@ -16,6 +16,7 @@ The project has two areas:
 - Tailwind CSS v4
 - PostgreSQL 17 + [Drizzle ORM](https://orm.drizzle.team/)
 - Zod for shared validation between client and server
+- [libphonenumber-js](https://gitlab.com/catamphetamine/libphonenumber-js) for international phone numbers (E.164 normalization)
 - Own session store in the database, `scrypt` password hashing and `httpOnly` cookie
 - Vitest for the shared business rules
 - Docker and Docker Compose for development and production
@@ -187,7 +188,7 @@ All of them require a valid session and are enforced on the server by `requireAd
 - **Separate age groups:** adults, children aged 8 to 11 and children aged 0 to 7.
 - **A decline requires no people.** A positive confirmation must include at least one person.
 - **People limit:** the guest's individual limit takes precedence over the default limit from the settings.
-- **Phone numbers** are normalized to Brazilian E.164 (`55` + area code + number) and validated on both client and server.
+- **Phone numbers** are normalized to E.164 (country code + area code + number) and validated on both client and server with `libphonenumber-js`. The guest and RSVP forms have a country selector (Brazil, Argentina and the United States listed first); other countries are supported too.
 - **Invitation links** use UUID v4 and do not allow enumerating guests.
 - **Message and settings** are stored in the database and applied immediately on the public page.
 
@@ -200,7 +201,7 @@ The first row must contain the headers. The separator is detected automatically 
 | Column | Required | Rules |
 | --- | --- | --- |
 | `Nome` | Yes | 2–160 characters |
-| `Telefone` | Yes | normalized to Brazilian E.164 |
+| `Telefone` | Yes | normalized to E.164; international numbers should include the country code (`+54`, `+1`, ...) |
 | `Família/Grupo` | No | up to 160 characters |
 | `E-mail` | No | validated and stored in lowercase |
 | `Observações` | No | up to 2,000 characters |
@@ -209,7 +210,7 @@ The first row must contain the headers. The separator is detected automatically 
 
 Header names are matched without accents and case (`Nome`/`name`, `Telefone`/`WhatsApp`/`Celular`, `Família/Grupo`/`Familia`/`Grupo`, and so on).
 
-**Duplicates:** the phone (normalized to E.164) is the identity key. A phone already registered, or repeated in the same file, is skipped; the first occurrence wins. E-mail is not used for duplicate detection because families may share the same address. The result screen shows how many rows were imported and skipped, with the line, name, phone and reason for each skipped row. Rows with an invalid phone, invalid e-mail or out-of-range limit are skipped with the validation message.
+**Duplicates:** the phone (normalized to E.164) is the identity key. For international numbers, include the country code in the CSV cell so the row is not interpreted as a local Brazilian number. A phone already registered, or repeated in the same file, is skipped; the first occurrence wins. E-mail is not used for duplicate detection because families may share the same address. The result screen shows how many rows were imported and skipped, with the line, name, phone and reason for each skipped row. Rows with an invalid phone, invalid e-mail or out-of-range limit are skipped with the validation message.
 
 ## Party settings
 

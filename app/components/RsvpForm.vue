@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { PublicInvitation, RsvpSummary } from '#shared/types'
+import type { CountryCode } from 'libphonenumber-js'
+import { DEFAULT_PHONE_COUNTRY } from '#shared/config/countries'
 import { rsvpInputSchema, zodFieldErrors } from '#shared/validation'
 import { totalGuests } from '#shared/utils/format'
+import { detectPhoneCountry, formatPhone } from '#shared/utils/phone'
 
 const props = defineProps<{ invitation: PublicInvitation }>()
 const emit = defineEmits<{ saved: [rsvp: RsvpSummary] }>()
@@ -12,10 +15,12 @@ const serverError = ref('')
 const fieldErrors = ref<Record<string, string>>({})
 
 const existing = props.invitation.existingRsvp
+const initialPhone = existing?.phone || props.invitation.guest.phone
 const form = reactive({
   attendanceStatus: existing?.attendanceStatus ?? 'yes' as 'yes' | 'no',
   responsibleName: existing?.responsibleName || props.invitation.guest.name,
-  phone: existing?.phone || props.invitation.guest.phone,
+  phone: formatPhone(initialPhone),
+  phoneCountry: (detectPhoneCountry(initialPhone) ?? DEFAULT_PHONE_COUNTRY) as CountryCode,
   email: existing?.email || props.invitation.guest.email || '',
   adults: existing?.adults ?? 1,
   children8to11: existing?.children8to11 ?? 0,
@@ -73,6 +78,7 @@ async function submit() {
           attendanceStatus: form.attendanceStatus,
           responsibleName: form.responsibleName,
           phone: form.phone,
+          phoneCountry: form.phoneCountry,
           email: form.email || null,
           adults: form.attendanceStatus === 'yes' ? form.adults : 0,
           children8to11: form.attendanceStatus === 'yes' ? form.children8to11 : 0,
@@ -182,18 +188,14 @@ async function submit() {
         label="WhatsApp / telefone"
         for="rsvp-phone"
         :error="fieldErrors.phone"
-        hint="Para contato em caso de imprevisto."
+        hint="Para contato em caso de imprevisto. Brasil: DDD + número; exterior: escolha o país."
         required
       >
-        <input
+        <PhoneInput
           id="rsvp-phone"
           v-model="form.phone"
-          type="tel"
-          inputmode="tel"
-          class="input-base"
-          autocomplete="tel"
-          placeholder="(45) 99999-9999"
-        >
+          v-model:country="form.phoneCountry"
+        />
       </FormField>
       <FormField
         label="E-mail"

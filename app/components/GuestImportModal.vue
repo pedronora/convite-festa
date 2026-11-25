@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { GuestImportResult } from '#shared/types'
 import { GUEST_IMPORT_COLUMNS, GUEST_IMPORT_MAX_ROWS, GUEST_IMPORT_TEMPLATE } from '#shared/config/guest-import'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
 
 const props = defineProps<{
   modelValue: boolean
@@ -165,7 +165,7 @@ function formatSize(bytes: number): string {
                   {{ row.groupName || '—' }}
                 </td>
                 <td class="px-3 py-2 text-navy-600">
-                  {{ formatPhoneBR(row.phone) }}
+                  {{ formatPhone(row.phone) }}
                 </td>
               </tr>
             </tbody>
@@ -215,7 +215,7 @@ function formatSize(bytes: number): string {
                   {{ row.name }}
                 </td>
                 <td class="px-3 py-2 text-navy-600">
-                  {{ formatPhoneBR(row.phone) }}
+                  {{ formatPhone(row.phone) }}
                 </td>
                 <td class="px-3 py-2 font-semibold text-amber-700">
                   {{ row.reason }}
@@ -245,7 +245,8 @@ function formatSize(bytes: number): string {
       <p class="text-sm font-semibold text-navy-600">
         A primeira linha precisa ter os cabeçalhos. Use <strong>;</strong> ou <strong>,</strong>
         como separador. O arquivo pode ter até <strong>{{ GUEST_IMPORT_MAX_ROWS }} linhas</strong>
-        e <strong>1 MB</strong>.
+        e <strong>1 MB</strong>. Números de fora do Brasil devem incluir o DDI
+        (ex.: <strong>+54 9 11 1234-5678</strong>).
       </p>
 
       <div class="grid gap-3 sm:grid-cols-2">
