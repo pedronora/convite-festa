@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import type { GuestListItem } from '#shared/types'
+import type { CountryCode } from 'libphonenumber-js'
+import { DEFAULT_PHONE_COUNTRY } from '#shared/config/countries'
 import { guestInputSchema, zodFieldErrors } from '#shared/validation'
+import { detectPhoneCountry, formatPhone } from '#shared/utils/phone'
 
 const props = defineProps<{
   modelValue: boolean
@@ -20,6 +23,7 @@ const fieldErrors = ref<Record<string, string>>({})
 const emptyForm = () => ({
   name: '',
   phone: '',
+  phoneCountry: DEFAULT_PHONE_COUNTRY as CountryCode,
   email: '',
   groupName: '',
   notes: '',
@@ -40,7 +44,8 @@ watch(() => props.modelValue, (open) => {
   if (props.guest) {
     Object.assign(form, {
       name: props.guest.name,
-      phone: props.guest.phone,
+      phone: formatPhone(props.guest.phone),
+      phoneCountry: detectPhoneCountry(props.guest.phone) ?? DEFAULT_PHONE_COUNTRY,
       email: props.guest.email || '',
       groupName: props.guest.groupName || '',
       notes: props.guest.notes || '',
@@ -54,6 +59,7 @@ function payload() {
   return {
     name: form.name,
     phone: form.phone,
+    phoneCountry: form.phoneCountry,
     email: form.email || null,
     groupName: form.groupName || null,
     notes: form.notes || null,
@@ -136,18 +142,14 @@ async function submit() {
           label="Telefone / WhatsApp"
           for="guest-phone"
           :error="fieldErrors.phone"
-          hint="Com DDD. Usaremos para o envio do convite."
+          hint="Brasil: DDD + número. Exterior: escolha o país e informe o número."
           required
         >
-          <input
+          <PhoneInput
             id="guest-phone"
             v-model="form.phone"
-            type="tel"
-            class="input-base"
-            inputmode="tel"
-            autocomplete="tel"
-            placeholder="(45) 99999-9999"
-          >
+            v-model:country="form.phoneCountry"
+          />
         </FormField>
 
         <FormField

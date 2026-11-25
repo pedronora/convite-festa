@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm'
 import { sendRegistrationSchema, zodMessage } from '#shared/validation'
-import { normalizePhoneBR } from '#shared/utils/phone'
+import { canonicalPhone } from '#shared/utils/phone'
 
 export default defineEventHandler(async (event) => {
   await requireAdmin(event)
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
   if (!guest) {
     throw createError({ statusCode: 404, message: 'Convidado não encontrado' })
   }
-  const phone = normalizePhoneBR(parsed.data.phone)
+  const phone = canonicalPhone(parsed.data.phone)
   if (!phone) {
     throw createError({ statusCode: 422, message: 'Telefone inválido' })
   }

@@ -2,7 +2,8 @@
 import type { GuestListItem } from '#shared/types'
 import { defaultPartySettings, type PartySettings } from '#shared/config/party'
 import { buildInvitationLink, renderInviteMessage, inviteeFirstName } from '#shared/utils/format'
-import { formatPhoneBR, whatsappUrl } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
+import { whatsappUrl } from '#shared/utils/whatsapp'
 
 const props = defineProps<{
   modelValue: boolean
@@ -233,7 +234,7 @@ async function fail() {
                 {{ current.name }}
               </p>
               <p class="text-xs font-semibold text-navy-500">
-                {{ formatPhoneBR(current.phone) }}
+                {{ formatPhone(current.phone) }}
                 <span v-if="current.groupName"> · {{ current.groupName }}</span>
               </p>
             </div>

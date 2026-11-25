@@ -1,6 +1,6 @@
 import { asc, eq } from 'drizzle-orm'
 import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
 import { resolveAppBaseUrl } from '#shared/utils/social'
 
 function csvCell(value: unknown): string {
@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
       [
         row.name,
         row.groupName ?? '',
-        formatPhoneBR(row.phone),
+        formatPhone(row.phone),
         row.email ?? '',
         SEND_LABEL[row.sendStatus] ?? row.sendStatus,
         formatDateTime(row.lastSentAt ? row.lastSentAt.toISOString() : null),

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
-import { formatPhoneBR } from '#shared/utils/phone'
+import { formatPhone } from '#shared/utils/phone'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 useHead({ title: 'Confirmações' })
@@ -245,7 +245,7 @@ function changePage(page: number) {
                   {{ item.responsibleName }}
                 </p>
                 <p class="text-[10px] font-semibold text-navy-400">
-                  {{ formatPhoneBR(item.phone) }}
+                  {{ formatPhone(item.phone) }}
                 </p>
               </td>
               <td class="px-3 py-3">
@@ -329,7 +329,7 @@ function changePage(page: number) {
                 {{ item.guestName }}
               </p>
               <p class="text-[11px] font-semibold text-navy-400">
-                {{ item.responsibleName }} · {{ formatPhoneBR(item.phone) }}
+                {{ item.responsibleName }} · {{ formatPhone(item.phone) }}
               </p>
             </div>
             <StatusBadge
@@ -461,7 +461,7 @@ function changePage(page: number) {
               {{ details.responsibleName }}
             </p>
             <p class="text-xs font-semibold text-navy-500">
-              {{ formatPhoneBR(details.phone) }}
+              {{ formatPhone(details.phone) }}
             </p>
           </div>
           <div class="rounded-xl bg-navy-50 p-3">

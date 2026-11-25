@@ -87,7 +87,7 @@ The `#shared` alias points to `shared/`. Code in `shared/` runs on the client, o
 - Reusable components in `app/components`; avoid creating variations when `AppButton`, `AppModal`, `FormField`, `StatusBadge`, `EmptyState` etc. already solve the problem.
 - Styling with Tailwind utilities and theme tokens (`spider-*`, `comic`, shadows). If you need a new color or animation, add it to `main.css` instead of scattering arbitrary values.
 - Charts are custom SVG components (`app/components/charts`); do not add a chart library without a real need.
-- Displayed dates use the utilities from `shared/utils/format.ts`; phone numbers go through `shared/utils/phone.ts` (Brazilian E.164).
+- Displayed dates use the utilities from `shared/utils/format.ts`; phone numbers go through `shared/utils/phone.ts` (E.164 via `libphonenumber-js`, with the country list in `shared/config/countries.ts`). WhatsApp links live in `shared/utils/whatsapp.ts` and receive the number already normalized.
 - UI texts in pt-BR, with a welcoming and direct tone.
 
 ## Tests

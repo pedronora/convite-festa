@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { defaultPartySettings, type PartySettings } from '#shared/config/party'
-import { whatsappShareUrl } from '#shared/utils/phone'
+import { whatsappShareUrl } from '#shared/utils/whatsapp'
 import { celebrantNames, celebrantsAgesLabel, formatDateLong } from '#shared/utils/format'
 
 definePageMeta({ layout: 'public' })

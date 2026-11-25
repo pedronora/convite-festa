@@ -1,78 +1,98 @@
-export function onlyDigits(value: string): string {
-  return value.replace(/\D/g, '')
+import { parsePhoneNumberFromString } from 'libphonenumber-js/min'
+import type { CountryCode } from 'libphonenumber-js'
+import { onlyDigits } from './digits'
+
+export type { CountryCode }
+
+/** Valores salvos no banco seguem E.164 sem o "+" (ex.: "5545999998888"). */
+function looksStored(value: string): boolean {
+  return /^\d{8,15}$/.test(value.trim())
 }
 
 /**
- * Normaliza um telefone brasileiro para o formato E.164 sem "+".
- * Ex.: "(45) 99999-8888" -> "5545999998888"
+ * Normaliza um telefone digitado pelo usuário para E.164 sem "+".
  *
- * Aceita números locais (DDD + número), com ou sem o código do país e com
- * zeros de discagem. Entradas com código internacional diferente de +55
- * são rejeitadas em vez de interpretadas como número local.
+ * Aceita o formato nacional do país informado, o código do país com "+" ou
+ * "00" e, quando o número é longo demais para ser local, um DDI colado sem o
+ * "+" (útil para planilhas). A validação usa o metadata do libphonenumber.
  */
-export function normalizePhoneBR(value: string): string | null {
+export function normalizePhone(value: string, country: CountryCode = 'BR'): string | null {
   const raw = value.trim()
   if (!raw) return null
-  let digits = onlyDigits(raw)
+
+  const digits = onlyDigits(raw)
   if (!digits) return null
 
-  if (raw.startsWith('+') || digits.startsWith('00')) {
-    if (digits.startsWith('00')) digits = digits.slice(2)
-    if (!digits.startsWith('55')) return null
-    digits = digits.slice(2)
+  const explicitInternational = raw.startsWith('+') || raw.startsWith('00')
+  const text = raw.startsWith('00') ? `+${digits.slice(2)}` : raw
+
+  let parsed = parsePhoneNumberFromString(text, explicitInternational ? undefined : country)
+
+  if (!parsed?.isValid() && !explicitInternational) {
+    if (country === 'BR') {
+      const withoutTrunk = digits.replace(/^0+/, '')
+      if (withoutTrunk !== digits) {
+        parsed = parsePhoneNumberFromString(withoutTrunk, 'BR')
+      }
+    }
+
+    // Números colados com DDI mas sem "+" (ex.: "5491112345678" em um CSV).
+    if (!parsed?.isValid() && digits.length >= 12) {
+      parsed = parsePhoneNumberFromString(`+${digits}`)
+    }
   }
-  else if (digits.length >= 12 && digits.startsWith('55')) {
-    digits = digits.slice(2)
-  }
 
-  // Remove o zero de discagem (0 + DDD + número).
-  if (digits.startsWith('0')) digits = digits.replace(/^0+/, '')
-
-  if (digits.length !== 10 && digits.length !== 11) return null
-
-  const ddd = Number(digits.slice(0, 2))
-  if (!Number.isInteger(ddd) || ddd < 11 || ddd > 99) return null
-
-  // Celulares brasileiros têm 11 dígitos e começam com 9 após o DDD.
-  if (digits.length === 11 && digits[2] !== '9') return null
-
-  return `55${digits}`
+  if (!parsed?.isValid()) return null
+  // O libphonenumber aceita DDDs abaixo de 11 (ex.: 10), que não são atribuídos
+  // no Brasil; mantemos a regra brasileira de DDD válido.
+  if (parsed.country === 'BR' && Number(parsed.nationalNumber.slice(0, 2)) < 11) return null
+  return parsed.number.slice(1)
 }
 
-export function formatPhoneBR(value: string): string {
+/** Interpreta um valor já salvo (E.164 sem "+") e devolve o E.164 canônico. */
+export function normalizeStoredPhone(value: string): string | null {
   const digits = onlyDigits(value)
-  const local = digits.startsWith('55') && digits.length > 11 ? digits.slice(2) : digits
-  if (local.length === 11) {
-    return `(${local.slice(0, 2)}) ${local.slice(2, 7)}-${local.slice(7)}`
-  }
-  if (local.length === 10) {
-    return `(${local.slice(0, 2)}) ${local.slice(2, 6)}-${local.slice(6)}`
-  }
-  return value
+  if (!digits) return null
+  const parsed = parsePhoneNumberFromString(`+${digits}`)
+  if (!parsed?.isValid()) return null
+  if (parsed.country === 'BR' && Number(parsed.nationalNumber.slice(0, 2)) < 11) return null
+  return parsed.number.slice(1)
 }
 
+/**
+ * Resolve um valor que pode ser um telefone salvo (só dígitos, com DDI) ou uma
+ * entrada local digitada pelo usuário (com máscara ou sem DDI).
+ */
+export function canonicalPhone(value: string): string | null {
+  if (looksStored(value)) {
+    const stored = normalizeStoredPhone(value)
+    if (stored) return stored
+  }
+  return normalizePhone(value, 'BR')
+}
+
+/**
+ * Formata para exibição: Brasil no padrão nacional "`(45) 99999-8888`" e os
+ * demais países no padrão internacional "`+1 202 555 0143`".
+ */
+export function formatPhone(value: string): string {
+  const digits = canonicalPhone(value)
+  if (!digits) return value
+
+  const parsed = parsePhoneNumberFromString(`+${digits}`)
+  if (!parsed) return value
+
+  return parsed.country === 'BR' ? parsed.formatNational() : parsed.formatInternational()
+}
+
+/** Descobre o país de um telefone salvo ou digitado (para pré-selecionar o seletor). */
+export function detectPhoneCountry(value: string): CountryCode | null {
+  const digits = canonicalPhone(value)
+  if (!digits) return null
+  return parsePhoneNumberFromString(`+${digits}`)?.country ?? null
+}
+
+/** Número pronto para os links do WhatsApp (E.164 sem "+"). */
 export function whatsappNumber(value: string): string {
-  return normalizePhoneBR(value) ?? onlyDigits(value)
-}
-
-// O redirect do wa.me corrompe UTF-8 de 4 bytes (emojis) no parâmetro `text`,
-// trocando cada caractere por U+FFFD. O endpoint final preserva o texto.
-const WHATSAPP_SEND_URL = 'https://api.whatsapp.com/send'
-
-export function whatsappUrl(phone: string, message: string): string {
-  return `${WHATSAPP_SEND_URL}?phone=${whatsappNumber(phone)}&text=${encodeURIComponent(message)}`
-}
-
-/** Compartilhar sem destinatário definido (o WhatsApp pede o contato). */
-export function whatsappShareUrl(message: string): string {
-  return `${WHATSAPP_SEND_URL}?text=${encodeURIComponent(message)}`
-}
-
-/** Abrir conversa com um número, sem mensagem pré-preenchida. */
-export function whatsappChatUrl(phone: string): string {
-  return `${WHATSAPP_SEND_URL}?phone=${whatsappNumber(phone)}`
-}
-
-export function telUrl(phone: string): string {
-  return `tel:+${whatsappNumber(phone)}`
+  return canonicalPhone(value) ?? onlyDigits(value)
 }

@@ -63,6 +63,34 @@ describe('rsvpInputSchema', () => {
     expect(rsvpInputSchema.safeParse({ ...base, email: 'maria@' }).success).toBe(false)
   })
 
+  it('aceita telefone internacional com o país selecionado', () => {
+    expect(rsvpInputSchema.safeParse({
+      ...base,
+      phone: '11 4123-4567',
+      phoneCountry: 'AR',
+    }).success).toBe(true)
+    expect(rsvpInputSchema.safeParse({
+      ...base,
+      phone: '202-555-0143',
+      phoneCountry: 'US',
+    }).success).toBe(true)
+  })
+
+  it('usa o Brasil como país padrão e rejeita país desconhecido', () => {
+    const parsed = rsvpInputSchema.safeParse(base)
+    expect(parsed.success).toBe(true)
+    if (parsed.success) expect(parsed.data.phoneCountry).toBe('BR')
+    expect(rsvpInputSchema.safeParse({ ...base, phoneCountry: 'XX' }).success).toBe(false)
+  })
+
+  it('rejeita telefone brasileiro quando o país selecionado é outro', () => {
+    expect(rsvpInputSchema.safeParse({
+      ...base,
+      phone: '(45) 99999-8888',
+      phoneCountry: 'US',
+    }).success).toBe(false)
+  })
+
   it('normaliza e-mail para minúsculas', () => {
     const parsed = rsvpInputSchema.safeParse({ ...base, email: 'Maria@Exemplo.COM' })
     expect(parsed.success).toBe(true)

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { rsvpInputSchema, zodMessage } from '#shared/validation'
-import { normalizePhoneBR } from '#shared/utils/phone'
+import { normalizePhone } from '#shared/utils/phone'
 import { exceedsGuestLimit, resolveGuestLimit, totalGuests } from '#shared/utils/format'
 
 export default defineEventHandler(async (event) => {
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const phone = normalizePhoneBR(input.phone)
+  const phone = normalizePhone(input.phone, input.phoneCountry)
   if (!phone) {
     throw createError({
       statusCode: 422,

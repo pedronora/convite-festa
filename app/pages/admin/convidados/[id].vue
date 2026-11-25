@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { GuestDetail, SendHistoryItem } from '#shared/types'
-import { buildInvitationLink, formatDateTime, formatPhoneDisplay } from '#shared/utils/format'
-import { formatPhoneBR, whatsappChatUrl } from '#shared/utils/phone'
+import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
+import { formatPhone } from '#shared/utils/phone'
+import { whatsappChatUrl } from '#shared/utils/whatsapp'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
@@ -234,7 +235,7 @@ async function onSaved() {
                   rel="noopener"
                   class="hover:text-spider-600"
                 >
-                  {{ formatPhoneBR(guest.phone) }}
+                  {{ formatPhone(guest.phone) }}
                 </a>
               </dd>
             </div>
@@ -420,7 +421,7 @@ async function onSaved() {
                   Telefone
                 </dt>
                 <dd class="font-bold text-navy-700">
-                  {{ formatPhoneDisplay(guest.rsvpPhone || guest.phone) }}
+                  {{ formatPhone(guest.rsvpPhone || guest.phone) }}
                 </dd>
               </div>
               <div
@@ -500,7 +501,7 @@ async function onSaved() {
                 </p>
               </div>
               <p class="mt-1 text-[11px] font-semibold text-navy-400">
-                {{ send.method === 'whatsapp_web' ? 'WhatsApp Web' : 'WhatsApp Business API' }} · {{ formatPhoneBR(send.phone) }}
+                {{ send.method === 'whatsapp_web' ? 'WhatsApp Web' : 'WhatsApp Business API' }} · {{ formatPhone(send.phone) }}
               </p>
               <button
                 type="button"
@@ -563,7 +564,7 @@ async function onSaved() {
         >
           <div class="flex flex-wrap gap-2 text-[11px] font-bold text-navy-500">
             <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatDateTime(selectedSend.sentAt) }}</span>
-            <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatPhoneBR(selectedSend.phone) }}</span>
+            <span class="rounded-full bg-navy-100 px-2.5 py-1">{{ formatPhone(selectedSend.phone) }}</span>
             <span class="rounded-full bg-navy-100 px-2.5 py-1">Tentativa {{ selectedSend.attempt }}</span>
           </div>
           <p class="whitespace-pre-line rounded-2xl border border-navy-100 bg-navy-50/60 p-4 text-sm font-medium leading-relaxed text-navy-700">
