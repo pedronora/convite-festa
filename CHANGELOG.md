@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.2] - 2026-11-25
+
 ### Added
 
 - Confirmation report CSV on `/admin/confirmacoes` with the responsible name, group, status, estimated guests and confirmed people by age group (adults, children aged 8–11, children aged 0–7 and total).
