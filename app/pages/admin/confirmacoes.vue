@@ -75,13 +75,13 @@ function changePage(page: number) {
     >
       <template #actions>
         <a
-          href="/api/admin/export"
+          href="/api/admin/rsvps/export"
           class="inline-flex items-center gap-2 rounded-xl border-2 border-navy-200 bg-white px-4 py-2.5 text-sm font-extrabold text-navy-800 transition hover:border-navy-300 hover:bg-navy-50"
         >
           <AppIcon
             name="download"
             :size="16"
-          /> Exportar CSV
+          /> Exportar relatório
         </a>
       </template>
     </PageHeader>

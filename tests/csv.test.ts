@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CsvParseError, detectDelimiter, parseCsv } from '../shared/utils/csv'
+import { buildCsv, CsvParseError, csvCell, detectDelimiter, parseCsv } from '../shared/utils/csv'
 
 describe('detectDelimiter', () => {
   it('prefere ponto e vírgula no empate', () => {
@@ -9,6 +9,26 @@ describe('detectDelimiter', () => {
 
   it('ignora separadores dentro de aspas', () => {
     expect(detectDelimiter('"Nome, completo";Telefone')).toBe(';')
+  })
+})
+
+describe('csvCell', () => {
+  it('neutraliza fórmulas e preserva números e vazios', () => {
+    expect(csvCell('=1+1')).toBe(`'=1+1`)
+    expect(csvCell(0)).toBe('0')
+    expect(csvCell(null)).toBe('')
+  })
+
+  it('escapa separador, aspas e quebra de linha', () => {
+    expect(csvCell('a;b')).toBe(`"a;b"`)
+    expect(csvCell('a"b')).toBe(`"a""b"`)
+    expect(csvCell('a\nb')).toBe(`"a\nb"`)
+  })
+})
+
+describe('buildCsv', () => {
+  it('monta cabeçalho e linhas com CRLF', () => {
+    expect(buildCsv(['Nome', 'Total'], [['Ana', 2]])).toBe('Nome;Total\r\nAna;2')
   })
 })
 
