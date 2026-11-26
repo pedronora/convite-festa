@@ -140,3 +140,21 @@ export function parseCsv(input: string): ParsedCsv {
     records: dataRecords,
   }
 }
+
+/**
+ * Escapa uma célula no padrão do Excel em português: neutraliza fórmulas de
+ * planilha e coloca entre aspas quando há separador, aspas ou quebra de linha.
+ */
+export function csvCell(value: unknown): string {
+  let text = value === null || value === undefined ? '' : String(value)
+  if (/^[=+\-@]/.test(text)) text = `'${text}`
+  if (/[;"\n\r]/.test(text)) text = `"${text.replace(/"/g, '""')}"`
+  return text
+}
+
+/** Monta um CSV com `;` e CRLF, sem BOM. */
+export function buildCsv(header: readonly unknown[], rows: readonly (readonly unknown[])[]): string {
+  return [header, ...rows]
+    .map(row => row.map(csvCell).join(';'))
+    .join('\r\n')
+}

@@ -1,14 +1,8 @@
 import { asc, eq } from 'drizzle-orm'
+import { csvCell } from '#shared/utils/csv'
 import { buildInvitationLink, formatDateTime } from '#shared/utils/format'
 import { formatPhone } from '#shared/utils/phone'
 import { resolveAppBaseUrl } from '#shared/utils/social'
-
-function csvCell(value: unknown): string {
-  let text = value === null || value === undefined ? '' : String(value)
-  if (/^[=+\-@]/.test(text)) text = `'${text}`
-  if (/[;"\n\r]/.test(text)) text = `"${text.replace(/"/g, '""')}"`
-  return text
-}
 
 const SEND_LABEL: Record<string, string> = {
   not_sent: 'Não enviado',

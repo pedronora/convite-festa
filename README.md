@@ -8,7 +8,7 @@ A complete web application to manage guests, send invitations over WhatsApp and 
 The project has two areas:
 
 - **Public site** (`/` and `/convite/[uuid]`): Spider-Man themed invitation, party details, countdown, RSVP and calendar/map actions.
-- **Admin panel** (`/admin`): dashboard, guest management, individual link per UUID, send history, RSVPs, CSV export and party settings.
+- **Admin panel** (`/admin`): dashboard, guest management, individual link per UUID, send history, RSVPs, full CSV export, confirmation report and party settings.
 
 ## Stack
 
@@ -172,7 +172,7 @@ All of them require a valid session and are enforced on the server by `requireAd
 | `/admin/convidados` | List, search, filters, sorting, bulk actions and CSV. |
 | `/admin/convidados/[id]` | Details, editing, resend, link regeneration and deletion. |
 | `/admin/envios` | Send and resend history. |
-| `/admin/confirmacoes` | Answers, age groups and messages. |
+| `/admin/confirmacoes` | Answers, age groups, messages and confirmation report. |
 | `/admin/financeiro` | Expense dashboard: contracted, paid, open, due soon, categories and planned-vs-paid curve. |
 | `/admin/financeiro/contratos` | Suppliers and contracts with search, filters, totals and quick payment. |
 | `/admin/financeiro/contratos/[id]` | Contract details, installments, payment history and balances. |
@@ -211,6 +211,12 @@ The first row must contain the headers. The separator is detected automatically 
 Header names are matched without accents and case (`Nome`/`name`, `Telefone`/`WhatsApp`/`Celular`, `Família/Grupo`/`Familia`/`Grupo`, and so on).
 
 **Duplicates:** the phone (normalized to E.164) is the identity key. For international numbers, include the country code in the CSV cell so the row is not interpreted as a local Brazilian number. A phone already registered, or repeated in the same file, is skipped; the first occurrence wins. E-mail is not used for duplicate detection because families may share the same address. The result screen shows how many rows were imported and skipped, with the line, name, phone and reason for each skipped row. Rows with an invalid phone, invalid e-mail or out-of-range limit are skipped with the validation message.
+
+## Exporting confirmations (CSV)
+
+On `/admin/confirmacoes`, **Exportar relatório** downloads one row per invitation with the responsible name, group, status, estimated guests and the confirmed people broken down by age group: adults, children aged 8–11, children aged 0–7 and the total.
+
+The status is `Confirmado`, `Não comparecerá` or `Não confirmado`. The confirmed columns are zero unless the invitation is confirmed, and `# convidados` shows the initial estimate from the guest record (empty when not informed). The full guest export, including phone, e-mail, invitation link and send history, remains on `/admin/convidados`.
 
 ## Party settings
 
